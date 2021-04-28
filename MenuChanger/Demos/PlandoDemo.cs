@@ -30,8 +30,8 @@ namespace MenuChanger.Demos
 
         public PlandoDemo()
         {
-            PlandoSelectPage = MenuPage.Create("Plando Select Page", ModeMenu.ModePage);
-            StartPage = MenuPage.Create("Plando Start Page", PlandoSelectPage);
+            PlandoSelectPage = new MenuPage("Plando Select Page", ModeMenu.ModePage);
+            StartPage = new MenuPage("Plando Start Page", PlandoSelectPage);
 
             EntryButton = new BigButton(ModeMenu.ModePage, MenuChanger.Sprites["plando"]);
             EntryButton.Button.AddHideMenuPageEvent(ModeMenu.ModePage);

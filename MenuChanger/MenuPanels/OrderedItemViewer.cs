@@ -76,6 +76,12 @@ namespace MenuChanger.MenuPanels
             IndexLabel.Text.text = ComputeCounterText();
         }
 
+        public void JumpTo(IMenuElement element)
+        {
+            int i = Items.IndexOf(element);
+            if (i >= 0) JumpTo(i);
+        }
+
 
         public virtual void Add(IMenuElement obj)
         {

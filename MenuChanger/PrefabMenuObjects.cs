@@ -280,12 +280,14 @@ namespace MenuChanger
             return (obj, obj.transform.Find("Text").GetComponent<Text>());
         }
 
+        /*
         public static PresetSwapButton<T> BuildPresetSwapButton<T>(MenuPage page, string name, 
             Dictionary<string, PresetDef<T>> presets, Dictionary<string, MenuItem<T>> subButtons)
         {
             PresetSwapButton<T> button = new PresetSwapButton<T>(page, name, presets, subButtons);
             return button;
         }
+        */
 
         public static MenuButton BuildNewButton(string text)
         {

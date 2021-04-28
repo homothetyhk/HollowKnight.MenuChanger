@@ -10,63 +10,51 @@ namespace MenuChanger
 {
     public static class BinaryFormatting
     {
-        /*
-        public class Serializer
+        static Dictionary<Type, ReflectionData> Cache = new Dictionary<Type, ReflectionData>();
+        class ReflectionData
         {
-            FieldInfo[] BoolFields;
-            FieldInfo[] IntFields;
-            FieldInfo[] EnumFields;
-            (FieldInfo, Serializer)[] NestedFields;
-
-
-            public Serializer(Type T)
+            public ReflectionData(Type T)
             {
-                FieldInfo[] Fields = T.GetFields(BindingFlags.Public | BindingFlags.Instance);
-                BoolFields = Fields.Where(f => f.FieldType == typeof(bool)).OrderBy(f => f.Name).ToArray();
-                IntFields = Fields.Where(f => f.FieldType == typeof(int)).OrderBy(f => f.Name).ToArray();
-                EnumFields = Fields.Where(f => f.FieldType.IsEnum).OrderBy(f => f.Name).ToArray();
-                NestedFields = Fields.Where(
-                f => !PrimitiveType(f.FieldType) && (f.FieldType.Attributes & TypeAttributes.Serializable) != 0)
-                    .Select(f => (f, new Serializer(f.FieldType))).ToArray();
+                FieldInfo[] fields = T.GetFields(BindingFlags.Public | BindingFlags.Instance);
+                var g = fields
+                    .GroupBy(f => f.FieldType)
+                    .ToDictionary(i => i.Key, i => i.OrderBy(f => f.Name).ToArray());
+
+
+                if (!g.TryGetValue(typeof(long), out LongFields)) LongFields = new FieldInfo[0];
+                if (!g.TryGetValue(typeof(int), out IntFields)) IntFields = new FieldInfo[0];
+                if (!g.TryGetValue(typeof(short), out ShortFields)) ShortFields = new FieldInfo[0];
+                if (!g.TryGetValue(typeof(byte), out ByteFields)) ByteFields = new FieldInfo[0];
+                if (!g.TryGetValue(typeof(bool), out BoolFields)) BoolFields = new FieldInfo[0];
+
+                EnumFields = fields.Where(f => f.FieldType.IsEnum).OrderBy(f => f.Name).ToArray();
             }
 
-            public string Serialize(object t)
+            public FieldInfo[] LongFields;
+            public FieldInfo[] IntFields;
+            public FieldInfo[] ShortFields;
+            public FieldInfo[] ByteFields;
+            public FieldInfo[] EnumFields;
+            public FieldInfo[] BoolFields;
+
+            public U[] GetValues<U>(object o, FieldInfo[] fields) => fields.Select(f => (U)f.GetValue(o)).ToArray();
+            public void SetValues<U>(object o, U[] us, FieldInfo[] fields)
             {
-                string code = string.Empty;
-
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    BinaryWriter writer = new BinaryWriter(stream);
-                    foreach (int i in intFields) writer.Write(i);
-                    foreach (int i in enumFields) writer.Write(i);
-                    foreach (byte b in ConvertBoolArrayToByteArray(boolFields)) writer.Write(b);
-                    writer.Close();
-
-                    code = Convert.ToBase64String(stream.ToArray());
-                }
-
-                foreach (FieldInfo field in Fields.Where(
-                    f => !PrimitiveType(f.FieldType) && (f.FieldType.Attributes & TypeAttributes.Serializable) != 0))
-                {
-                    if (field.GetValue(t) is object p)
-                    {
-                        code += $"-{Serialize(p)}";
-                    }
-                    else
-                    {
-                        MenuChanger.instance.LogWarn($"Unable to serialize null {field.Name} in {t.GetType().Name}");
-                    }
-                }
-
-                MenuChanger.instance.Log($"Computed Serialization of {t.GetType().Name} as {code}");
-                return code;
+                int len = Math.Min(us.Length, fields.Length);
+                for (int i = 0; i < len; i++) fields[i].SetValue(o, us[i]);
             }
+
+            public long[] Longs(object o) => GetValues<long>(o, LongFields);
+            public int[] Ints(object o) => GetValues<int>(o, IntFields);
+            public short[] Shorts(object o) => GetValues<short>(o, ShortFields);
+            public byte[] Bytes(object o) => GetValues<byte>(o, ByteFields);
+            public bool[] Bools(object o) => GetValues<bool>(o, BoolFields);
+            public byte[] Enums(object o) => GetValues<byte>(o, EnumFields);
+
         }
-        */
 
-
-        // uncached!
-        public static string Serialize(object o)
+        [Obsolete]
+        public static string OldSerialize(object o)
         {
             FieldInfo[] fieldInfos = o.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
             int[] intFields = GetIntFields(o, fieldInfos);
@@ -91,7 +79,7 @@ namespace MenuChanger
             {
                 if (field.GetValue(o) is object p)
                 {
-                    code += $"-{Serialize(p)}";
+                    code += $"-{OldSerialize(p)}";
                 }
                 else
                 {
@@ -103,7 +91,77 @@ namespace MenuChanger
             return code;
         }
 
-        public static object Deserialize(string code, object o)
+        public static string Serialize(object o)
+        {
+            Type T = o.GetType();
+            if (!Cache.TryGetValue(T, out ReflectionData rd))
+            {
+                rd = new ReflectionData(T);
+                Cache[T] = rd;
+            }
+
+            return SerializeNumericData(
+                rd.Longs(o),
+                rd.Ints(o),
+                rd.Shorts(o),
+                rd.Bytes(o),
+                rd.Enums(o),
+                rd.Bools(o)
+                );
+        }
+
+
+        public static string SerializeNumericData(long[] longs, int[] ints, short[] shorts, byte[] bytes, byte[] rawEnums, bool[] bools)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                BinaryWriter writer = new BinaryWriter(stream);
+                foreach (long i in longs ?? new long[0]) writer.Write(i);
+                foreach (int i in ints ?? new int[0]) writer.Write(i);
+                foreach (short i in shorts ?? new short[0]) writer.Write(i);
+                foreach (byte i in bytes ?? new byte[0]) writer.Write(i);
+                foreach (byte i in rawEnums ?? new byte[0]) writer.Write(i);
+                foreach (byte b in ConvertBoolArrayToByteArray(bools)) writer.Write(b);
+                writer.Close();
+
+                return Convert.ToBase64String(stream.ToArray());
+            }
+        }
+
+        public static void Deserialize(string code, object o)
+        {
+            Type T = o.GetType();
+            if (!Cache.TryGetValue(T, out ReflectionData rd))
+            {
+                Cache[T] = rd = new ReflectionData(T);
+            }
+
+            byte[] bytes = Convert.FromBase64String(code);
+            using (MemoryStream stream = new MemoryStream(bytes))
+            using (BinaryReader reader = new BinaryReader(stream))
+            {
+                try
+                {
+                    foreach (FieldInfo field in rd.LongFields) field.SetValue(o, reader.ReadInt64());
+                    foreach (FieldInfo field in rd.IntFields) field.SetValue(o, reader.ReadInt32());
+                    foreach (FieldInfo field in rd.ShortFields) field.SetValue(o, reader.ReadInt16());
+                    foreach (FieldInfo field in rd.ByteFields) field.SetValue(o, reader.ReadByte());
+                    foreach (FieldInfo field in rd.EnumFields) field.SetValue(o, reader.ReadByte());
+                    bool[] bools = ConvertByteArrayToBoolArray(reader.ReadBytes(bytes.Length - (int)stream.Position));
+                    for (int i = 0; i < bools.Length; i++)
+                    {
+                        rd.BoolFields[i].SetValue(o, bools[i]);
+                    }
+                }
+                catch (Exception e)
+                {
+                    MenuChanger.instance.LogError($"Error in deserializing {T.Name}:\n{e}");
+                }
+            }
+        }
+
+        [Obsolete]
+        public static object OldDeserialize(string code, object o)
         {
             FieldInfo[] fieldInfos = o.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
             FieldInfo[] intFields = fieldInfos.Where(f => f.FieldType == typeof(int)).OrderBy(f => f.Name).ToArray();

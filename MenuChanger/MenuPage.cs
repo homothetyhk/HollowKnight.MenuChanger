@@ -17,10 +17,9 @@ namespace MenuChanger
         public MenuButton backButton;
         public bool isShowing = false;
 
-        public static MenuPage Create(string name, MenuPage backTo) => new MenuPage(name, backTo);
-        public static MenuPage Create(string name = "Menu Page") => new MenuPage(name, null);
+        public MenuPage(string name) : this(name, null) { }
 
-        private MenuPage(string name, MenuPage backTo)
+        public MenuPage(string name, MenuPage backTo)
         {
             self = new GameObject(name);
             self.transform.position = UIManager.instance.UICanvas.transform.position;
@@ -54,48 +53,38 @@ namespace MenuChanger
 
         public void Show()
         {
+            BeforeShow?.Invoke();
+
             self.SetActive(true);
             cg.interactable = true;
             cg.alpha = 1f;
             isShowing = true;
             MenuChanger.displayedPages.Add(this);
+
+            AfterShow?.Invoke();
         }
 
         public void Hide()
         {
+            BeforeHide?.Invoke();
+            
             cg.interactable = false;
             cg.alpha = 0f;
             self.SetActive(false);
             isShowing = false;
             MenuChanger.displayedPages.Remove(this);
+
+            AfterHide?.Invoke();
         }
 
-        public void Add(GameObject obj)
+        internal void Add(GameObject obj)
         {
             obj.transform.SetParent(self.transform);
         }
 
-        public MenuButton AddNewModeButton(Sprite sprite)
-        {
-            MenuButton button = PrefabMenuObjects.BuildBigButtonSpriteOnly(sprite).GetComponent<MenuButton>();
-            button.transform.SetParent(self.transform);
-            button.transform.localPosition = Vector3.zero;
-            button.transform.localScale = new Vector2(0.6f, 0.6f);
-            button.transform.Find("Selector").localScale = new Vector2(0.5f, 0.5f);
-
-            return button;
-        }
-
-        public MenuButton AddNewModeButton(Sprite sprite, string title, string desc)
-        {
-            MenuButton button = PrefabMenuObjects.BuildBigButtonTwoTextAndSprite(sprite, title, desc).GetComponent<MenuButton>();
-            button.transform.SetParent(self.transform);
-            button.transform.localPosition = Vector3.zero;
-            button.transform.localScale = new Vector2(0.6f, 0.6f);
-            button.transform.Find("Selector").localScale = new Vector2(0.5f, 0.5f);
-
-            return button;
-        }
-
+        public event Action BeforeShow;
+        public event Action AfterShow;
+        public event Action BeforeHide;
+        public event Action AfterHide;
     }
 }

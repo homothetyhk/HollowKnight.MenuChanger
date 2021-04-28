@@ -15,7 +15,7 @@ namespace MenuChanger
 
         internal static void Reset()
         {
-            ModePage = MenuPage.Create("Mode Page");
+            ModePage = new MenuPage("Mode Page");
 
             ModeButtonPanel = new MultiGridItemPanel(ModePage, 5, 3, 150f, 650f, new Vector2(0, 300),
                 new BigButton(ModePage, Mode.Classic),

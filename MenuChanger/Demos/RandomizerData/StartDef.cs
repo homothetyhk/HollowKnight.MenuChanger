@@ -12,7 +12,9 @@ namespace MenuChanger.Demos.RandomizerData
 {
     public struct StartDef
     {
-        public static Dictionary<string, StartDef> GetStartLocations()
+        public static StartDef[] StartDefs = GetStartLocations();
+
+        public static StartDef[] GetStartLocations()
         {
             Assembly a = typeof(MenuChanger).Assembly;
             Stream startLocationStream = a.GetManifestResourceStream("MenuChanger.Resources.startlocations.xml");
@@ -22,6 +24,8 @@ namespace MenuChanger.Demos.RandomizerData
 
             return ParseStartLocationXML(startLocationXml.SelectNodes("randomizer/start"));
         }
+
+        public string name;
 
         // respawn marker properties
         public string sceneName;
@@ -40,9 +44,9 @@ namespace MenuChanger.Demos.RandomizerData
         public bool roomSafe; // safe := no items required to get to a room transition
 
 
-        private static Dictionary<string, StartDef> ParseStartLocationXML(XmlNodeList nodes)
+        private static StartDef[] ParseStartLocationXML(XmlNodeList nodes)
         {
-            Dictionary<string, StartDef> defs = new Dictionary<string, StartDef>();
+            List<StartDef> defs = new List<StartDef>();
 
             Dictionary<string, FieldInfo> startLocationFields = new Dictionary<string, FieldInfo>();
             typeof(StartDef).GetFields().ToList().ForEach(f => startLocationFields.Add(f.Name, f));
@@ -52,7 +56,7 @@ namespace MenuChanger.Demos.RandomizerData
                 XmlAttribute nameAttr = startNode.Attributes?["name"];
 
                 // Setting as object prevents boxing in FieldInfo.SetValue calls
-                object def = new StartDef();
+                object def = new StartDef { name = nameAttr?.InnerText };
 
                 foreach (XmlNode fieldNode in startNode.ChildNodes)
                 {
@@ -91,10 +95,10 @@ namespace MenuChanger.Demos.RandomizerData
                     }
                 }
 
-                defs.Add(nameAttr.InnerText, (StartDef)def);
+                defs.Add((StartDef)def);
             }
 
-            return defs;
+            return defs.ToArray();
         }
 
     }

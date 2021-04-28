@@ -69,6 +69,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryFormatting.cs" />
+    <Compile Include="Demos\RandomizerData\Captions.cs" />
+    <Compile Include="Demos\RandomizerData\StartLocationData.cs" />
+    <Compile Include="Demos\RandomizerData\LongLocationHintData.cs" />
+    <Compile Include="Demos\RandomizerData\CurseData.cs" />
+    <Compile Include="StringExtensions.cs" />
+    <Compile Include="Demos\RandomizerData\EssenceCostData.cs" />
+    <Compile Include="Demos\RandomizerData\GrubCostData.cs" />
     <Compile Include="Demos\RandomizerData\SkipData.cs" />
     <Compile Include="Demos\RandomizerData\PoolData.cs" />
     <Compile Include="Demos\RandomizerData\StartDef.cs" />

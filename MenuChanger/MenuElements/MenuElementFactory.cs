@@ -11,7 +11,10 @@ namespace MenuChanger.MenuElements
         public MenuPage Parent;
         public Dictionary<string, ToggleButton> BoolFields = new Dictionary<string, ToggleButton>();
         public Dictionary<string, MenuItem<Enum>> EnumFields = new Dictionary<string, MenuItem<Enum>>();
-        public Dictionary<string, NumericEntryField> IntFields = new Dictionary<string, NumericEntryField>();
+        public Dictionary<string, LongEntryField> LongFields = new Dictionary<string, LongEntryField>();
+        public Dictionary<string, IntEntryField> IntFields = new Dictionary<string, IntEntryField>();
+        public Dictionary<string, ShortEntryField> ShortFields = new Dictionary<string, ShortEntryField>();
+        public Dictionary<string, ByteEntryField> ByteFields = new Dictionary<string, ByteEntryField>();
         public IMenuElement[] Elements;
 
         public MenuElementFactory(MenuPage page, T obj)
@@ -23,12 +26,34 @@ namespace MenuChanger.MenuElements
             foreach (FieldInfo f in fields)
             {
                 Type U = f.FieldType;
-                if (U == typeof(int))
+
+                if (U == typeof(long))
                 {
-                    NumericEntryField entryField = new NumericEntryField(Parent, ToDisplayName(f.Name));
+                    LongEntryField entryField = new LongEntryField(Parent, ToDisplayName(f.Name));
+                    LongFields[f.Name] = entryField;
+                    elements.Add(entryField);
+                    entryField.Changed += value => f.SetValue(obj, value);
+                }
+                else if (U == typeof(int))
+                {
+                    IntEntryField entryField = new IntEntryField(Parent, ToDisplayName(f.Name));
                     IntFields[f.Name] = entryField;
                     elements.Add(entryField);
-                    // bind??
+                    entryField.Changed += value => f.SetValue(obj, value);
+                }
+                else if (U == typeof(short))
+                {
+                    ShortEntryField entryField = new ShortEntryField(Parent, ToDisplayName(f.Name));
+                    ShortFields[f.Name] = entryField;
+                    elements.Add(entryField);
+                    entryField.Changed += value => f.SetValue(obj, value);
+                }
+                else if (U == typeof(byte))
+                {
+                    ByteEntryField entryField = new ByteEntryField(Parent, ToDisplayName(f.Name));
+                    ByteFields[f.Name] = entryField;
+                    elements.Add(entryField);
+                    entryField.Changed += value => f.SetValue(obj, value);
                 }
                 else if (U == typeof(bool))
                 {
@@ -51,28 +76,6 @@ namespace MenuChanger.MenuElements
             Elements = elements.ToArray();
         }
 
-        public static string ToDisplayName(string name)
-        {
-            StringBuilder uiname = new StringBuilder(name);
-            if (name.Length > 0)
-            {
-                uiname[0] = char.ToUpper(uiname[0]);
-            }
-            
-            for (int i = 1; i < uiname.Length; i++)
-            {
-                if (char.IsUpper(uiname[i]) && char.IsLower(uiname[i - 1]))
-                {
-                    uiname.Insert(i, " ");
-                }
-
-                if (char.IsDigit(uiname[i]) && !char.IsDigit(uiname[i - 1]) && !char.IsWhiteSpace(uiname[i-1]))
-                {
-                    uiname.Insert(i, " ");
-                }
-            }
-
-            return uiname.ToString();
-        }
+        public static string ToDisplayName(string name) => name.FromCamelCase();
     }
 }

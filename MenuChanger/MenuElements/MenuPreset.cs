@@ -11,8 +11,11 @@ namespace MenuChanger.MenuElements
         public readonly Dictionary<string, T> Ts;
         public readonly FieldInfo[] Tfields;
         public readonly T Obj;
+        public readonly MenuLabel Label;
+        public readonly Func<T, string> Labeller;
 
-        public MenuPreset(MenuPage page, string prefix, Dictionary<string, T> dict, T obj, bool checkPreset)
+        public MenuPreset(MenuPage page, string prefix, Dictionary<string, T> dict, T obj, 
+            MenuElementFactory<T> factory, Func<T, string> labeller)
             : base(page, prefix, dict.Keys.ToArray())
         {
             Ts = dict;
@@ -20,11 +23,20 @@ namespace MenuChanger.MenuElements
             Obj = obj;
 
             Changed += SetPreset;
-            if (checkPreset)
-            {
-                //base.GameObject.AddComponent<Components.Updater>().action += UpdatePreset;
-            }
-            Changed += (s) => DebugMethods.DumpProperties(Obj);
+
+            Pair(factory);
+            Labeller = labeller;
+            Label = new MenuLabel(page, labeller(Ts[currentSelection]), MenuLabel.Style.Body);
+
+            // evil code
+            Label.GameObject.transform.SetParent(GameObject.transform);
+            Label.GameObject.transform.localPosition = new UnityEngine.Vector3(0, -25, 0);
+            Label.GameObject.transform.localScale *= 0.7f;
+
+            Label.Text.alignment = UnityEngine.TextAnchor.MiddleCenter;
+            Changed += s => Label.Text.text = Labeller(Ts[s.CurrentSelection]);
+
+            SetPreset(this);
         }
 
         public void SetPreset(MenuItem<string> self) => SetPreset(self.CurrentSelection);
@@ -43,26 +55,40 @@ namespace MenuChanger.MenuElements
             {
                 if (field.FieldType == typeof(bool) && factory.BoolFields.TryGetValue(field.Name, out ToggleButton toggleButton))
                 {
-                    toggleButton.Changed += UpdatePreset;
-                    Changed += (s) => toggleButton.SetSelection((bool)field.GetValue(Obj), true);
+                    toggleButton.Changed += _ => UpdatePreset();
+                    Changed += _ => toggleButton.SetSelection((bool)field.GetValue(Obj), true);
                 }
-                else if (field.FieldType == typeof(int) && factory.IntFields.TryGetValue(field.Name, out NumericEntryField intField))
+                else if (field.FieldType == typeof(byte) && factory.ByteFields.TryGetValue(field.Name, out ByteEntryField byteField))
                 {
-                    intField.InputField.onValueChanged.AddListener(UpdatePreset);
-                    Changed += (s) => intField.InputValue = (int)field.GetValue(Obj);
+                    byteField.Changed += _ => UpdatePreset();
+                    Changed += _ => byteField.InputValue = (byte)field.GetValue(Obj);
+                }
+                else if (field.FieldType == typeof(short) && factory.ShortFields.TryGetValue(field.Name, out ShortEntryField shortField))
+                {
+                    shortField.Changed += _ => UpdatePreset();
+                    Changed += _ => shortField.InputValue = (short)field.GetValue(Obj);
+                }
+                else if (field.FieldType == typeof(int) && factory.IntFields.TryGetValue(field.Name, out IntEntryField intField))
+                {
+                    intField.Changed += _ => UpdatePreset();
+                    Changed += _ => intField.InputValue = (int)field.GetValue(Obj);
+                }
+                else if (field.FieldType == typeof(long) && factory.LongFields.TryGetValue(field.Name, out LongEntryField longField))
+                {
+                    longField.Changed += _ => UpdatePreset();
+                    Changed += _ => longField.InputValue = (long)field.GetValue(Obj);
                 }
                 else if (field.FieldType.IsEnum)
                 {
                     if (factory.EnumFields.TryGetValue(field.Name, out MenuItem<Enum> enumButton))
                     {
-                        enumButton.Changed += UpdatePreset;
-                        Changed += (s) => enumButton.TrySetSelection(field.GetValue(Obj), true);
+                        enumButton.Changed += _ => UpdatePreset();
+                        Changed += _ => enumButton.TrySetSelection(field.GetValue(Obj), true);
                     }
                 }
             }
         }
 
-        public void UpdatePreset(IMenuItem item) => UpdatePreset();
         public void UpdatePreset(string s) => UpdatePreset();
 
         public void UpdatePreset()

@@ -26,6 +26,8 @@ namespace MenuChanger.MenuElements
             Label = new MenuLabel(page, label, MenuLabel.Style.Body);
             Label.Text.alignment = TextAnchor.UpperCenter;
             MoveTo(Vector2.zero);
+
+            InputField.onValueChanged.AddListener(InvokeChanged);
         }
 
         public T InputValue
@@ -34,16 +36,13 @@ namespace MenuChanger.MenuElements
             set => InputField.text = Write(value);
         }
 
-        public void AddValidateInputHook(Func<T, bool> validator)
+        public delegate void ChangedHandler(T t);
+        protected ChangedHandler ChangedInternal;
+        protected void InvokeChanged(string s) => ChangedInternal?.Invoke(Read(s));
+        public event ChangedHandler Changed
         {
-            InputField.onValueChanged.AddListener((s) =>
-            {
-                if (!validator(InputValue))
-                {
-                    InputField.textComponent.color = Color.red;
-                }
-                else InputField.textComponent.color = Color.white;
-            });
+            add => ChangedInternal += value;
+            remove => ChangedInternal -= value;
         }
 
         public abstract T Read(string input);
@@ -117,21 +116,81 @@ namespace MenuChanger.MenuElements
         }
     }
 
-
-    public class NumericEntryField : EntryField<int>
+    public class LongEntryField : EntryField<long>
     {
-        public NumericEntryField(MenuPage page, string label) : base(page, label)
+        public LongEntryField(MenuPage page, string label) : base(page, label)
         {
-
+            InputField.characterValidation = InputField.CharacterValidation.Integer;
+            InputField.characterLimit = 18;
         }
 
-        public override int Read(string s)
+        public override long Read(string input)
         {
-            if (int.TryParse(s, out int val))
+            if (long.TryParse(input, out long val))
             {
                 return val;
             }
-            else return 0;
+
+            return 0;
         }
     }
+
+    public class IntEntryField : EntryField<int>
+    {
+        public IntEntryField(MenuPage page, string label) : base(page, label)
+        {
+            InputField.characterValidation = InputField.CharacterValidation.Integer;
+            InputField.characterLimit = 10;
+        }
+
+        public override int Read(string input)
+        {
+            if (long.TryParse(input, out long val))
+            {
+                return (int)Math.Min(Math.Max(val, int.MinValue), int.MaxValue);
+            }
+
+            return 0;
+        }
+    }
+
+    public class ShortEntryField : EntryField<short>
+    {
+        public ShortEntryField(MenuPage page, string label) : base(page, label)
+        {
+            InputField.characterValidation = InputField.CharacterValidation.Integer;
+            InputField.characterLimit = 5;
+        }
+
+        public override short Read(string input)
+        {
+            if (long.TryParse(input, out long val))
+            {
+                return (short)Math.Min(Math.Max(val, short.MinValue), short.MaxValue);
+            }
+
+            return 0;
+        }
+    }
+
+    public class ByteEntryField : EntryField<byte>
+    {
+        public ByteEntryField(MenuPage page, string label) : base(page, label)
+        {
+            InputField.characterValidation = InputField.CharacterValidation.Integer;
+            InputField.characterLimit = 3;
+        }
+
+        public override byte Read(string input)
+        {
+            if (long.TryParse(input, out long val))
+            {
+                return (byte)Math.Min(Math.Max(val, byte.MinValue), byte.MaxValue);
+            }
+
+            return 0;
+        }
+    }
+
+
 }

@@ -107,126 +107,6 @@
     <areaSafe>true</areaSafe>
     <roomSafe>true</roomSafe>
   </start>
-  <start name="Fungal Core">
-    <sceneName>Fungus2_30</sceneName>
-    <x>64.8</x>
-    <y>21.4</y>
-    <zone>WASTES</zone>
-    <waypoint>Fungal_Core</waypoint>
-    <areaTransition>Fungus2_29[right1]</areaTransition>
-    <roomTransition>Fungus2_30[top1]</roomTransition>
-    <itemSafe>false</itemSafe>
-    <areaSafe>false</areaSafe>
-    <roomSafe>false</roomSafe>
-  </start>
-  <start name="Distant Village">
-    <sceneName>Room_spider_small</sceneName>
-    <x>23.1</x>
-    <y>13.4</y>
-    <zone>DEEPNEST</zone>
-    <waypoint>Distant_Village</waypoint>
-    <areaTransition>Deepnest_10[right2]</areaTransition>
-    <roomTransition>Room_spider_small[left1]</roomTransition>
-    <itemSafe>false</itemSafe>
-    <areaSafe>true</areaSafe>
-    <roomSafe>true</roomSafe>
-  </start>
-  <start name="Abyss">
-    <sceneName>Abyss_06_Core</sceneName>
-    <x>42</x>
-    <y>5.4</y>
-    <zone>ABYSS</zone>
-    <waypoint>Abyss</waypoint>
-    <areaTransition>Abyss_06_Core[top1]</areaTransition>
-    <roomTransition>Abyss_06_Core[right2]</roomTransition>
-    <itemSafe>false</itemSafe>
-    <areaSafe>false</areaSafe>
-    <roomSafe>true</roomSafe>
-  </start>
-  <start name="Hive">
-    <sceneName>Hive_03</sceneName>
-    <x>47.2</x>
-    <y>142.7</y>
-    <zone>HIVE</zone>
-    <waypoint>Hive</waypoint>
-    <areaTransition>Hive_03_c[left1]</areaTransition>
-    <roomTransition>Hive_03[right1]</roomTransition>
-    <itemSafe>false</itemSafe>
-    <areaSafe>false</areaSafe>
-    <roomSafe>true</roomSafe>
-  </start>
-  <start name="Kingdom's Edge">
-    <sceneName>Deepnest_East_15</sceneName>
-    <x>26.5</x>
-    <y>4.4</y>
-    <zone>OUTSKIRTS</zone>
-    <waypoint>Upper_Kingdom's_Edge</waypoint>
-    <areaTransition>Deepnest_East_07[left2]</areaTransition>
-    <roomTransition>Deepnest_East_15[left1]</roomTransition>
-    <itemSafe>false</itemSafe>
-    <areaSafe>true</areaSafe>
-    <roomSafe>true</roomSafe>
-  </start>
-  <start name="Hallownest's Crown">
-    <sceneName>Mines_34</sceneName>
-    <x>128.3</x>
-    <y>46.4</y>
-    <zone>MINES</zone>
-    <waypoint>Hallownest's_Crown</waypoint>
-    <areaTransition>Mines_25[left1]</areaTransition>
-    <roomTransition>Mines_34[bot1]</roomTransition>
-    <itemSafe>false</itemSafe>
-    <areaSafe>true</areaSafe>
-    <roomSafe>true</roomSafe>
-  </start>
-  <start name="Crystallized Mound">
-    <sceneName>Mines_35</sceneName>
-    <x>3.2</x>
-    <y>48.4</y>
-    <zone>MINES</zone>
-    <waypoint>Crystallized_Mound</waypoint>
-    <areaTransition>Mines_35[left1]</areaTransition>
-    <roomTransition>Mines_35[left1]</roomTransition>
-    <itemSafe>true</itemSafe>
-    <areaSafe>true</areaSafe>
-    <roomSafe>true</roomSafe>
-  </start>
-  <start name="Royal Waterways">
-    <sceneName>Waterways_03</sceneName>
-    <x>93.6</x>
-    <y>4.4</y>
-    <zone>WATERWAYS</zone>
-    <waypoint>Upper_Left_Waterways</waypoint>
-    <areaTransition>Waterways_09[left1]</areaTransition>
-    <roomTransition>Waterways_03[left1]</roomTransition>
-    <itemSafe>false</itemSafe>
-    <areaSafe>false</areaSafe>
-    <roomSafe>true</roomSafe>
-  </start>
-  <start name="Queen's Gardens">
-    <sceneName>Fungus3_13</sceneName>
-    <x>25.3</x>
-    <y>63.4</y>
-    <zone>ROYAL_GARDENS</zone>
-    <waypoint>Top_Left_Queen's_Gardens</waypoint>
-    <areaTransition>Fungus3_34[right1]</areaTransition>
-    <roomTransition>Fungus3_13[left1]</roomTransition>
-    <itemSafe>false</itemSafe>
-    <areaSafe>false</areaSafe>
-    <roomSafe>true</roomSafe>
-  </start>
-  <start name="Far Greenpath">
-    <sceneName>Fungus1_13</sceneName>
-    <x>34.9</x>
-    <y>23.4</y>
-    <zone>GREEN_PATH</zone>
-    <waypoint>Greenpath-QG</waypoint>
-    <areaTransition>Fungus1_13[left1]</areaTransition>
-    <roomTransition>Fungus1_13[left1]</roomTransition>
-    <itemSafe>false</itemSafe>
-    <areaSafe>true</areaSafe>
-    <roomSafe>true</roomSafe>
-  </start>
   <start name="Greenpath">
     <sceneName>Fungus1_32</sceneName>
     <x>3.8</x>
@@ -275,6 +155,127 @@
     <areaSafe>true</areaSafe>
     <roomSafe>true</roomSafe>
   </start>
+  <start name="Crystallized Mound">
+    <sceneName>Mines_35</sceneName>
+    <x>3.2</x>
+    <y>48.4</y>
+    <zone>MINES</zone>
+    <waypoint>Crystallized_Mound</waypoint>
+    <areaTransition>Mines_35[left1]</areaTransition>
+    <roomTransition>Mines_35[left1]</roomTransition>
+    <itemSafe>true</itemSafe>
+    <areaSafe>true</areaSafe>
+    <roomSafe>true</roomSafe>
+  </start>
+  <start name="Queen's Gardens">
+    <sceneName>Fungus3_13</sceneName>
+    <x>25.3</x>
+    <y>63.4</y>
+    <zone>ROYAL_GARDENS</zone>
+    <waypoint>Top_Left_Queen's_Gardens</waypoint>
+    <areaTransition>Fungus3_34[right1]</areaTransition>
+    <roomTransition>Fungus3_13[left1]</roomTransition>
+    <itemSafe>false</itemSafe>
+    <areaSafe>false</areaSafe>
+    <roomSafe>true</roomSafe>
+  </start>
+  <start name="Far Greenpath">
+    <sceneName>Fungus1_13</sceneName>
+    <x>34.9</x>
+    <y>23.4</y>
+    <zone>GREEN_PATH</zone>
+    <waypoint>Greenpath-QG</waypoint>
+    <areaTransition>Fungus1_13[left1]</areaTransition>
+    <roomTransition>Fungus1_13[left1]</roomTransition>
+    <itemSafe>false</itemSafe>
+    <areaSafe>true</areaSafe>
+    <roomSafe>true</roomSafe>
+  </start>
+  <start name="Fungal Core">
+    <sceneName>Fungus2_30</sceneName>
+    <x>64.8</x>
+    <y>21.4</y>
+    <zone>WASTES</zone>
+    <waypoint>Fungal_Core</waypoint>
+    <areaTransition>Fungus2_29[right1]</areaTransition>
+    <roomTransition>Fungus2_30[top1]</roomTransition>
+    <itemSafe>false</itemSafe>
+    <areaSafe>false</areaSafe>
+    <roomSafe>false</roomSafe>
+  </start>
+  <start name="Royal Waterways">
+    <sceneName>Waterways_03</sceneName>
+    <x>93.6</x>
+    <y>4.4</y>
+    <zone>WATERWAYS</zone>
+    <waypoint>Upper_Left_Waterways</waypoint>
+    <areaTransition>Waterways_09[left1]</areaTransition>
+    <roomTransition>Waterways_03[left1]</roomTransition>
+    <itemSafe>false</itemSafe>
+    <areaSafe>false</areaSafe>
+    <roomSafe>true</roomSafe>
+  </start>
+  <start name="Distant Village">
+    <sceneName>Room_spider_small</sceneName>
+    <x>23.1</x>
+    <y>13.4</y>
+    <zone>DEEPNEST</zone>
+    <waypoint>Distant_Village</waypoint>
+    <areaTransition>Deepnest_10[right2]</areaTransition>
+    <roomTransition>Room_spider_small[left1]</roomTransition>
+    <itemSafe>false</itemSafe>
+    <areaSafe>true</areaSafe>
+    <roomSafe>true</roomSafe>
+  </start>
+  <start name="Kingdom's Edge">
+    <sceneName>Deepnest_East_15</sceneName>
+    <x>26.5</x>
+    <y>4.4</y>
+    <zone>OUTSKIRTS</zone>
+    <waypoint>Upper_Kingdom's_Edge</waypoint>
+    <areaTransition>Deepnest_East_07[left2]</areaTransition>
+    <roomTransition>Deepnest_East_15[left1]</roomTransition>
+    <itemSafe>false</itemSafe>
+    <areaSafe>true</areaSafe>
+    <roomSafe>true</roomSafe>
+  </start>
+  <start name="Hallownest's Crown">
+    <sceneName>Mines_34</sceneName>
+    <x>128.3</x>
+    <y>46.4</y>
+    <zone>MINES</zone>
+    <waypoint>Hallownest's_Crown</waypoint>
+    <areaTransition>Mines_25[left1]</areaTransition>
+    <roomTransition>Mines_34[bot1]</roomTransition>
+    <itemSafe>false</itemSafe>
+    <areaSafe>true</areaSafe>
+    <roomSafe>true</roomSafe>
+  </start>
+  <start name="Abyss">
+    <sceneName>Abyss_06_Core</sceneName>
+    <x>42</x>
+    <y>5.4</y>
+    <zone>ABYSS</zone>
+    <waypoint>Abyss</waypoint>
+    <areaTransition>Abyss_06_Core[top1]</areaTransition>
+    <roomTransition>Abyss_06_Core[right2]</roomTransition>
+    <itemSafe>false</itemSafe>
+    <areaSafe>false</areaSafe>
+    <roomSafe>true</roomSafe>
+  </start>
+  <start name="Hive">
+    <sceneName>Hive_03</sceneName>
+    <x>47.2</x>
+    <y>142.7</y>
+    <zone>HIVE</zone>
+    <waypoint>Hive</waypoint>
+    <areaTransition>Hive_03_c[left1]</areaTransition>
+    <roomTransition>Hive_03[right1]</roomTransition>
+    <itemSafe>false</itemSafe>
+    <areaSafe>false</areaSafe>
+    <roomSafe>true</roomSafe>
+  </start>
+
   <start name="City of Tears">
     <sceneName>Ruins1_27</sceneName>
     <x>29.6</x>
