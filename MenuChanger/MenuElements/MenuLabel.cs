@@ -11,6 +11,7 @@ namespace MenuChanger.MenuElements
     {
         public MenuPage Parent { get; private set; }
         public GameObject GameObject { get; private set; }
+        public CanvasGroup CanvasGroup { get; private set; }
         public Text Text { get; private set; }
         public bool Hidden { get; private set; }
 
@@ -27,39 +28,55 @@ namespace MenuChanger.MenuElements
             {
                 default:
                 case Style.Title:
-                    (GameObject, Text) = PrefabMenuObjects.BuildLabel(Parent, text);
+                    (GameObject, Text, CanvasGroup) = PrefabMenuObjects.BuildLabel(Parent, text);
                     break;
                 case Style.Body:
-                    (GameObject, Text) = PrefabMenuObjects.BuildDescText(Parent, text);
+                    (GameObject, Text, CanvasGroup) = PrefabMenuObjects.BuildDescText(Parent, text);
                     break;
             }
         }
 
-        public void MoveTo(Vector2 pos)
+        public virtual void MoveTo(Vector2 pos)
         {
             GameObject.transform.localPosition = pos;
         }
 
-        public void Translate(Vector2 delta)
+        public virtual void Translate(Vector2 delta)
         {
             GameObject.transform.localPosition += (Vector3)delta;
         }
 
-        public void Show()
+        public virtual void Show()
         {
             Hidden = false;
             GameObject.SetActive(true);
         }
 
-        public void Hide()
+        public virtual void Hide()
         {
             Hidden = true;
             GameObject.SetActive(false);
         }
 
-        public void Destroy()
+        public virtual void Destroy()
         {
             GameObject.Destroy(GameObject);
+        }
+
+        public void MakeTransparent()
+        {
+            CanvasGroup.alpha = 0f;
+        }
+
+        public void MakeOpaque()
+        {
+            CanvasGroup.alpha = 1f;
+        }
+
+        public void SetVisibleByAlpha(bool visible)
+        {
+            if (visible) MakeOpaque();
+            else MakeTransparent();
         }
     }
 }

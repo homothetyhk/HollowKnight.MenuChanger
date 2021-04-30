@@ -91,7 +91,6 @@ namespace MenuChanger.MenuPanels
                 last.Add(obj);
             }
             if (last.Hidden) obj.Hide();
-            else obj.Show();
         }
 
         // Absolutely no rebalancing

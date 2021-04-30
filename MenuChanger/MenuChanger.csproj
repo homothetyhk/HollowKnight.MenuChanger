@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryFormatting.cs" />
+    <Compile Include="Colors.cs" />
     <Compile Include="Demos\RandomizerData\Captions.cs" />
     <Compile Include="Demos\RandomizerData\StartLocationData.cs" />
     <Compile Include="Demos\RandomizerData\LongLocationHintData.cs" />
@@ -101,7 +102,6 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Demos\PlandoDemo.cs" />
     <Compile Include="MenuPanels\AlignedItemPanel.cs" />
-    <Compile Include="MenuElements\PresetSwapButton.cs" />
     <Compile Include="MenuPanels\IMenuPanel.cs" />
     <Compile Include="MenuPanels\OrderedItemViewer.cs" />
     <Compile Include="Demos\RandomizerData.cs" />

@@ -16,18 +16,29 @@ namespace MenuChanger.MenuElements
         public MenuLabel Label { get; private set; }
         public Vector2 LabelOffset = new Vector2(0f, 55f);
 
-        public EntryField(MenuPage page, string label)
+        public EntryField(MenuPage page, string label, MenuLabel.Style style = MenuLabel.Style.Title)
         {
-            (GameObject, InputField) = PrefabMenuObjects.BuildEntryField();
+            switch (style)
+            {
+                default:
+                case MenuLabel.Style.Title:
+                    (GameObject, InputField) = PrefabMenuObjects.BuildEntryField();
+                    page.Add(GameObject); // whyyy?
+                    GameObject.transform.localScale = new Vector2(0.8f, 0.8f);
+                    break;
+                case MenuLabel.Style.Body:
+                    (GameObject, InputField) = PrefabMenuObjects.BuildMultiLineEntryField(page);
+                    break;
+            }
+            
             Parent = page;
-            page.Add(GameObject);
-            GameObject.transform.localScale = new Vector2(0.8f, 0.8f);
 
             Label = new MenuLabel(page, label, MenuLabel.Style.Body);
             Label.Text.alignment = TextAnchor.UpperCenter;
             MoveTo(Vector2.zero);
 
             InputField.onValueChanged.AddListener(InvokeChanged);
+            InputField.onValueChanged.AddListener(InvokeChangedSelf);
         }
 
         public T InputValue
@@ -36,14 +47,23 @@ namespace MenuChanger.MenuElements
             set => InputField.text = Write(value);
         }
 
-        public delegate void ChangedHandler(T t);
-        protected ChangedHandler ChangedInternal;
-        protected void InvokeChanged(string s) => ChangedInternal?.Invoke(Read(s));
-        public event ChangedHandler Changed
+        public delegate void ChangedTwoHandler(EntryField<T> self);
+        public event ChangedTwoHandler ChangedSelf;
+        public void InvokeChangedSelf(string _ = null) => ChangedSelf?.Invoke(this);
+
+        public delegate void ChangedHandler(T self);
+        public event ChangedHandler Changed;
+        public void InvokeChanged(string _ = null) => Changed?.Invoke(InputValue);
+
+        public void AddValidateInputToTextColorEvent(Func<T, bool> test)
         {
-            add => ChangedInternal += value;
-            remove => ChangedInternal -= value;
+            Changed += (_) =>
+            {
+                if (test(InputValue)) InputField.textComponent.color = Colors.DEFAULT_COLOR;
+                else InputField.textComponent.color = Colors.INVALID_INPUT_COLOR;
+            };
         }
+
 
         public abstract T Read(string input);
         public virtual string Write(T t)
@@ -81,9 +101,6 @@ namespace MenuChanger.MenuElements
         {
             GameObject.Destroy(GameObject);
         }
-
-        public static readonly Color INVALID_INPUT_COLOR = Color.red;
-        public static readonly Color VALID_INPUT_COLOR = Color.white;
     }
 
 
@@ -105,10 +122,7 @@ namespace MenuChanger.MenuElements
 
     public class TextEntryField : EntryField<string>
     {
-        public TextEntryField(MenuPage page, string label) : base(page, label)
-        {
-
-        }
+        public TextEntryField(MenuPage page, string label) : base(page, label, MenuLabel.Style.Body) { }
 
         public override string Read(string s)
         {

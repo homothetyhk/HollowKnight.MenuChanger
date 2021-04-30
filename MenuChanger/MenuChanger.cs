@@ -71,8 +71,9 @@ namespace MenuChanger
         }
 
         public Settings Settings = new Settings();
-
+        public static GlobalSettings gs = new GlobalSettings();
         public override ModSettings SaveSettings { get => Settings; set => Settings = value as Settings; }
+        public override ModSettings GlobalSettings { get => gs; set => gs = value as GlobalSettings; }
 
         public int MakeAssemblyHash()
         {

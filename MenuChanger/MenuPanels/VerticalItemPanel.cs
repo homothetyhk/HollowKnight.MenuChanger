@@ -53,14 +53,12 @@ namespace MenuChanger.MenuPanels
         {
             Items.Add(item);
             Reposition();
-            if (Hidden) item.Hide();
         }
 
         public void Insert(int index, IMenuElement item)
         {
             Items.Insert(index, item);
             Reposition();
-            if (Hidden) item.Hide();
         }
 
         public bool Remove(IMenuElement item)

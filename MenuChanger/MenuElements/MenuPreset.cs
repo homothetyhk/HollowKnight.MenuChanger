@@ -6,16 +6,24 @@ using System.Reflection;
 
 namespace MenuChanger.MenuElements
 {
-    public class MenuPreset<T> : MenuItem<string>
+    public interface IMenuPreset
+    {
+        MenuLabel Label { get; }
+
+        void UpdatePreset();
+    }
+
+
+    public class MenuPreset<T> : MenuItem<string>, IMenuPreset
     {
         public readonly Dictionary<string, T> Ts;
         public readonly FieldInfo[] Tfields;
         public readonly T Obj;
-        public readonly MenuLabel Label;
-        public readonly Func<T, string> Labeller;
+        public MenuLabel Label { get; private set; }
+        public readonly Func<T, string> Caption;
 
         public MenuPreset(MenuPage page, string prefix, Dictionary<string, T> dict, T obj, 
-            MenuElementFactory<T> factory, Func<T, string> labeller)
+            MenuElementFactory<T> factory, Func<T, string> caption)
             : base(page, prefix, dict.Keys.ToArray())
         {
             Ts = dict;
@@ -25,8 +33,8 @@ namespace MenuChanger.MenuElements
             Changed += SetPreset;
 
             Pair(factory);
-            Labeller = labeller;
-            Label = new MenuLabel(page, labeller(Ts[currentSelection]), MenuLabel.Style.Body);
+            Caption = caption;
+            Label = new MenuLabel(page, caption(Ts[CurrentSelection]), MenuLabel.Style.Body);
 
             // evil code
             Label.GameObject.transform.SetParent(GameObject.transform);
@@ -34,9 +42,9 @@ namespace MenuChanger.MenuElements
             Label.GameObject.transform.localScale *= 0.7f;
 
             Label.Text.alignment = UnityEngine.TextAnchor.MiddleCenter;
-            Changed += s => Label.Text.text = Labeller(Ts[s.CurrentSelection]);
+            Changed += s => Label.Text.text = Caption(Obj);
 
-            SetPreset(this);
+            UpdatePreset();
         }
 
         public void SetPreset(MenuItem<string> self) => SetPreset(self.CurrentSelection);

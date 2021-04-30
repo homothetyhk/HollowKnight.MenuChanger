@@ -8,8 +8,9 @@ namespace MenuChanger.Demos
 {
     public class RandomizerSettings : ModSettings
     {
-        public GenerationSettings GenerationSettings;
-        public SaveData SaveData;
+        public GameSettings GameSettings = new GameSettings();
+        public GenerationSettings GenerationSettings = new GenerationSettings();
+        public SaveData SaveData = new SaveData();
     }
 
     public class SaveData
@@ -17,7 +18,18 @@ namespace MenuChanger.Demos
         // TODO
     }
 
-    public class GenerationSettings
+    public class GameSettings
+    {
+        public bool NPCItemDialogue;
+        public bool JinnAppearsWithJiji;
+        public bool RealGeoRocks;
+        public bool RealGrubJars;
+
+        public bool PreloadJinn;
+        public bool PreloadGeoRocks;
+    }
+
+    public class GenerationSettings : ICloneable
     {
         public int Seed;
         public TransitionMode TransitionMode;
@@ -31,27 +43,60 @@ namespace MenuChanger.Demos
         public StartItemSettings StartItemSettings = new StartItemSettings();
         public MiscSettings MiscSettings = new MiscSettings();
 
-        public override string ToString()
+        private object[] serializationFields => new object[]
         {
-            string[] comps = new string[]
-            {
-                BinaryFormatting.Serialize(SkipSettings),
-                BinaryFormatting.Serialize(PoolSettings),
-                BinaryFormatting.Serialize(CursedSettings),
-                BinaryFormatting.Serialize(GrubCostRandomizerSettings),
-                BinaryFormatting.Serialize(EssenceCostRandomizerSettings),
-                BinaryFormatting.Serialize(LongLocationSettings),
-                BinaryFormatting.Serialize(StartLocationSettings),
-                BinaryFormatting.Serialize(StartItemSettings),
-                BinaryFormatting.Serialize(MiscSettings),
-            };
+            SkipSettings,
+            PoolSettings,
+            CursedSettings,
+            GrubCostRandomizerSettings,
+            EssenceCostRandomizerSettings,
+            LongLocationSettings,
+            StartLocationSettings,
+            StartItemSettings,
+            MiscSettings
+        };
 
-            return string.Join(":", comps);
+        public string Serialize()
+        {
+            return string.Join(":", serializationFields.Select(o => BinaryFormatting.Serialize(o)).ToArray());
         }
 
-        public void FromString(string code)
+        public static GenerationSettings Deserialize(string code)
         {
+            GenerationSettings gs = new GenerationSettings();
+            string[] pieces = code.Split(':');
+            object[] fields = gs.serializationFields;
 
+            if (pieces.Length != fields.Length)
+            {
+                MenuChanger.instance.LogWarn("Invalid settings code: not enough pieces.");
+                return null;
+            }
+
+            for (int i = 0; i < fields.Length; i++)
+            {
+                BinaryFormatting.Deserialize(pieces[i], fields[i]);
+            }
+
+            return gs;
+        }
+
+        public object Clone()
+        {
+            return new GenerationSettings
+            {
+                Seed = Seed,
+                TransitionMode = TransitionMode,
+                SkipSettings = SkipSettings.Clone() as SkipSettings,
+                PoolSettings = PoolSettings.Clone() as PoolSettings,
+                GrubCostRandomizerSettings = GrubCostRandomizerSettings.Clone() as GrubCostRandomizerSettings,
+                EssenceCostRandomizerSettings = EssenceCostRandomizerSettings.Clone() as EssenceCostRandomizerSettings,
+                LongLocationSettings = LongLocationSettings.Clone() as LongLocationSettings,
+                CursedSettings = CursedSettings.Clone() as CursedSettings,
+                StartLocationSettings = StartLocationSettings.Clone() as StartLocationSettings,
+                StartItemSettings = StartItemSettings.Clone() as StartItemSettings,
+                MiscSettings = MiscSettings.Clone() as MiscSettings,
+            };
         }
     }
 
@@ -64,7 +109,7 @@ namespace MenuChanger.Demos
     }
 
     [Serializable]
-    public class SkipSettings
+    public class SkipSettings : ICloneable
     {
         public bool MildSkips;
         public bool ShadeSkips;
@@ -73,10 +118,15 @@ namespace MenuChanger.Demos
         public bool SpikeTunnels;
         public bool DarkRooms;
         public bool SpicySkips;
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 
     [Serializable]
-    public class PoolSettings
+    public class PoolSettings : ICloneable
     {
         public bool Dreamers;
         public bool Skills;
@@ -100,10 +150,15 @@ namespace MenuChanger.Demos
         public bool BossEssence;
         public bool BossGeo;
         public bool LoreTablets;
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 
     [Serializable]
-    public class CursedSettings
+    public class CursedSettings : ICloneable
     {
         public bool RandomCurses;
         public bool RandomizeFocus;
@@ -113,26 +168,41 @@ namespace MenuChanger.Demos
         public bool RemoveSpellUpgrades;
         public bool SplitClaw;
         public bool SplitCloak;
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 
-    public class GrubCostRandomizerSettings
+    public class GrubCostRandomizerSettings : ICloneable
     {
         public bool RandomizeGrubItemCosts;
         public byte MinimumGrubCost;
         public byte MaximumGrubCost;
         public byte GrubTolerance;
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 
-    public class EssenceCostRandomizerSettings
+    public class EssenceCostRandomizerSettings : ICloneable
     {
         public bool RandomizeEssenceItemCosts;
         public short MinimumEssenceCost;
         public short MaximumEssenceCost;
         public short EssenceTolerance;
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 
     [Serializable]
-    public class LongLocationSettings
+    public class LongLocationSettings : ICloneable
     {
         public enum WPSetting : byte
         {
@@ -168,10 +238,15 @@ namespace MenuChanger.Demos
         public BossEssenceSetting BossEssenceRandomization;
         public CostItemHintSettings CostItemHints;
         public LongLocationHintSetting LongLocationHints;
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 
     [Serializable]
-    public class StartLocationSettings
+    public class StartLocationSettings : ICloneable
     {
         public enum RandomizeStartLocationType : byte
         {
@@ -221,10 +296,15 @@ namespace MenuChanger.Demos
         public void SetStartLocation(string start) => StartLocationIndex = (byte)RandomizerData.StartDef.StartDefs
             .Select((def, i) => (def, i))
             .First(p => p.def.name == start).i;
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 
     [Serializable]
-    public class StartItemSettings
+    public class StartItemSettings : ICloneable
     {
         public bool RandomizeStartGeo;
         public int MinimumStartGeo;
@@ -247,6 +327,11 @@ namespace MenuChanger.Demos
             Item1, Item2, Item3, Item4, Item5, Item6, Item7, Item8, Item9,
         };
         */
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 
     [Serializable]
@@ -277,12 +362,17 @@ namespace MenuChanger.Demos
     }
 
     [Serializable]
-    public class MiscSettings
+    public class MiscSettings : ICloneable
     {
         public bool AddDuplicateItems;
         //public bool RandomizeNotchCosts;
         //public bool RandomizeShopLocations;
         //shhh
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 
 }

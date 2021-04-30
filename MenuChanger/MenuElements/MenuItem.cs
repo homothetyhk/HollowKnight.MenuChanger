@@ -12,48 +12,37 @@ namespace MenuChanger.MenuElements
 {
     public class MenuItem<T> : SmallButton, IMenuItem
     {
-        public T CurrentSelection => currentSelection;
-        public object BoxedCurrentSelection => currentSelection as object;
+        public int CurrentIndex { get; protected set; }
+        public T CurrentSelection { get; protected set; }
+        public int Count => Selections.Count;
+        public object BoxedCurrentSelection => CurrentSelection as object;
 
         public string Name { get; private set; }
         public bool Locked { get; protected set; }
-        
-        public event MenuItemChanged Changed
-        {
-            add => ChangedInternal += value;
-            remove => ChangedInternal -= value;
-        }
 
-        public event MenuItemFormat Format
-        {
-            add => FormatInternal += value;
-            remove => FormatInternal -= value;
-        }
+        public MenuItem(MenuPage page, string name, params T[] values) : this(page, name, values?.ToList() ?? new List<T>()) { }
 
-        public MenuItem(MenuPage page, string name, params T[] values) : base(page, name)
+        // For maintaining reference to original list
+        public MenuItem(MenuPage page, string name, List<T> values) : base(page, name)
         {
             if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException(nameof(name));
             }
 
-            if (values == null || values.Length == 0)
-            {
-                throw new ArgumentNullException(nameof(values));
-            }
-
             Selections = values;
             Name = name;
 
             _text = Button.transform.Find("Text").GetComponent<Text>();
-            _text.fontSize = 36;
+            _text.fontSize = 45;
             _align = Button.gameObject.GetComponentInChildren<FixVerticalAlign>(true);
 
             Button.ClearEvents();
             Button.AddEvent(MoveNext);
 
-            currentIndex = 0;
-            currentSelection = Selections[0];
+            CurrentIndex = 0;
+            if (Selections.Count > 0) CurrentSelection = Selections[0];
+            else CurrentSelection = default;
             
             RefreshText();
         }
@@ -73,16 +62,16 @@ namespace MenuChanger.MenuElements
         {
             if (Locked) return;
 
-            currentIndex = -1;
-            for (int i = 0; i < Selections.Length; i++)
+            CurrentIndex = -1;
+            for (int i = 0; i < Selections.Count; i++)
             {
                 if (Selections[i].Equals(obj))
                 {
-                    currentIndex = i;
+                    CurrentIndex = i;
                     break;
                 }
             }
-            currentSelection = obj;
+            CurrentSelection = obj;
 
             RefreshText(invokeChanged);
         }
@@ -91,19 +80,51 @@ namespace MenuChanger.MenuElements
         {
             if (Locked) return;
 
-            currentIndex++;
-            if (currentIndex >= Selections.Length)
+            CurrentIndex++;
+            if (CurrentIndex >= Selections.Count)
             {
-                currentIndex = 0;
+                CurrentIndex = 0;
             }
-            currentSelection = Selections[currentIndex];
+            if (Selections.Count > 0)
+            {
+                CurrentSelection = Selections[CurrentIndex];
+            }
 
             RefreshText();
         }
 
+        public void AddItem(T t)
+        {
+            Selections.Add(t);
+        }
+
+        public void RemoveItem(T t)
+        {
+            Selections.Remove(t);
+            if (CurrentSelection.Equals(t)) MoveNext();
+        }
+
+        public void OverwriteCurrent(T t)
+        {
+            if (Selections.Count > 0)
+            {
+                CurrentSelection = Selections[CurrentIndex] = t;
+                RefreshText();
+            }
+        }
+
+        public void RemoveCurrent()
+        {
+            if (Selections.Count > 0)
+            {
+                Selections.RemoveAt(CurrentIndex--);
+                MoveNext();
+            }
+        }
+
         protected virtual void RefreshText(bool invokeEvent = true)
         {
-            _text.text = InvokeFormat(Name, ": ", currentSelection.ToString());
+            _text.text = InvokeFormat(Name, ": ", CurrentSelection?.ToString() ?? string.Empty);
 
             _align.AlignText();
 
@@ -130,24 +151,22 @@ namespace MenuChanger.MenuElements
         }
 
         protected readonly FixVerticalAlign _align;
-        protected readonly T[] Selections;
+        protected readonly List<T> Selections; 
         protected readonly Text _text;
-        protected int currentIndex;
-        protected T currentSelection;
+        
 
+        public event MenuItemChanged Changed;
         public delegate void MenuItemChanged(MenuItem<T> item);
-        protected event MenuItemChanged ChangedInternal;
-        protected void InvokeChanged() => ChangedInternal?.Invoke(this);
+        protected void InvokeChanged() => Changed?.Invoke(this);
 
 
-
+        public event MenuItemFormat Format;
         public delegate (string, string, string) MenuItemFormat(T selection, string prefix, string cons, string repr);
-        protected event MenuItemFormat FormatInternal;
         protected string InvokeFormat(string prefix, string cons, string repr)
         {
-            foreach (MenuItemFormat format in FormatInternal?.GetInvocationList() ?? new Delegate[0])
+            foreach (MenuItemFormat format in Format?.GetInvocationList() ?? new Delegate[0])
             {
-                (prefix, cons, repr) = format(currentSelection, prefix, cons, repr);
+                (prefix, cons, repr) = format(CurrentSelection, prefix, cons, repr);
             }
 
             return $"{prefix}{cons}{repr}";

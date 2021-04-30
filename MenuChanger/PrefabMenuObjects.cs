@@ -62,7 +62,7 @@ namespace MenuChanger
             }
         }
 
-        public static (GameObject, Text) BuildDescText(MenuPage page, string text)
+        public static (GameObject, Text, CanvasGroup) BuildDescText(MenuPage page, string text)
         {
             GameObject obj = GameObject.Instantiate(descText);
             
@@ -87,9 +87,10 @@ namespace MenuChanger
             obj.GetComponent<RectTransform>().sizeDelta = new Vector2(0f, 0f);
 
             // allow clicking things placed behind the text
-            obj.AddComponent<CanvasGroup>().blocksRaycasts = false;
+            CanvasGroup cg = obj.AddComponent<CanvasGroup>();
+            cg.blocksRaycasts = false;
 
-            return (obj, t);
+            return (obj, t, cg);
         }
 
 
@@ -164,29 +165,6 @@ namespace MenuChanger
 
         public static MenuButton BuildBigButtonTwoTextNoSprite(string title, string desc)
         {
-            /*
-            MenuButton button = GameObject.Instantiate(classicModeButtonObjectPrefab).GetComponent<MenuButton>();
-            button.buttonType = MenuButton.MenuButtonType.Proceed;
-            GameObject.Destroy(button.gameObject.GetComponent<StartGameEventTrigger>());
-
-            Transform textTrans = button.transform.Find("Text");
-            GameObject.Destroy(textTrans.GetComponent<AutoLocalizeTextUI>());
-            textTrans.GetComponent<Text>().text = title ?? string.Empty;
-            if (string.IsNullOrEmpty(desc))
-            {
-                textTrans.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, -5f);
-            }
-            else
-            {
-                textTrans.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 30f); // ???
-            }
-            // scaling issues with title text
-            textTrans.GetComponent<RectTransform>().sizeDelta = new Vector2(784f, 63f);
-
-            Transform descTrans = button.transform.Find("DescriptionText");
-            GameObject.Destroy(descTrans.GetComponent<AutoLocalizeTextUI>());
-            descTrans.GetComponent<Text>().text = desc ?? string.Empty;
-            */
             var obj = CloneBigButton();
             GameObject.Destroy(obj.button.transform.Find("Image").GetComponent<Image>());
             obj.titleText.text = title;
@@ -267,7 +245,7 @@ namespace MenuChanger
             return button;
         }
 
-        public static (GameObject, Text) BuildLabel(MenuPage page, string label)
+        public static (GameObject, Text, CanvasGroup) BuildLabel(MenuPage page, string label)
         {
             GameObject obj = backButtonPrefab.Clone(label + " Label", MenuButton.MenuButtonType.Activate, Vector2.zero, label).gameObject;
             GameObject.Destroy(obj.GetComponent<EventTrigger>());
@@ -277,17 +255,11 @@ namespace MenuChanger
             obj.transform.localPosition = Vector3.zero;
             obj.transform.localScale = new Vector3(0.7f, 0.7f, 1f);
 
-            return (obj, obj.transform.Find("Text").GetComponent<Text>());
-        }
+            CanvasGroup cg = obj.AddComponent<CanvasGroup>();
+            cg.blocksRaycasts = false;
 
-        /*
-        public static PresetSwapButton<T> BuildPresetSwapButton<T>(MenuPage page, string name, 
-            Dictionary<string, PresetDef<T>> presets, Dictionary<string, MenuItem<T>> subButtons)
-        {
-            PresetSwapButton<T> button = new PresetSwapButton<T>(page, name, presets, subButtons);
-            return button;
+            return (obj, obj.transform.Find("Text").GetComponent<Text>(), cg);
         }
-        */
 
         public static MenuButton BuildNewButton(string text)
         {
@@ -298,7 +270,7 @@ namespace MenuChanger
 
         public static (GameObject, InputField) BuildEntryField()
         {
-            GameObject obj = backButtonPrefab.Clone("NumericEntryField", MenuButton.MenuButtonType.Activate, Vector2.zero).gameObject;
+            GameObject obj = backButtonPrefab.Clone("EntryField", MenuButton.MenuButtonType.Activate, Vector2.zero).gameObject;
             GameObject.DestroyImmediate(obj.GetComponent<MenuButton>());
             GameObject.DestroyImmediate(obj.GetComponent<EventTrigger>());
             GameObject.DestroyImmediate(obj.transform.Find("Text").GetComponent<AutoLocalizeTextUI>());
@@ -323,24 +295,57 @@ namespace MenuChanger
             return (obj, inputField);
         }
 
-        public static (GameObject, InputField) BuildNumericEntryField(int characterLimit, int? defaultValue = null)
+        public static (GameObject, InputField) BuildMultiLineEntryField(MenuPage page)
         {
-            (GameObject obj, InputField inputField) = BuildEntryField();
-            inputField.contentType = InputField.ContentType.IntegerNumber;
-            inputField.characterLimit = characterLimit;
-            inputField.text = (defaultValue ?? new System.Random().Next((int)Math.Pow(10, characterLimit) - 1)).ToString();
+            GameObject obj = GameObject.Instantiate(descText);
 
-            inputField.colors = new ColorBlock
+            // prevent null ref logs
+            SoftMaskScript sms = obj.GetComponent<SoftMaskScript>();
+            if (sms is SoftMaskScript)
             {
-                highlightedColor = Color.yellow,
-                pressedColor = Color.red,
-                disabledColor = Color.black,
-                normalColor = Color.white,
-                colorMultiplier = 2f
-            };
+                typeof(Graphic).GetField("m_Canvas", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .SetValue(sms.GetComponent<Graphic>(), UIManager.instance.UICanvas);
+                GameObject.DestroyImmediate(sms, true);
+            }
+
+            // remove scrollbar mask
+            Text t = obj.GetComponent<Text>();
+            t.material = backButtonObjectPrefab.transform.Find("Text").GetComponent<Text>().material;
+
+            // add to page and fix scale issues
+            page.Add(obj);
+            obj.transform.localPosition = Vector3.zero;
+            obj.transform.localScale = new Vector3(0.7f, 0.7f, 1f);
+            obj.GetComponent<RectTransform>().sizeDelta = new Vector2(0f, 0f);
+            try
+            {
+                GameObject.DestroyImmediate(obj.GetComponent<AutoLocalizeTextUI>());
+                GameObject.DestroyImmediate(obj.GetComponent<FixVerticalAlign>());
+                GameObject.DestroyImmediate(obj.GetComponent<ContentSizeFitter>());
+            }
+            catch (Exception e)
+            {
+                MenuChanger.instance.LogError(e);
+            }
+
+            // befuddling
+            RectTransform textRT = obj.GetComponent<RectTransform>();
+            textRT.anchorMin = textRT.anchorMax = new Vector2(0.5f, 0.5f);
+            textRT.sizeDelta = new Vector2(450f, 800f);
+
+            InputField inputField = obj.AddComponent<InputField>();
+
+            inputField.textComponent = t;
+
+            inputField.caretColor = Color.white;
+            inputField.contentType = InputField.ContentType.Standard;
+            inputField.navigation = Navigation.defaultNavigation;
+            inputField.caretWidth = 8;
+            inputField.characterLimit = 600;
+            inputField.text = string.Empty;
+            inputField.lineType = InputField.LineType.MultiLineSubmit;
 
             return (obj, inputField);
         }
-
     }
 }

@@ -32,7 +32,7 @@ namespace MenuChanger.MenuElements
             {
                 if (Locked)
                 {
-                    _text.color = LOCKED_FALSE_COLOR;
+                    _text.color = Colors.LOCKED_FALSE_COLOR;
                 }
                 else
                 {
@@ -43,19 +43,19 @@ namespace MenuChanger.MenuElements
 
             if (!Locked && value)
             {
-                _text.color = TRUE_COLOR;
+                _text.color = Colors.TRUE_COLOR;
             }
             else if (!Locked && !value)
             {
-                _text.color = FALSE_COLOR;
+                _text.color = Colors.FALSE_COLOR;
             }
             else if (Locked && value)
             {
-                _text.color = LOCKED_TRUE_COLOR;
+                _text.color = Colors.LOCKED_TRUE_COLOR;
             }
             else if (Locked && value)
             {
-                _text.color = LOCKED_FALSE_COLOR;
+                _text.color = Colors.LOCKED_FALSE_COLOR;
             }
             else
             {
@@ -80,9 +80,6 @@ namespace MenuChanger.MenuElements
             SetColor();
         }
 
-        private static readonly Color TRUE_COLOR = Color.Lerp(Color.white, Color.yellow, 0.5f);
-        private static readonly Color FALSE_COLOR = Color.grey;
-        private static readonly Color LOCKED_TRUE_COLOR = Color.Lerp(Color.grey, Color.yellow, 0.5f);
-        private static readonly Color LOCKED_FALSE_COLOR = Color.Lerp(Color.grey, Color.black, 0.5f);
+        
     }
 }

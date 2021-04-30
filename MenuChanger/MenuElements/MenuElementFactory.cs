@@ -16,14 +16,15 @@ namespace MenuChanger.MenuElements
         public Dictionary<string, ShortEntryField> ShortFields = new Dictionary<string, ShortEntryField>();
         public Dictionary<string, ByteEntryField> ByteFields = new Dictionary<string, ByteEntryField>();
         public IMenuElement[] Elements;
+        private FieldInfo[] Fields;
 
         public MenuElementFactory(MenuPage page, T obj)
         {
             Parent = page;
-            FieldInfo[] fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance);
+            Fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance);
             List<IMenuElement> elements = new List<IMenuElement>();
 
-            foreach (FieldInfo f in fields)
+            foreach (FieldInfo f in Fields)
             {
                 Type U = f.FieldType;
 
@@ -74,6 +75,69 @@ namespace MenuChanger.MenuElements
             }
 
             Elements = elements.ToArray();
+        }
+
+        public void SetMenuValues(T source, T target)
+        {
+            foreach (FieldInfo f in Fields)
+            {
+                Type U = f.FieldType;
+
+                if (U == typeof(long))
+                {
+                    if (LongFields.TryGetValue(f.Name, out var val))
+                    {
+                        long i = (long)f.GetValue(source);
+                        val.InputValue = i;
+                        f.SetValue(target, i);
+                    }
+                }
+                else if (U == typeof(int))
+                {
+                    if (IntFields.TryGetValue(f.Name, out var val))
+                    {
+                        int i = (int)f.GetValue(source);
+                        val.InputValue = i;
+                        f.SetValue(target, i);
+                    }
+                }
+                else if (U == typeof(short))
+                {
+                    if (ShortFields.TryGetValue(f.Name, out var val))
+                    {
+                        short i = (short)f.GetValue(source);
+                        val.InputValue = i;
+                        f.SetValue(target, i);
+                    }
+                }
+                else if (U == typeof(byte))
+                {
+                    if (ByteFields.TryGetValue(f.Name, out var val))
+                    {
+                        byte i = (byte)f.GetValue(source);
+                        val.InputValue = i;
+                        f.SetValue(target, i);
+                    }
+                }
+                else if (U == typeof(bool))
+                {
+                    if (BoolFields.TryGetValue(f.Name, out var val))
+                    {
+                        bool i = (bool)f.GetValue(source);
+                        val.SetSelection(i, false);
+                        f.SetValue(target, i);
+                    }
+                }
+                else if (U.IsEnum)
+                {
+                    if (EnumFields.TryGetValue(f.Name, out var val))
+                    {
+                        Enum i = (Enum)f.GetValue(source);
+                        val.SetSelection(i, false);
+                        f.SetValue(target, i);
+                    }
+                }
+            }
         }
 
         public static string ToDisplayName(string name) => name.FromCamelCase();
