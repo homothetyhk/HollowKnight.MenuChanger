@@ -59,7 +59,7 @@ namespace MenuChanger
             cg.interactable = true;
             cg.alpha = 1f;
             isShowing = true;
-            MenuChanger.displayedPages.Add(this);
+            MenuChangerMod.displayedPages.Add(this);
 
             AfterShow?.Invoke();
         }
@@ -72,7 +72,7 @@ namespace MenuChanger
             cg.alpha = 0f;
             self.SetActive(false);
             isShowing = false;
-            MenuChanger.displayedPages.Remove(this);
+            MenuChangerMod.displayedPages.Remove(this);
 
             AfterHide?.Invoke();
         }

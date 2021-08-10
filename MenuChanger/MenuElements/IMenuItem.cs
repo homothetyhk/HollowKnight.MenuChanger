@@ -6,15 +6,13 @@ using System.Reflection;
 
 namespace MenuChanger.MenuElements
 {
-    public interface IMenuItem : IMenuElement
+    public interface IMenuItem : IMenuElement, ILockable
     {
         object BoxedCurrentSelection { get; }
-        bool Locked { get; }
 
-        bool TrySetSelection(object obj, bool invokeChanged);
+        bool TrySetSelection(object obj);
         void MoveNext();
         void Bind(object obj, FieldInfo field);
-        void Lock();
-        void Unlock();
+
     }
 }

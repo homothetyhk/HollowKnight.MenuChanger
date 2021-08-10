@@ -18,7 +18,7 @@ namespace MenuChanger
             float height = 0f;
             foreach (RectTransform rt in button.gameObject.GetComponentsInChildren<RectTransform>())
             {
-                MenuChanger.instance.Log(rt.gameObject.name + $" {rt.rect.width * rt.localScale.x}, {rt.rect.height * rt.localScale.y}");
+                MenuChangerMod.instance.Log(rt.gameObject.name + $" {rt.rect.width * rt.localScale.x}, {rt.rect.height * rt.localScale.y}");
                 width = Mathf.Max(rt.rect.width * rt.localScale.x, width);
                 height = Mathf.Max(rt.rect.height * rt.localScale.y, height);
             }
@@ -33,10 +33,10 @@ namespace MenuChanger
 
         public static void DumpComponents(GameObject obj, bool verbose = true, int indentLevel = 0)
         {
-            MenuChanger.instance.Log(BuildFullName(obj.transform));
+            MenuChangerMod.instance.Log(BuildFullName(obj.transform));
             foreach (Component c in obj.transform.GetComponents<Component>())
             {
-                MenuChanger.instance.Log
+                MenuChangerMod.instance.Log
                     ($"{new string(' ', indentLevel)}{c.GetType().Name}: {c.transform.name} at {c.transform.position} (local: {c.transform.localPosition})");
                 if (verbose)
                 {
@@ -44,15 +44,15 @@ namespace MenuChanger
                     {
                         string name = descriptor.Name;
                         object value = descriptor.GetValue(c);
-                        MenuChanger.instance.Log($"{new string(' ', indentLevel + 4)}{descriptor.PropertyType.Name} {name}={value}");
+                        MenuChangerMod.instance.Log($"{new string(' ', indentLevel + 4)}{descriptor.PropertyType.Name} {name}={value}");
                     }
                 }
             }
 
             foreach (Transform child in obj.transform)
             {
-                MenuChanger.instance.Log($"{new string(' ', indentLevel)}----");
-                MenuChanger.instance.Log($"{new string(' ', indentLevel)}{child.gameObject.GetType().Name}: {child.gameObject.name}: {BuildFullName(child.transform)} at {child.transform.position} (local: {child.transform.localPosition})");
+                MenuChangerMod.instance.Log($"{new string(' ', indentLevel)}----");
+                MenuChangerMod.instance.Log($"{new string(' ', indentLevel)}{child.gameObject.GetType().Name}: {child.gameObject.name}: {BuildFullName(child.transform)} at {child.transform.position} (local: {child.transform.localPosition})");
                 DumpComponents(child.gameObject, verbose, indentLevel + 4);
             }
         }
@@ -64,7 +64,7 @@ namespace MenuChanger
             {
                 string name = descriptor.Name;
                 object value = descriptor.GetValue(obj);
-                MenuChanger.instance.Log($"{descriptor.PropertyType.Name} {name}={value}");
+                MenuChangerMod.instance.Log($"{descriptor.PropertyType.Name} {name}={value}");
             }
         }
 
@@ -94,7 +94,7 @@ namespace MenuChanger
         {
             if (verbose)
             {
-                MenuChanger.instance.Log($"Copying component of type {T.Name}");
+                MenuChangerMod.instance.Log($"Copying component of type {T.Name}");
             }
             foreach (PropertyInfo p in
                 T.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Default).Where(t => t.CanWrite))
@@ -103,7 +103,7 @@ namespace MenuChanger
                 {
                     if (verbose)
                     {
-                        MenuChanger.instance.Log($"    Skipping property {p.PropertyType.Name} {p.Name} of {T.Name}");
+                        MenuChangerMod.instance.Log($"    Skipping property {p.PropertyType.Name} {p.Name} of {T.Name}");
                     }
                 }
                 else
@@ -115,7 +115,7 @@ namespace MenuChanger
 
         public static void CopyComponents(GameObject from, GameObject to)
         {
-            MenuChanger.instance.Log($"Copying {from.name}");
+            MenuChangerMod.instance.Log($"Copying {from.name}");
             foreach (Component c in from.transform.GetComponents<Component>())
             {
                 CopyComponent(c.GetType(), c, to.AddComponent(c.GetType()));
@@ -123,12 +123,12 @@ namespace MenuChanger
 
             foreach (Transform child in from.transform)
             {
-                MenuChanger.instance.Log(from.transform.childCount);
+                MenuChangerMod.instance.Log(from.transform.childCount);
                 GameObject g = new GameObject(child.gameObject.name);
                 g.transform.SetParent(to.transform);
                 CopyComponents(child.gameObject, g);
             }
-            MenuChanger.instance.Log($"Finished copying {from.name}");
+            MenuChangerMod.instance.Log($"Finished copying {from.name}");
         }
 
     }

@@ -10,8 +10,39 @@ namespace MenuChanger
 {
     public static class BinaryFormatting
     {
+        public const char CLASS_SEPARATOR = ';';
+        public const char STRING_SEPARATOR = '`';
+
+
         static Dictionary<Type, (FieldInfo[] numerics, FieldInfo[] bools)> FieldCache = 
             new Dictionary<Type, (FieldInfo[] numerics, FieldInfo[] bools)>();
+
+        public class ReflectionData
+        {
+            static Dictionary<Type, ReflectionData> cache = new Dictionary<Type, ReflectionData>();
+
+            public static ReflectionData GetReflectionData(Type T)
+            {
+                if (cache.TryGetValue(T, out ReflectionData rd)) return rd;
+                else
+                {
+                    cache[T] = rd = new ReflectionData(T);
+                    return rd;
+                }
+            }
+
+            public FieldInfo[] numericFields;
+            public FieldInfo[] boolFields;
+            public FieldInfo[] stringFields;
+
+            public ReflectionData(Type T)
+            {
+                FieldInfo[] fields = T.GetFields(BindingFlags.Public | BindingFlags.Instance);
+                numericFields = fields.Where(f => NumericTypes.Contains(f.FieldType) || f.FieldType.IsEnum).OrderBy(f => f.Name).ToArray();
+                boolFields = fields.Where(f => f.FieldType == typeof(bool)).OrderBy(f => f.Name).ToArray();
+                stringFields = fields.Where(f => f.FieldType == typeof(string)).OrderBy(f => f.Name).ToArray();
+            }
+        }
 
         static Type[] NumericTypes = new Type[]
         {
@@ -65,26 +96,12 @@ namespace MenuChanger
         public static string Serialize(object o)
         {
             Type T = o.GetType();
-
-            FieldInfo[] numericFields;
-            FieldInfo[] boolFields;
-            if (FieldCache.TryGetValue(T, out var pair))
-            {
-                numericFields = pair.numerics;
-                boolFields = pair.bools;
-            }
-            else
-            {
-                FieldInfo[] fields = T.GetFields(BindingFlags.Public | BindingFlags.Instance);
-                numericFields = fields.Where(f => NumericTypes.Contains(f.FieldType) || f.FieldType.IsEnum).OrderBy(f => f.Name).ToArray();
-                boolFields = fields.Where(f => f.FieldType == typeof(bool)).OrderBy(f => f.Name).ToArray();
-                FieldCache[T] = (numericFields, boolFields);
-            }
+            ReflectionData rd = ReflectionData.GetReflectionData(T);
 
             using (MemoryStream stream = new MemoryStream())
             {
                 BinaryWriter writer = new BinaryWriter(stream);
-                foreach (FieldInfo f in numericFields)
+                foreach (FieldInfo f in rd.numericFields)
                 {
                     Type F = f.FieldType;
                     if (F.IsEnum)
@@ -95,34 +112,29 @@ namespace MenuChanger
                     writer.WriteNumeric(F, box);
                 }
 
-                bool[] boolValues = boolFields.Select(f => (bool)f.GetValue(o)).ToArray();
+                bool[] boolValues = rd.boolFields.Select(f => (bool)f.GetValue(o)).ToArray();
                 foreach (byte b in ConvertBoolArrayToByteArray(boolValues))
                 {
                     writer.Write(b);
                 }
 
                 writer.Close();
-                return Convert.ToBase64String(stream.ToArray());
+                StringBuilder sb = new StringBuilder(Convert.ToBase64String(stream.ToArray()));
+                foreach (FieldInfo f in rd.stringFields)
+                {
+                    sb.Append($"{STRING_SEPARATOR}{(string)f.GetValue(o)}");
+                }
+                return sb.ToString();
             }
         }
 
         public static void Deserialize(string code, object o)
         {
             Type T = o.GetType();
-            FieldInfo[] numericFields;
-            FieldInfo[] boolFields;
-            if (FieldCache.TryGetValue(T, out var pair))
-            {
-                numericFields = pair.numerics;
-                boolFields = pair.bools;
-            }
-            else
-            {
-                FieldInfo[] fields = T.GetFields(BindingFlags.Public | BindingFlags.Instance);
-                numericFields = fields.Where(f => NumericTypes.Contains(f.FieldType) || f.FieldType.IsEnum).OrderBy(f => f.Name).ToArray();
-                boolFields = fields.Where(f => f.FieldType == typeof(bool)).OrderBy(f => f.Name).ToArray();
-                FieldCache[T] = (numericFields, boolFields);
-            }
+            ReflectionData rd = ReflectionData.GetReflectionData(T);
+
+            string[] pieces = code.Split(STRING_SEPARATOR);
+            code = pieces[0];
 
             byte[] bytes;
             try
@@ -131,7 +143,7 @@ namespace MenuChanger
             }
             catch (Exception e)
             {
-                MenuChanger.instance.LogWarn($"Malformatted Base64 string {{{code}}}\n" + e);
+                MenuChangerMod.instance.LogWarn($"Malformatted Base64 string {{{code}}}\n" + e);
                 return;
             }
 
@@ -141,7 +153,7 @@ namespace MenuChanger
             {
                 try
                 {
-                    foreach (FieldInfo field in numericFields)
+                    foreach (FieldInfo field in rd.numericFields)
                     {
                         Type F = field.FieldType;
                         if (F.IsEnum)
@@ -152,15 +164,21 @@ namespace MenuChanger
                     }
 
                     bool[] boolValues = ConvertByteArrayToBoolArray(reader.ReadBytes(bytes.Length - (int)stream.Position));
-                    int cap = Math.Min(boolValues.Length, boolFields.Length);
+                    int cap = Math.Min(boolValues.Length, rd.boolFields.Length);
                     for (int i = 0; i < cap; i++)
                     {
-                        boolFields[i].SetValue(o, boolValues[i]);
+                        rd.boolFields[i].SetValue(o, boolValues[i]);
+                    }
+
+                    cap = Math.Min(rd.stringFields.Length, pieces.Length - 1);
+                    for (int i = 0; i < cap; i++)
+                    {
+                        rd.stringFields[i].SetValue(o, pieces[i + 1]);
                     }
                 }
                 catch (Exception e)
                 {
-                    MenuChanger.instance.LogError($"Error in deserializing {T.Name}:\n{e}");
+                    MenuChangerMod.instance.LogError($"Error in deserializing {T.Name}:\n{e}");
                 }
             }
         }

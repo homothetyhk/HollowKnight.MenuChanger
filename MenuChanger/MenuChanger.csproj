@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MenuChanger</RootNamespace>
     <AssemblyName>MenuChanger</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,17 +31,25 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="MMHOOK_Assembly-CSharp">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\MMHOOK_Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="MMHOOK_PlayMaker">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\MMHOOK_PlayMaker.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\PlayMaker.dll</HintPath>
-    </Reference>
-    <Reference Include="SereCore">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\SereCore.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -56,6 +66,10 @@
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
@@ -69,27 +83,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryFormatting.cs" />
+    <Compile Include="EventArgs.cs" />
+    <Compile Include="MenuConstructor.cs" />
+    <Compile Include="SpriteManager.cs" />
+    <Compile Include="ThreadSupport.cs" />
     <Compile Include="Colors.cs" />
-    <Compile Include="Demos\RandomizerData\Captions.cs" />
-    <Compile Include="Demos\RandomizerData\StartLocationData.cs" />
-    <Compile Include="Demos\RandomizerData\LongLocationHintData.cs" />
-    <Compile Include="Demos\RandomizerData\CurseData.cs" />
+    <Compile Include="MenuElements\CounterLabel.cs" />
+    <Compile Include="MenuElements\TimerLabel.cs" />
+    <Compile Include="MenuElements\ILockable.cs" />
     <Compile Include="StringExtensions.cs" />
-    <Compile Include="Demos\RandomizerData\EssenceCostData.cs" />
-    <Compile Include="Demos\RandomizerData\GrubCostData.cs" />
-    <Compile Include="Demos\RandomizerData\SkipData.cs" />
-    <Compile Include="Demos\RandomizerData\PoolData.cs" />
-    <Compile Include="Demos\RandomizerData\StartDef.cs" />
     <Compile Include="MenuElements\MenuPreset.cs" />
     <Compile Include="MenuPanels\MultiGridItemPanel.cs" />
     <Compile Include="SaveGameDataExtensions.cs" />
     <Compile Include="ResumeMenu.cs" />
     <Compile Include="MenuElements\RadioSwitch.cs" />
     <Compile Include="Mode.cs" />
-    <Compile Include="Demos\PlandoDef.cs" />
     <Compile Include="ModeMenu.cs" />
-    <Compile Include="Components\Updater.cs" />
-    <Compile Include="Demos\RandomizerSettings.cs" />
     <Compile Include="MenuElements\BaseButton.cs" />
     <Compile Include="MenuElements\BigButton.cs" />
     <Compile Include="MenuElements\SmallButton.cs" />
@@ -100,21 +109,18 @@
     <Compile Include="MenuElements\IMenuItem.cs" />
     <Compile Include="MenuPanels\Subpage.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="Demos\PlandoDemo.cs" />
     <Compile Include="MenuPanels\AlignedItemPanel.cs" />
     <Compile Include="MenuPanels\IMenuPanel.cs" />
     <Compile Include="MenuPanels\OrderedItemViewer.cs" />
-    <Compile Include="Demos\RandomizerData.cs" />
     <Compile Include="DebugMethods.cs" />
     <Compile Include="MenuPanels\GridItemPanel.cs" />
-    <Compile Include="Demos\RandomizerDemo.cs" />
     <Compile Include="PrefabMenuObjects.cs" />
     <Compile Include="MenuPanels\VerticalItemPanel.cs" />
     <Compile Include="MenuElements\ToggleButton.cs" />
     <Compile Include="MenuPage.cs" />
     <Compile Include="MenuElements\MenuItem.cs" />
     <Compile Include="MenuButtonExtensions.cs" />
-    <Compile Include="MenuChanger.cs" />
+    <Compile Include="MenuChangerMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -126,8 +132,11 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\startlocations.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\entries.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\MenuChanger"</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -8,9 +8,20 @@ namespace MenuChanger.MenuElements
 {
     public class RadioSwitch
     {
+        public enum ToggleGroupMode
+        {
+            RadioSwitch,
+            MultiSelect,
+        }
+
         public readonly MenuPage Parent;
         public readonly ToggleButton[] Elements;
         public ToggleButton CurrentButton { get; protected set; }
+        /// <summary>
+        /// Determines whether the RadioSwitch event is called when its buttons are clicked.
+        /// </summary>
+        public bool Active { get; protected set; } = true;
+
         public string CurrentSelection => CurrentButton?.Name;
 
         public RadioSwitch(MenuPage page, params string[] ts)
@@ -19,47 +30,112 @@ namespace MenuChanger.MenuElements
 
             Parent = page;
             Elements = ts.Select(t => new ToggleButton(page, t)).ToArray();
-            CurrentButton = Elements[0];
-            CurrentButton.SetSelection(true, true);
+            SelectFirst();
 
             foreach (ToggleButton b in Elements)
             {
-                b.Changed += OnClick;
+                b.InterceptChanged += OnClick;
             }
-
         }
 
-        public void OnClick(MenuItem<bool> clicked)
+        public void OnClick(object sender, InterceptEventArgs<bool> args)
         {
-            if (CurrentButton == clicked)
+            ToggleButton button = sender as ToggleButton;
+            if (!Active) return;
+            if (CurrentButton == sender)
             {
-                clicked.SetSelection(true, false);
+                args.cancelChange = true;
                 return;
             }
-            if (CurrentButton.Locked)
+            if (args.orig)
             {
-                clicked.SetSelection(false, false);
                 return;
             }
+            if ((args.orig == args.current) || args.cancelChange)
+            {
+                return;
+            }
+            MenuChangerMod.instance.Log($"OnClick called with current button {CurrentSelection} ({CurrentButton?.CurrentSelection}) and new button {button.Name} ({button.CurrentSelection})");
 
-            CurrentButton.SetSelection(false, false);
-            CurrentButton = (ToggleButton)clicked;
+            ToggleButton previous = CurrentButton;
+            CurrentButton = sender as ToggleButton;
+            previous?.SetSelection(false);
             InvokeChanged();
         }
 
-        public void Deselect()
+        public void ChangeSelection(ToggleButton newButton)
         {
-            CurrentButton.SetSelection(false, true);
+            if (CurrentButton != null)
+            {
+                ToggleButton previous = CurrentButton;
+                CurrentButton = null;
+                previous.SetSelection(false);
+            }
+
+            newButton.SetSelection(true);
+            CurrentButton = newButton;
+            InvokeChanged();
+        }
+
+        public void SelectFirst()
+        {
+            MenuChangerMod.instance.Log("Trying SelectFirst...");
+            Active = true;
+            ChangeSelection(Elements[0]);
+            MenuChangerMod.instance.Log("SelectFirst successful.");
+        }
+
+        public bool TrySelect(string name)
+        {
+            if (Elements.FirstOrDefault(b => b.Name == name) is ToggleButton button && !button.Locked && !(CurrentButton?.Locked ?? false))
+            {
+                Active = true;
+                ChangeSelection(button);
+                return true;
+            }
+            return false;
+        }
+
+        public void MatchPredicateAndLock(Func<ToggleButton, bool> predicate)
+        {
+            Active = false;
+            foreach (ToggleButton button in Elements)
+            {
+                button.Unlock();
+                button.SetSelection(predicate(button));
+                button.Lock();
+            }
+        }
+
+        public void DeselectAll(Func<ToggleButton, bool> lockPredicate = null)
+        {
+            MenuChangerMod.instance.Log("Trying deselect...");
+            Active = false;
+            foreach (ToggleButton button in Elements)
+            {
+                button.Unlock();
+                if (button.CurrentSelection) button.SetSelection(false);
+                if (lockPredicate != null && lockPredicate(button))
+                {
+                    if (lockPredicate(button)) button.Lock();
+                }
+            }
+            MenuChangerMod.instance.Log("Deselect successful.");
+        }
+
+        public void DeselectCurrent()
+        {
+            CurrentButton?.SetSelection(false);
             CurrentButton = null;
         }
 
-        public delegate void RadioSwitchChangedEvent(string selection);
-        protected RadioSwitchChangedEvent ChangedInternal;
-        public event RadioSwitchChangedEvent Changed
+        public void SetActive(bool value)
         {
-            add => ChangedInternal += value;
-            remove => ChangedInternal -= value;
+            Active = value;
         }
-        protected void InvokeChanged() => ChangedInternal?.Invoke(CurrentSelection);
+
+        public delegate void RadioSwitchChangedEvent(string selection);
+        public event RadioSwitchChangedEvent Changed;
+        protected void InvokeChanged() => Changed?.Invoke(CurrentSelection);
     }
 }

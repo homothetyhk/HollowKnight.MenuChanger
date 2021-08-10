@@ -18,7 +18,6 @@ namespace MenuChanger.MenuElements
         public object BoxedCurrentSelection => CurrentSelection as object;
 
         public string Name { get; private set; }
-        public bool Locked { get; protected set; }
 
         public MenuItem(MenuPage page, string name, params T[] values) : this(page, name, values?.ToList() ?? new List<T>()) { }
 
@@ -33,8 +32,6 @@ namespace MenuChanger.MenuElements
             Selections = values;
             Name = name;
 
-            _text = Button.transform.Find("Text").GetComponent<Text>();
-            _text.fontSize = 45;
             _align = Button.gameObject.GetComponentInChildren<FixVerticalAlign>(true);
 
             Button.ClearEvents();
@@ -48,48 +45,56 @@ namespace MenuChanger.MenuElements
         }
 
 
-        public bool TrySetSelection(object obj, bool invokeChanged)
+        public bool TrySetSelection(object obj)
         {
             if (obj is T t)
             {
-                SetSelection(t, invokeChanged);
+                SetSelection(t);
                 return true;
             }
             return false;
         }
 
-        public void SetSelection(T obj, bool invokeChanged)
+        public void SetSelection(T obj)
         {
             if (Locked) return;
 
-            CurrentIndex = -1;
-            for (int i = 0; i < Selections.Count; i++)
-            {
-                if (Selections[i].Equals(obj))
-                {
-                    CurrentIndex = i;
-                    break;
-                }
-            }
-            CurrentSelection = obj;
+            InterceptEventArgs<T> args = InvokeInterceptChanged(obj);
+            if (args.cancelChange) return;
 
-            RefreshText(invokeChanged);
+            int i;
+            for (i = 0; i < Selections.Count; i++)
+            {
+                if (Equals(Selections[i], args.current)) break;
+            }
+            if (i == Selections.Count) return;
+
+            CurrentIndex = i;
+            CurrentSelection = Selections[i];
+            RefreshText();
         }
 
         public void MoveNext()
         {
             if (Locked) return;
 
-            CurrentIndex++;
-            if (CurrentIndex >= Selections.Count)
+            int i = CurrentIndex + 1;
+            if (i >= Selections.Count) i = 0;
+
+            InterceptEventArgs<T> args = InvokeInterceptChanged(Selections[i]);
+            if (args.cancelChange) return;
+
+            if (!Equals(args.orig, args.current))
             {
-                CurrentIndex = 0;
-            }
-            if (Selections.Count > 0)
-            {
-                CurrentSelection = Selections[CurrentIndex];
+                for (i = 0; i < Selections.Count; i++)
+                {
+                    if (Equals(Selections[i], args.current)) break;
+                }
+                if (i == Selections.Count) return;
             }
 
+            CurrentIndex = i;
+            CurrentSelection = Selections[i];
             RefreshText();
         }
 
@@ -124,7 +129,7 @@ namespace MenuChanger.MenuElements
 
         protected virtual void RefreshText(bool invokeEvent = true)
         {
-            _text.text = InvokeFormat(Name, ": ", CurrentSelection?.ToString() ?? string.Empty);
+            Text.text = InvokeFormat(Name, ": ", CurrentSelection?.ToString() ?? string.Empty);
 
             _align.AlignText();
 
@@ -137,27 +142,23 @@ namespace MenuChanger.MenuElements
         public void Bind(object obj, FieldInfo field)
         {
             Changed += (self) => field.SetValue(obj, self.BoxedCurrentSelection);
-            //Button.gameObject.AddComponent<Components.Updater>().action += () => TrySetSelection(field.GetValue(obj), true);
-        }
-
-        public virtual void Lock()
-        {
-            Locked = true;
-        }
-
-        public virtual void Unlock()
-        {
-            Locked = false;
         }
 
         protected readonly FixVerticalAlign _align;
         protected readonly List<T> Selections; 
-        protected readonly Text _text;
         
 
         public event MenuItemChanged Changed;
         public delegate void MenuItemChanged(MenuItem<T> item);
         protected void InvokeChanged() => Changed?.Invoke(this);
+
+        public event EventHandler<InterceptEventArgs<T>> InterceptChanged;
+        protected InterceptEventArgs<T> InvokeInterceptChanged(T newValue)
+        {
+            InterceptEventArgs<T> args = new InterceptEventArgs<T>(CurrentSelection, newValue);
+            InterceptChanged?.Invoke(this, args);
+            return args;
+        }
 
 
         public event MenuItemFormat Format;

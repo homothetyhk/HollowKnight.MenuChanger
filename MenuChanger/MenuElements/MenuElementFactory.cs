@@ -124,7 +124,7 @@ namespace MenuChanger.MenuElements
                     if (BoolFields.TryGetValue(f.Name, out var val))
                     {
                         bool i = (bool)f.GetValue(source);
-                        val.SetSelection(i, false);
+                        val.SetSelection(i);
                         f.SetValue(target, i);
                     }
                 }
@@ -133,7 +133,7 @@ namespace MenuChanger.MenuElements
                     if (EnumFields.TryGetValue(f.Name, out var val))
                     {
                         Enum i = (Enum)f.GetValue(source);
-                        val.SetSelection(i, false);
+                        val.SetSelection(i);
                         f.SetValue(target, i);
                     }
                 }

@@ -36,6 +36,17 @@ namespace MenuChanger.MenuElements
             }
         }
 
+        public MenuLabel(MenuPage page, string text, Vector2 dimensions)
+        {
+            Parent = page;
+            (GameObject, Text, CanvasGroup) = PrefabMenuObjects.BuildDescText(Parent, text);
+            GameObject.DestroyImmediate(GameObject.GetComponent<ContentSizeFitter>());
+            GameObject.DestroyImmediate(GameObject.GetComponent<AutoLocalizeTextUI>());
+            GameObject.DestroyImmediate(GameObject.GetComponent<FixVerticalAlign>());
+            Text.rectTransform.anchorMin = Text.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            Text.rectTransform.sizeDelta = dimensions;
+        }
+
         public virtual void MoveTo(Vector2 pos)
         {
             GameObject.transform.localPosition = pos;

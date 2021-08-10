@@ -4,10 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Reflection;
 using GlobalEnums;
 using Modding;
 using Modding.Patches;
 using Newtonsoft.Json;
+using UnityEngine.UI;
 
 namespace MenuChanger
 {
@@ -30,77 +32,43 @@ namespace MenuChanger
 
         internal static void Hook()
         {
-            On.GameManager.LoadGameFromUI += OnLoadGameFromUI;
-            On.GameManager.GetSaveStatsForSlot += OnGetSaveStatsForSlot;
+            On.UnityEngine.UI.SaveSlotButton.OnSubmit += SaveSlotButton_OnSubmit;
         }
 
-        internal static void OnLoadGameFromUI
-            (On.GameManager.orig_LoadGameFromUI orig, GameManager self, int saveSlot)
+        private static SaveStats GetSaveStats(this SaveSlotButton button)
         {
-            if (TryGetResumePage(saveSlot, out MenuPage page) && page is MenuPage)
+            return ReflectionHelper.GetField<SaveSlotButton, SaveStats>(button, "saveStats");
+        }
+
+        private static int GetSaveSlotIndex(this SaveSlotButton button)
+        {
+            return (int)typeof(SaveSlotButton)
+                .GetProperty("SaveSlotIndex", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(button);
+        }
+
+        private static void SaveSlotButton_OnSubmit(On.UnityEngine.UI.SaveSlotButton.orig_OnSubmit orig, SaveSlotButton self, UnityEngine.EventSystems.BaseEventData eventData)
+        {
+            if (self.saveFileState == SaveSlotButton.SaveFileStates.LoadedStats
+                && self.GetSaveStats().permadeathMode != 2)
             {
-                UIManager.instance.StartCoroutine(UIManager.instance.HideSaveProfileMenu());
-                UIManager.instance.menuState = MainMenuState.PLAY_MODE_MENU;
-                page.Show();
-                return;
-            }
-
-            orig(self, saveSlot);
-        }
-
-        internal static void OnGetSaveStatsForSlot
-            (On.GameManager.orig_GetSaveStatsForSlot orig, GameManager self, int saveSlot, Action<SaveStats> callback)
-        {
-            RecordSaveGameData(saveSlot);
-            orig(self, saveSlot, callback);
-        }
-
-        internal static bool TryGetResumePage(int saveSlot, out MenuPage page)
-        {
-            page = null;
-            return SaveGameData.TryGetValue(saveSlot, out SaveGameData data)
-                && data.TryGetModSettings<MenuChanger, Settings>(out Settings settings)
-                && ResumePages.TryGetValue(settings.resumeKey, out page);
-        }
-
-        internal static void RecordSaveGameData(int id)
-        {
-            if (!Platform.IsSaveSlotIndexValid(id))
-            {
-                return;
-            }
-
-            Platform.Current.ReadSaveSlot(id, fileBytes =>
-            {
-                if (fileBytes == null) return;
-
-                string json;
-                if (GameManager.instance.gameConfig.useSaveEncryption && !Platform.Current.IsFileSystemProtected)
-                {
-                    BinaryFormatter binaryFormatter = new BinaryFormatter();
-                    MemoryStream serializationStream = new MemoryStream(fileBytes);
-                    string encryptedString = (string)binaryFormatter.Deserialize(serializationStream);
-                    json = Encryption.Decrypt(encryptedString);
-                }
-                else
-                {
-                    json = Encoding.UTF8.GetString(fileBytes);
-                }
                 try
                 {
-                    ResumeMenu.SaveGameData[id] = JsonConvert.DeserializeObject<SaveGameData>(json, new JsonSerializerSettings()
+                    Settings s = MenuChangerMod.instance.ManuallyLoadSettings<MenuChangerMod, Settings>(self.GetSaveSlotIndex());
+                    if (s != null && s.resumeKey != null && ResumePages.TryGetValue(s.resumeKey, out MenuPage page) && page is MenuPage)
                     {
-                        ContractResolver = ShouldSerializeContractResolver.Instance,
-                        TypeNameHandling = TypeNameHandling.Auto,
-                        ObjectCreationHandling = ObjectCreationHandling.Replace,
-                        Converters = JsonConverterTypes.ConverterTypes
-                    });
+                        UIManager.instance.StartCoroutine(UIManager.instance.HideSaveProfileMenu());
+                        UIManager.instance.menuState = MainMenuState.PLAY_MODE_MENU;
+                        page.Show();
+                        return;
+                    }
                 }
-                catch
+                catch (Exception e)
                 {
-                    MenuChanger.instance.LogWarn($"Unable to read save data for slot {id}");
+                    MenuChangerMod.instance.LogError($"Unable to manually load settings from menu!\n{e}");
                 }
-            });
+            }
+            orig(self, eventData);
         }
     }
 }

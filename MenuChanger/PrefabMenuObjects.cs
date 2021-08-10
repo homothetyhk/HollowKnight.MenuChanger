@@ -325,7 +325,7 @@ namespace MenuChanger
             }
             catch (Exception e)
             {
-                MenuChanger.instance.LogError(e);
+                MenuChangerMod.instance.LogError(e);
             }
 
             // befuddling

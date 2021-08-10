@@ -16,7 +16,7 @@ namespace MenuChanger.MenuElements
 
         protected override void RefreshText(bool invokeEvent = true)
         {
-            _text.text = InvokeFormat(Name, string.Empty, string.Empty);
+            Text.text = InvokeFormat(Name, string.Empty, string.Empty);
             SetColor();
             _align.AlignText();
 
@@ -28,44 +28,26 @@ namespace MenuChanger.MenuElements
 
         public void SetColor()
         {
-            if (!(CurrentSelection is bool value))
+            switch (CurrentSelection)
             {
-                if (Locked)
-                {
-                    _text.color = Colors.LOCKED_FALSE_COLOR;
-                }
-                else
-                {
-                    _text.color = Color.white;
-                }
-                return;
-            }
-
-            if (!Locked && value)
-            {
-                _text.color = Colors.TRUE_COLOR;
-            }
-            else if (!Locked && !value)
-            {
-                _text.color = Colors.FALSE_COLOR;
-            }
-            else if (Locked && value)
-            {
-                _text.color = Colors.LOCKED_TRUE_COLOR;
-            }
-            else if (Locked && value)
-            {
-                _text.color = Colors.LOCKED_FALSE_COLOR;
-            }
-            else
-            {
-                _text.color = Color.red;
+                case true when !Locked:
+                    Text.color = Colors.TRUE_COLOR;
+                    break;
+                case true when Locked:
+                    Text.color = Colors.LOCKED_TRUE_COLOR;
+                    break;
+                case false when Locked:
+                    Text.color = Colors.LOCKED_FALSE_COLOR;
+                    break;
+                case false when !Locked:
+                    Text.color = Colors.FALSE_COLOR;
+                    break;
             }
         }
 
         public void SetColor(Color c)
         {
-            _text.color = c;
+            Text.color = c;
         }
 
         public override void Lock()
@@ -79,7 +61,5 @@ namespace MenuChanger.MenuElements
             Locked = false;
             SetColor();
         }
-
-        
     }
 }

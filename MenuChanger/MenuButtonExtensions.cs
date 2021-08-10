@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 
 namespace MenuChanger
 {
-    internal static class MenuButtonExtensions
+    public static class MenuButtonExtensions
     {
         public static MenuButton Clone(this MenuButton self, string name, MenuButton.MenuButtonType type, Vector2 pos,
             string text = null, string description = null, Sprite image = null)
@@ -96,19 +96,19 @@ namespace MenuChanger
 
         public static void AddHideMenuPageEvent(this MenuButton self, MenuPage prev)
         {
-            if (prev == null) MenuChanger.instance.LogError("Null MenuPage found in AddHideMenuPageEvent");
+            if (prev == null) MenuChangerMod.instance.LogError("Null MenuPage found in AddHideMenuPageEvent");
 
             self.AddEvent(EventTriggerType.Submit, _ => prev.Hide());
         }
 
         public static void AddHideAllMenuPagesEvent(this MenuButton self)
         {
-            self.AddEvent(EventTriggerType.Submit, _ => MenuChanger.HideAllMenuPages());
+            self.AddEvent(EventTriggerType.Submit, _ => MenuChangerMod.HideAllMenuPages());
         }
 
         public static void AddShowMenuPageEvent(this MenuButton self, MenuPage next)
         {
-            if (next == null) MenuChanger.instance.LogError("Null MenuPage found in AddShowMenuPageEvent");
+            if (next == null) MenuChangerMod.instance.LogError("Null MenuPage found in AddShowMenuPageEvent");
 
             self.AddEvent(EventTriggerType.Submit, _ => next.Show());
         }
@@ -124,7 +124,7 @@ namespace MenuChanger
 
         public static void AddSetResumeKeyEvent(this MenuButton self, string key)
         {
-            self.AddEvent(() => MenuChanger.instance.Settings.resumeKey = key);
+            self.AddEvent(() => MenuChangerMod.instance.Settings.resumeKey = key);
         }
     }
 }

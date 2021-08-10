@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -37,23 +38,42 @@ namespace MenuChanger.MenuElements
             Label.Text.alignment = TextAnchor.UpperCenter;
             MoveTo(Vector2.zero);
 
+            InputField.onValueChanged.AddListener(InvokeModify);
             InputField.onValueChanged.AddListener(InvokeChanged);
-            InputField.onValueChanged.AddListener(InvokeChangedSelf);
         }
 
         public T InputValue
         {
             get => Read(InputField.text);
-            set => InputField.text = Write(value);
+            set
+            {
+                InputField.text = Write(value);
+                Changed?.Invoke(InputValue);
+            }
         }
-
-        public delegate void ChangedTwoHandler(EntryField<T> self);
-        public event ChangedTwoHandler ChangedSelf;
-        public void InvokeChangedSelf(string _ = null) => ChangedSelf?.Invoke(this);
 
         public delegate void ChangedHandler(T self);
         public event ChangedHandler Changed;
         public void InvokeChanged(string _ = null) => Changed?.Invoke(InputValue);
+
+        public delegate T ModifyHandler(T input);
+        public event ModifyHandler Modify;
+        public void InvokeModify(string _ = null)
+        {
+            T input = InputValue;
+            foreach (Delegate d in Modify?.GetInvocationList() ?? new Delegate[0])
+            {
+                input = (T)d.DynamicInvoke(input);
+            }
+            if (!InputValue.Equals(input)) InputValue = input;
+        }
+
+
+        public abstract T Read(string input);
+        public virtual string Write(T t)
+        {
+            return t.ToString();
+        }
 
         public void AddValidateInputToTextColorEvent(Func<T, bool> test)
         {
@@ -62,13 +82,6 @@ namespace MenuChanger.MenuElements
                 if (test(InputValue)) InputField.textComponent.color = Colors.DEFAULT_COLOR;
                 else InputField.textComponent.color = Colors.INVALID_INPUT_COLOR;
             };
-        }
-
-
-        public abstract T Read(string input);
-        public virtual string Write(T t)
-        {
-            return t.ToString();
         }
 
         public void MoveTo(Vector2 pos)
@@ -122,7 +135,12 @@ namespace MenuChanger.MenuElements
 
     public class TextEntryField : EntryField<string>
     {
-        public TextEntryField(MenuPage page, string label) : base(page, label, MenuLabel.Style.Body) { }
+        public TextEntryField(MenuPage page, string label) : base(page, label, MenuLabel.Style.Body)
+        {
+            InputField.textComponent.alignment = TextAnchor.UpperCenter;
+            LabelOffset = new Vector2(0, 30f);
+            MoveTo(Vector2.zero);
+        }
 
         public override string Read(string s)
         {
@@ -130,79 +148,124 @@ namespace MenuChanger.MenuElements
         }
     }
 
-    public class LongEntryField : EntryField<long>
+    public class NumericEntryField<T> : EntryField<T> 
+        where T : struct,
+          IComparable,
+          IComparable<T>,
+          IConvertible,
+          IEquatable<T>,
+          IFormattable
+    {
+        public NumericEntryField(MenuPage page, string label) : base(page, label)
+        {
+            InputField.characterValidation = InputField.CharacterValidation.Integer;
+            SetClamp(typeMin, typeMax);
+            Modify += InputClamp;
+            Changed += CleanInput;
+            InputField.onValidateInput += CatchNegation;
+        }
+
+        public override T Read(string input)
+        {
+            if (long.TryParse(input, out long val))
+            {
+                return (T)Convert.ChangeType(ClampToType(val), typeof(T));
+            }
+            else if (ulong.TryParse(input, out ulong altVal))
+            {
+                return (T)Convert.ChangeType(ClampToType(altVal), typeof(T));
+            }
+            else return default;
+        }
+
+        private void CleanInput(T input)
+        {
+            switch (InputField.text)
+            {
+                case "":
+                case "-":
+                    return;
+                default:
+                    if (InputField.text != input.ToString())
+                    {
+                        InputValue = input;
+                    }
+                    return;
+            }
+        }
+
+        private T clampMin;
+        private T clampMax;
+
+        private T InputClamp(T input)
+        {
+            return Clamp(input, clampMin, clampMax);
+        }
+
+        private char CatchNegation(string input, int index, char newChar)
+        {
+            if (newChar == '-' && clampMin.CompareTo(default(T)) >= 0) return '\0';
+            else return newChar;
+        }
+
+        public void SetClamp(T min, T max)
+        {
+            clampMin = min;
+            clampMax = max;
+        }
+
+        public static T Clamp(T val, T min, T max)
+        {
+            if (val.CompareTo(min) < 0) return min;
+            if (val.CompareTo(max) > 0) return max;
+            return val;
+        }
+
+
+        readonly static T typeMin = (T)typeof(T).GetField("MinValue", BindingFlags.Public | BindingFlags.Static).GetValue(null);
+        readonly static T typeMax = (T)typeof(T).GetField("MaxValue", BindingFlags.Public | BindingFlags.Static).GetValue(null);
+
+        private static long ClampToType(long val)
+        {
+            return NumericEntryField<long>.Clamp(val, Convert.ToInt64(typeMin), Convert.ToInt64(typeMax));
+        }
+
+        private static ulong ClampToType(ulong val)
+        {
+            return NumericEntryField<ulong>.Clamp(val, Convert.ToUInt64(typeMin), Convert.ToUInt64(typeMax));
+        }
+    }
+
+    // These types are all useless now
+    public class LongEntryField : NumericEntryField<long>
     {
         public LongEntryField(MenuPage page, string label) : base(page, label)
         {
-            InputField.characterValidation = InputField.CharacterValidation.Integer;
-            InputField.characterLimit = 18;
-        }
-
-        public override long Read(string input)
-        {
-            if (long.TryParse(input, out long val))
-            {
-                return val;
-            }
-
-            return 0;
+            InputField.characterLimit = 20;
         }
     }
 
-    public class IntEntryField : EntryField<int>
+    public class IntEntryField : NumericEntryField<int>
     {
         public IntEntryField(MenuPage page, string label) : base(page, label)
         {
-            InputField.characterValidation = InputField.CharacterValidation.Integer;
-            InputField.characterLimit = 10;
-        }
-
-        public override int Read(string input)
-        {
-            if (long.TryParse(input, out long val))
-            {
-                return (int)Math.Min(Math.Max(val, int.MinValue), int.MaxValue);
-            }
-
-            return 0;
+            InputField.characterLimit = 12;
         }
     }
 
-    public class ShortEntryField : EntryField<short>
+    public class ShortEntryField : NumericEntryField<short>
     {
         public ShortEntryField(MenuPage page, string label) : base(page, label)
         {
-            InputField.characterValidation = InputField.CharacterValidation.Integer;
-            InputField.characterLimit = 5;
-        }
-
-        public override short Read(string input)
-        {
-            if (long.TryParse(input, out long val))
-            {
-                return (short)Math.Min(Math.Max(val, short.MinValue), short.MaxValue);
-            }
-
-            return 0;
+            InputField.characterLimit = 7;
         }
     }
 
-    public class ByteEntryField : EntryField<byte>
+    public class ByteEntryField : NumericEntryField<byte>
     {
         public ByteEntryField(MenuPage page, string label) : base(page, label)
         {
-            InputField.characterValidation = InputField.CharacterValidation.Integer;
-            InputField.characterLimit = 3;
-        }
-
-        public override byte Read(string input)
-        {
-            if (long.TryParse(input, out long val))
-            {
-                return (byte)Math.Min(Math.Max(val, byte.MinValue), byte.MaxValue);
-            }
-
-            return 0;
+            InputField.characterLimit = 4;
         }
     }
 

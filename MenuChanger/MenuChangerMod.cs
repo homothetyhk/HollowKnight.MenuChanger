@@ -16,14 +16,13 @@ using System.Collections;
 using GlobalEnums;
 using MenuChanger.MenuPanels;
 using MenuChanger.MenuElements;
-using MenuChanger.Demos;
+//using MenuChanger.Demos;
 
 namespace MenuChanger
 {
-    public class MenuChanger : Mod
+    public class MenuChangerMod : Mod, ILocalSettings<Settings> //,IGlobalSettings<GlobalSettings>,
     {
-        internal static MenuChanger instance;
-        internal static Dictionary<string, Sprite> Sprites;
+        internal static MenuChangerMod instance;
         internal static List<MenuPage> displayedPages = new List<MenuPage>();
 
         public static void HideAllMenuPages()
@@ -39,9 +38,7 @@ namespace MenuChanger
         private void EditUI()
         {
             ResumeMenu.Reset();
-            ModeMenu.Reset();
-            new RandomizerDemo();
-            new PlandoDemo();
+            ModeMenu.OnEnterMainMenu();
         }
 
         public override int LoadPriority() => -10;
@@ -49,8 +46,9 @@ namespace MenuChanger
         public override void Initialize()
         {
             instance = this;
+            ThreadSupport.Setup();
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += EditUI;
-            Sprites = SereCore.ResourceHelper.GetSprites("MenuChanger.Resources.");
+            SpriteManager.LoadEmbeddedPngs("MenuChanger.Resources.");
             PrefabMenuObjects.Setup();
             EditUI();
             
@@ -64,16 +62,14 @@ namespace MenuChanger
                 s.StartCoroutine(s.HideSaveProfileMenu());
                 s.menuState = MainMenuState.PLAY_MODE_MENU;
 
-                ModeMenu.ModePage.Show();
+                ModeMenu.Show();
             };
 
             ResumeMenu.Hook();
         }
 
         public Settings Settings = new Settings();
-        public static GlobalSettings gs = new GlobalSettings();
-        public override ModSettings SaveSettings { get => Settings; set => Settings = value as Settings; }
-        public override ModSettings GlobalSettings { get => gs; set => gs = value as GlobalSettings; }
+        //public static GlobalSettings gs = new GlobalSettings();
 
         public int MakeAssemblyHash()
         {
@@ -98,5 +94,27 @@ namespace MenuChanger
         {
             return $"1.0 ({ Math.Abs(MakeAssemblyHash() % 997)})";
         }
+
+        public void OnLoadLocal(Settings s)
+        {
+            Settings = s;
+        }
+
+        public Settings OnSaveLocal()
+        {
+            return Settings;
+        }
+
+        /*
+        public void OnLoadGlobal(GlobalSettings s)
+        {
+            gs = s;
+        }
+
+        public GlobalSettings OnSaveGlobal()
+        {
+            return gs;
+        }
+        */
     }
 }

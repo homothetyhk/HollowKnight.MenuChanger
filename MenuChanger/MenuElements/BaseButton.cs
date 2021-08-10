@@ -9,6 +9,12 @@ namespace MenuChanger.MenuElements
 {
     public class BaseButton : IMenuElement
     {
+        public event Action OnClick;
+        protected virtual void InvokeOnClick()
+        {
+            OnClick?.Invoke();
+        }
+
         public MenuPage Parent { get; private set; }
         public MenuButton Button { get; private set; }
         public GameObject GameObject { get; private set; }
@@ -22,6 +28,7 @@ namespace MenuChanger.MenuElements
 
             Parent.Add(GameObject);
             GameObject.transform.localPosition = Vector3.zero;
+            newButton.AddEvent(InvokeOnClick);
         }
 
         public void Show()
