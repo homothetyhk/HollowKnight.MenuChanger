@@ -16,13 +16,12 @@ using System.Collections;
 using GlobalEnums;
 using MenuChanger.MenuPanels;
 using MenuChanger.MenuElements;
-//using MenuChanger.Demos;
 
 namespace MenuChanger
 {
-    public class MenuChangerMod : Mod, ILocalSettings<Settings> //,IGlobalSettings<GlobalSettings>,
+    public class MenuChangerMod : Mod, ILocalSettings<Settings>
     {
-        internal static MenuChangerMod instance;
+        internal static MenuChangerMod instance { get; private set; }
         internal static List<MenuPage> displayedPages = new List<MenuPage>();
 
         public static void HideAllMenuPages()
@@ -30,28 +29,35 @@ namespace MenuChanger
             while (displayedPages.FirstOrDefault() is MenuPage page) page.Hide();
         }
 
-        private void EditUI(Scene from, Scene to)
+        private void OnSceneChange(Scene from, Scene to)
         {
-            if (to.name == "Menu_Title") EditUI();
+            if (from.name == "Menu_Title" && to.name != "Menu_Title") PrefabMenuObjects.Dispose();
         }
 
         private void EditUI()
         {
+            Log("EditUI called in scene: " + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+
             ResumeMenu.Reset();
             ModeMenu.OnEnterMainMenu();
         }
 
-        public override int LoadPriority() => -10;
+        public override int LoadPriority() => 100000;
+
+        public MenuChangerMod() : base("MenuChanger")
+        {
+            instance = this;
+            LogHelper.OnLog += Log;
+            UIManager.EditMenus += PrefabMenuObjects.Setup;
+        }
 
         public override void Initialize()
         {
-            instance = this;
+            LogHelper.OnLog += Log;
             ThreadSupport.Setup();
-            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += EditUI;
+            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnSceneChange;
             SpriteManager.LoadEmbeddedPngs("MenuChanger.Resources.");
-            PrefabMenuObjects.Setup();
-            EditUI();
-            
+            UIManager.EditMenus += EditUI;
             On.UIManager.UIGoToProfileMenu += (o, s) =>
             {
                 o(s);
@@ -64,8 +70,8 @@ namespace MenuChanger
 
                 ModeMenu.Show();
             };
-
             ResumeMenu.Hook();
+            Log("MenuChanger initialized");
         }
 
         public Settings Settings = new Settings();
@@ -104,17 +110,5 @@ namespace MenuChanger
         {
             return Settings;
         }
-
-        /*
-        public void OnLoadGlobal(GlobalSettings s)
-        {
-            gs = s;
-        }
-
-        public GlobalSettings OnSaveGlobal()
-        {
-            return gs;
-        }
-        */
     }
 }

@@ -10,7 +10,7 @@ using System.IO;
 
 namespace MenuChanger
 {
-    public static class SpriteManager
+    internal static class SpriteManager
     {
         private static Dictionary<string, Sprite> _sprites;
 

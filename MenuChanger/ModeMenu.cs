@@ -22,6 +22,7 @@ namespace MenuChanger
 
         internal static void OnEnterMainMenu()
         {
+            MenuChangerMod.instance.Log("Constructing mode menu...");
             ModePage = new MenuPage("Mode Page");
             List<BigButton> buttons = new List<BigButton>();
 
@@ -31,10 +32,11 @@ namespace MenuChanger
                 {
                     constructors[i].OnEnterMainMenu(ModePage);
                     buttons.Add(constructors[i].GetModeButton(ModePage));
+                    MenuChangerMod.instance.Log($"  Constructed menu from {constructors[i].GetType().AssemblyQualifiedName}");
                 }
                 catch (Exception e)
                 {
-                    MenuChangerMod.instance.LogError($"Error during OnEnterMainMenu for constructor of type {constructors[i].GetType().Name}:\n{e}");
+                    MenuChangerMod.instance.LogError($"Error during OnEnterMainMenu for constructor of type {constructors[i].GetType().AssemblyQualifiedName}:\n{e}");
                     constructors.RemoveAt(i--);
                     continue;
                 }

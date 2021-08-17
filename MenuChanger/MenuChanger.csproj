@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="BinaryFormatting.cs" />
     <Compile Include="EventArgs.cs" />
+    <Compile Include="LogHelper.cs" />
     <Compile Include="MenuConstructor.cs" />
     <Compile Include="SpriteManager.cs" />
     <Compile Include="ThreadSupport.cs" />
@@ -124,16 +125,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\plando.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\startlocations.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\entries.txt" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

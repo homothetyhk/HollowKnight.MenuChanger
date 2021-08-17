@@ -33,6 +33,7 @@ namespace MenuChanger.MenuElements
                     LongEntryField entryField = new LongEntryField(Parent, ToDisplayName(f.Name));
                     LongFields[f.Name] = entryField;
                     elements.Add(entryField);
+                    entryField.InputValue = (long)f.GetValue(obj);
                     entryField.Changed += value => f.SetValue(obj, value);
                 }
                 else if (U == typeof(int))
@@ -40,6 +41,7 @@ namespace MenuChanger.MenuElements
                     IntEntryField entryField = new IntEntryField(Parent, ToDisplayName(f.Name));
                     IntFields[f.Name] = entryField;
                     elements.Add(entryField);
+                    entryField.InputValue = (int)f.GetValue(obj);
                     entryField.Changed += value => f.SetValue(obj, value);
                 }
                 else if (U == typeof(short))
@@ -47,6 +49,7 @@ namespace MenuChanger.MenuElements
                     ShortEntryField entryField = new ShortEntryField(Parent, ToDisplayName(f.Name));
                     ShortFields[f.Name] = entryField;
                     elements.Add(entryField);
+                    entryField.InputValue = (short)f.GetValue(obj);
                     entryField.Changed += value => f.SetValue(obj, value);
                 }
                 else if (U == typeof(byte))
@@ -54,6 +57,7 @@ namespace MenuChanger.MenuElements
                     ByteEntryField entryField = new ByteEntryField(Parent, ToDisplayName(f.Name));
                     ByteFields[f.Name] = entryField;
                     elements.Add(entryField);
+                    entryField.InputValue = (byte)f.GetValue(obj);
                     entryField.Changed += value => f.SetValue(obj, value);
                 }
                 else if (U == typeof(bool))
@@ -62,6 +66,7 @@ namespace MenuChanger.MenuElements
                     button.Bind(obj, f);
                     BoolFields[f.Name] = button;
                     elements.Add(button);
+                    button.SetSelection((bool)f.GetValue(obj));
                     button.Changed += (s) => DebugMethods.DumpProperties(obj);
                 }
                 else if (U.IsEnum)
@@ -70,6 +75,7 @@ namespace MenuChanger.MenuElements
                     button.Bind(obj, f);
                     EnumFields[f.Name] = button;
                     button.Format += (_, p, c, r) => (p, c, ToDisplayName(r));
+                    button.SetSelection((Enum)f.GetValue(obj));
                     elements.Add(button);
                 }
             }

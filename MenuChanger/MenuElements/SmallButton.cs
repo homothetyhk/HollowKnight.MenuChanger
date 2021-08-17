@@ -15,7 +15,6 @@ namespace MenuChanger.MenuElements
             GameObject.transform.localScale = new Vector2(0.7f, 0.7f);
             Text = Button.transform.Find("Text").GetComponent<Text>();
             Text.fontSize = 36;
-            Button.AddEvent(InvokeOnClick);
         }
 
         protected override void InvokeOnClick()

@@ -9,7 +9,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using Newtonsoft.Json;
 using MonoMod;
-//using MenuChanger.Demos;
 
 namespace MenuChanger
 {
