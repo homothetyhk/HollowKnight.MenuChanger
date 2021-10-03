@@ -67,7 +67,7 @@ namespace MenuChanger.MenuElements
                     BoolFields[f.Name] = button;
                     elements.Add(button);
                     button.SetSelection((bool)f.GetValue(obj));
-                    button.Changed += (s) => DebugMethods.DumpProperties(obj);
+                    //button.Changed += (s) => DebugMethods.DumpProperties(obj);
                 }
                 else if (U.IsEnum)
                 {

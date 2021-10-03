@@ -67,10 +67,18 @@ namespace MenuChanger.MenuElements
             {
                 if (Equals(Selections[i], args.current)) break;
             }
-            if (i == Selections.Count) return;
 
-            CurrentIndex = i;
-            CurrentSelection = Selections[i];
+            if (i == Selections.Count)
+            {
+                CurrentIndex = -1;
+                CurrentSelection = obj;
+            }
+            else
+            {
+                CurrentIndex = i;
+                CurrentSelection = Selections[i];
+            }
+
             RefreshText();
         }
 

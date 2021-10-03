@@ -55,7 +55,7 @@ namespace MenuChanger.MenuElements
             {
                 return;
             }
-            MenuChangerMod.instance.Log($"OnClick called with current button {CurrentSelection} ({CurrentButton?.CurrentSelection}) and new button {button.Name} ({button.CurrentSelection})");
+            //MenuChangerMod.instance.Log($"OnClick called with current button {CurrentSelection} ({CurrentButton?.CurrentSelection}) and new button {button.Name} ({button.CurrentSelection})");
 
             ToggleButton previous = CurrentButton;
             CurrentButton = sender as ToggleButton;
@@ -79,10 +79,10 @@ namespace MenuChanger.MenuElements
 
         public void SelectFirst()
         {
-            MenuChangerMod.instance.Log("Trying SelectFirst...");
+            //MenuChangerMod.instance.Log("Trying SelectFirst...");
             Active = true;
             ChangeSelection(Elements[0]);
-            MenuChangerMod.instance.Log("SelectFirst successful.");
+            //MenuChangerMod.instance.Log("SelectFirst successful.");
         }
 
         public bool TrySelect(string name)
@@ -109,7 +109,7 @@ namespace MenuChanger.MenuElements
 
         public void DeselectAll(Func<ToggleButton, bool> lockPredicate = null)
         {
-            MenuChangerMod.instance.Log("Trying deselect...");
+            //MenuChangerMod.instance.Log("Trying deselect...");
             Active = false;
             foreach (ToggleButton button in Elements)
             {
@@ -120,7 +120,7 @@ namespace MenuChanger.MenuElements
                     if (lockPredicate(button)) button.Lock();
                 }
             }
-            MenuChangerMod.instance.Log("Deselect successful.");
+            //MenuChangerMod.instance.Log("Deselect successful.");
         }
 
         public void DeselectCurrent()

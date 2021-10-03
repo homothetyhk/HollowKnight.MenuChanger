@@ -13,7 +13,7 @@ namespace MenuChanger
 {
     public static class SaveGameDataExtensions
     {
-		private class FakeModSavegameData
+		public class FakeModSavegameData
         {
 			public Dictionary<string, string> loadedMods;
 			public Dictionary<string, JToken> modData = new Dictionary<string, JToken>();

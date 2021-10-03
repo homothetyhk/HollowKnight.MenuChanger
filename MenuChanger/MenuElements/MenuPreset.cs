@@ -164,7 +164,7 @@ namespace MenuChanger.MenuElements
         public void UpdatePreset()
         {
             if (isUpdating) return;
-
+            
             foreach(string key in Selections)
             {
                 if (CheckPreset(key))
@@ -173,7 +173,7 @@ namespace MenuChanger.MenuElements
                     return;
                 }
             }
-            
+
             if (CurrentSelection != "Custom") SetSelection("Custom");
         }
 

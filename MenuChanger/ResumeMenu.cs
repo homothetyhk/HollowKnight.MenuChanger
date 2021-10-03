@@ -10,6 +10,8 @@ using Modding;
 using Modding.Patches;
 using Newtonsoft.Json;
 using UnityEngine.UI;
+using System.Collections;
+using UnityEngine;
 
 namespace MenuChanger
 {
@@ -59,7 +61,7 @@ namespace MenuChanger
                     {
                         UIManager.instance.StartCoroutine(UIManager.instance.HideSaveProfileMenu());
                         UIManager.instance.menuState = MainMenuState.PLAY_MODE_MENU;
-                        page.Show();
+                        GameManager.instance.StartCoroutine(LoadGameAndDoAction(self.GetSaveSlotIndex(), page.Show));
                         return;
                     }
                 }
@@ -70,5 +72,27 @@ namespace MenuChanger
             }
             orig(self, eventData);
         }
+
+        private static IEnumerator LoadGameAndDoAction(int slot, Action a)
+        {
+            bool finishedLoading = false;
+            bool successfullyLoaded = false;
+            GameManager.instance.LoadGame(slot, (b) =>
+            {
+                finishedLoading = true;
+                successfullyLoaded = b;
+            });
+            while (!finishedLoading) yield return null;
+            if (!successfullyLoaded)
+            {
+                UIManager.instance.UIReturnToMainMenu();
+                yield break;
+            }
+            else
+            {
+                a?.Invoke();
+            }
+        }
+
     }
 }
