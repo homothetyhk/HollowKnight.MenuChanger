@@ -9,7 +9,7 @@ namespace MenuChanger.MenuElements
 {
     public class SmallButton : BaseButton, ILockable
     {
-        public Text Text { get; private set; }
+        public Text Text { get; }
         public SmallButton(MenuPage page, string text) : base(page, PrefabMenuObjects.BuildNewButton(text))
         {
             GameObject.transform.localScale = new Vector2(0.7f, 0.7f);

@@ -10,12 +10,12 @@ namespace MenuChanger.MenuPanels
 {
     public class Subpage : IMenuPanel
     {
-        public MenuPage Parent { get; private set; }
-        public List<IMenuElement> Items { get; private set; }
+        public MenuPage Parent { get; }
+        public List<IMenuElement> Items { get; }
 
         private Vector2 offset;
 
-        public MenuLabel TitleLabel { get; private set; }
+        public MenuLabel TitleLabel { get; }
         public bool Hidden { get; private set; }
 
         public Subpage(MenuPage page, string title, Vector2 titlePos)

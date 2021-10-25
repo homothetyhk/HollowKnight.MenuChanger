@@ -6,6 +6,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using MenuChanger.Extensions;
 
 
 namespace MenuChanger.MenuElements
@@ -147,9 +148,9 @@ namespace MenuChanger.MenuElements
             }
         }
 
-        public void Bind(object obj, FieldInfo field)
+        public void Bind(object obj, MemberInfo mi)
         {
-            Changed += (self) => field.SetValue(obj, self.BoxedCurrentSelection);
+            Changed += (self) => mi.SetValue(obj, self.BoxedCurrentSelection);
         }
 
         protected readonly FixVerticalAlign _align;

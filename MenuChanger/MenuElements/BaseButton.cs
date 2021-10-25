@@ -15,9 +15,9 @@ namespace MenuChanger.MenuElements
             OnClick?.Invoke();
         }
 
-        public MenuPage Parent { get; private set; }
-        public MenuButton Button { get; private set; }
-        public GameObject GameObject { get; private set; }
+        public MenuPage Parent { get; }
+        public MenuButton Button { get; }
+        public GameObject GameObject { get; }
         public bool Hidden { get; private set; }
 
         public BaseButton(MenuPage page, MenuButton newButton)

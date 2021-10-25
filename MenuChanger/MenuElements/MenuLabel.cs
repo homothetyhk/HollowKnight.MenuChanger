@@ -9,10 +9,10 @@ namespace MenuChanger.MenuElements
 {
     public class MenuLabel : IMenuElement
     {
-        public MenuPage Parent { get; private set; }
-        public GameObject GameObject { get; private set; }
-        public CanvasGroup CanvasGroup { get; private set; }
-        public Text Text { get; private set; }
+        public MenuPage Parent { get; }
+        public GameObject GameObject { get; }
+        public CanvasGroup CanvasGroup { get; }
+        public Text Text { get; }
         public bool Hidden { get; private set; }
 
         public enum Style

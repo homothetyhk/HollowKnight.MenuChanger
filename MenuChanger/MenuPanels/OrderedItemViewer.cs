@@ -10,11 +10,11 @@ namespace MenuChanger.MenuPanels
 {
     public class OrderedItemViewer : IMenuPanel
     {
-        public List<IMenuElement> Items { get; private set; }
-        public MenuPage Parent { get; private set; }
-        public SmallButton PrevButton { get; private set; }
-        public SmallButton NextButton { get; private set; }
-        public MenuLabel IndexLabel { get; private set; }
+        public List<IMenuElement> Items { get; }
+        public MenuPage Parent { get; }
+        public SmallButton PrevButton { get; }
+        public SmallButton NextButton { get; }
+        public MenuLabel IndexLabel { get; }
         public bool Hidden { get; private set; } = true;
 
 

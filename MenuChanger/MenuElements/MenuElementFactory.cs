@@ -3,89 +3,108 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using MenuChanger.Extensions;
+using MenuChanger.Attributes;
 
 namespace MenuChanger.MenuElements
 {
     public class MenuElementFactory<T>
     {
-        public MenuPage Parent;
-        public Dictionary<string, ToggleButton> BoolFields = new Dictionary<string, ToggleButton>();
-        public Dictionary<string, MenuItem<Enum>> EnumFields = new Dictionary<string, MenuItem<Enum>>();
-        public Dictionary<string, LongEntryField> LongFields = new Dictionary<string, LongEntryField>();
-        public Dictionary<string, IntEntryField> IntFields = new Dictionary<string, IntEntryField>();
-        public Dictionary<string, ShortEntryField> ShortFields = new Dictionary<string, ShortEntryField>();
-        public Dictionary<string, ByteEntryField> ByteFields = new Dictionary<string, ByteEntryField>();
-        public IMenuElement[] Elements;
-        private FieldInfo[] Fields;
+        public readonly MenuPage Parent;
+        public readonly Dictionary<string, ToggleButton> BoolFields = new();
+        public readonly Dictionary<string, MenuItem<Enum>> EnumFields = new();
+        public readonly Dictionary<string, LongEntryField> LongFields = new();
+        public readonly Dictionary<string, IntEntryField> IntFields = new();
+        public readonly Dictionary<string, ShortEntryField> ShortFields = new();
+        public readonly Dictionary<string, ByteEntryField> ByteFields = new();
+        public readonly IMenuElement[] Elements;
+        private readonly MemberInfo[] Members;
 
         public MenuElementFactory(MenuPage page, T obj)
         {
             Parent = page;
-            Fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance);
-            List<IMenuElement> elements = new List<IMenuElement>();
+            Members = typeof(T).GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                .Where(f => f.IsValidForMenu()).ToArray();
+            List<IMenuElement> elements = new();
 
-            foreach (FieldInfo f in Fields)
+            foreach (MemberInfo mi in Members)
             {
-                Type U = f.FieldType;
+                Type U = mi.GetValueType();
 
                 if (U == typeof(long))
                 {
-                    LongEntryField entryField = new LongEntryField(Parent, ToDisplayName(f.Name));
-                    LongFields[f.Name] = entryField;
+                    LongEntryField entryField = new(Parent, ToDisplayName(mi.Name));
+                    LongFields[mi.Name] = entryField;
                     elements.Add(entryField);
-                    entryField.InputValue = (long)f.GetValue(obj);
-                    entryField.Changed += value => f.SetValue(obj, value);
+                    entryField.InputValue = (long)mi.GetValue(obj);
+                    entryField.Changed += value => mi.SetValue(obj, value);
                 }
                 else if (U == typeof(int))
                 {
-                    IntEntryField entryField = new IntEntryField(Parent, ToDisplayName(f.Name));
-                    IntFields[f.Name] = entryField;
+                    IntEntryField entryField = new(Parent, ToDisplayName(mi.Name));
+                    IntFields[mi.Name] = entryField;
                     elements.Add(entryField);
-                    entryField.InputValue = (int)f.GetValue(obj);
-                    entryField.Changed += value => f.SetValue(obj, value);
+                    entryField.Bind(mi, obj);
                 }
                 else if (U == typeof(short))
                 {
-                    ShortEntryField entryField = new ShortEntryField(Parent, ToDisplayName(f.Name));
-                    ShortFields[f.Name] = entryField;
+                    ShortEntryField entryField = new(Parent, ToDisplayName(mi.Name));
+                    ShortFields[mi.Name] = entryField;
                     elements.Add(entryField);
-                    entryField.InputValue = (short)f.GetValue(obj);
-                    entryField.Changed += value => f.SetValue(obj, value);
+                    entryField.InputValue = (short)mi.GetValue(obj);
+                    entryField.Changed += value => mi.SetValue(obj, value);
                 }
                 else if (U == typeof(byte))
                 {
-                    ByteEntryField entryField = new ByteEntryField(Parent, ToDisplayName(f.Name));
-                    ByteFields[f.Name] = entryField;
+                    ByteEntryField entryField = new(Parent, ToDisplayName(mi.Name));
+                    ByteFields[mi.Name] = entryField;
                     elements.Add(entryField);
-                    entryField.InputValue = (byte)f.GetValue(obj);
-                    entryField.Changed += value => f.SetValue(obj, value);
+                    entryField.InputValue = (byte)mi.GetValue(obj);
+                    entryField.Changed += value => mi.SetValue(obj, value);
                 }
                 else if (U == typeof(bool))
                 {
-                    ToggleButton button = new ToggleButton(Parent, ToDisplayName(f.Name));
-                    button.Bind(obj, f);
-                    BoolFields[f.Name] = button;
+                    ToggleButton button = new(Parent, ToDisplayName(mi.Name));
+                    button.Bind(obj, mi);
+                    BoolFields[mi.Name] = button;
                     elements.Add(button);
-                    button.SetSelection((bool)f.GetValue(obj));
+                    button.SetSelection((bool)mi.GetValue(obj));
                     //button.Changed += (s) => DebugMethods.DumpProperties(obj);
                 }
                 else if (U.IsEnum)
                 {
-                    MenuItem<Enum> button = new MenuItem<Enum>(Parent, ToDisplayName(f.Name), Enum.GetValues(U).Cast<Enum>().ToArray());
-                    button.Bind(obj, f);
-                    EnumFields[f.Name] = button;
+                    MenuItem<Enum> button = new(Parent, ToDisplayName(mi.Name), Enum.GetValues(U).Cast<Enum>().ToArray());
+                    button.Bind(obj, mi);
+                    EnumFields[mi.Name] = button;
                     button.Format += (_, p, c, r) => (p, c, ToDisplayName(r));
-                    button.SetSelection((Enum)f.GetValue(obj));
+                    button.SetSelection((Enum)mi.GetValue(obj));
                     elements.Add(button);
                 }
             }
+
+            foreach (var mi in Members)
+            {
+                foreach (var tv in mi.GetCustomAttributes<TriggerValidationAttribute>())
+                {
+                    if (Members.FirstOrDefault(m => m.Name == tv.memberName) is not MemberInfo m2) continue;
+                    Type U = mi.GetValueType();
+                    Type V = m2.GetValueType();
+
+                    // surely there is a better way to do this than to enumerate all pairs of types
+                    if (U == typeof(int) && V == typeof(int)) 
+                    {
+                        IntFields[mi.Name].Changed += (_) => IntFields[m2.Name].InvokeModify();
+                    }
+                }
+            }
+
 
             Elements = elements.ToArray();
         }
 
         public void SetMenuValues(T source, T target)
         {
-            foreach (FieldInfo f in Fields)
+            foreach (FieldInfo f in Members)
             {
                 Type U = f.FieldType;
 

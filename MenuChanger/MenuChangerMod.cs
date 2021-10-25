@@ -36,8 +36,6 @@ namespace MenuChanger
 
         private void EditUI()
         {
-            Log("EditUI called in scene: " + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
-
             ResumeMenu.Reset();
             ModeMenu.OnEnterMainMenu();
         }
@@ -53,10 +51,8 @@ namespace MenuChanger
 
         public override void Initialize()
         {
-            LogHelper.OnLog += Log;
             ThreadSupport.Setup();
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnSceneChange;
-            SpriteManager.LoadEmbeddedPngs("MenuChanger.Resources.");
             UIManager.EditMenus += EditUI;
             On.UIManager.UIGoToProfileMenu += (o, s) =>
             {
@@ -71,11 +67,9 @@ namespace MenuChanger
                 ModeMenu.Show();
             };
             ResumeMenu.Hook();
-            Log("MenuChanger initialized");
         }
 
-        public Settings Settings = new Settings();
-        //public static GlobalSettings gs = new GlobalSettings();
+        public Settings Settings = new();
 
         public int MakeAssemblyHash()
         {

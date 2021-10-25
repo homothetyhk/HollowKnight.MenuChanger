@@ -5,16 +5,18 @@ using System.Text;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
+using MenuChanger.Attributes;
+using MenuChanger.Extensions;
 
 namespace MenuChanger.MenuElements
 {
     public abstract class EntryField<T> : IMenuElement
     {
-        public MenuPage Parent { get; private set; }
-        public GameObject GameObject { get; private set; }
-        public InputField InputField { get; private set; }
+        public MenuPage Parent { get; }
+        public GameObject GameObject { get; }
+        public InputField InputField { get; }
         public bool Hidden { get; private set; }
-        public MenuLabel Label { get; private set; }
+        public MenuLabel Label { get; }
         public Vector2 LabelOffset = new Vector2(0f, 55f);
 
         public EntryField(MenuPage page, string label, MenuLabel.Style style = MenuLabel.Style.Title)
@@ -61,7 +63,7 @@ namespace MenuChanger.MenuElements
         public void InvokeModify(string _ = null)
         {
             T input = InputValue;
-            foreach (Delegate d in Modify?.GetInvocationList() ?? new Delegate[0])
+            foreach (Delegate d in Modify?.GetInvocationList() ?? Enumerable.Empty<Delegate>())
             {
                 input = (T)d.DynamicInvoke(input);
             }
@@ -73,6 +75,13 @@ namespace MenuChanger.MenuElements
         public virtual string Write(T t)
         {
             return t.ToString();
+        }
+
+
+        public virtual void Bind(MemberInfo mi, object o)
+        {
+            InputValue = (T)mi.GetValue(o);
+            Changed += value => mi.SetValue(o, value);
         }
 
         public void AddValidateInputToTextColorEvent(Func<T, bool> test)
@@ -176,6 +185,66 @@ namespace MenuChanger.MenuElements
                 return (T)Convert.ChangeType(ClampToType(altVal), typeof(T));
             }
             else return default;
+        }
+
+        public override void Bind(MemberInfo mi, object o)
+        {
+            base.Bind(mi, o);
+
+            if (mi.GetCustomAttribute<MenuRangeAttribute>() is MenuRangeAttribute mr)
+            {
+                SetClamp((T)mr.min, (T)mr.max);
+            }
+
+            Type U = o.GetType();
+            foreach (var db in mi.GetCustomAttributes<DynamicBoundAttribute>())
+            {
+                MemberInfo info = U.GetMember(db.memberName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                    .FirstOrDefault(m =>
+                    m.MemberType == MemberTypes.Field
+                    || m.MemberType == MemberTypes.Property && ((PropertyInfo)m).CanRead
+                    || m.MemberType == MemberTypes.Method && ((MethodInfo)m).GetParameters().Length == 0
+                    );
+
+                if (info != null && (info.MemberType == MemberTypes.Field || info.MemberType == MemberTypes.Property))
+                {
+                    if (db.upper)
+                    {
+                        Modify += (val) =>
+                        {
+                            T ub = (T)info.GetValue(o);
+                            return val.CompareTo(ub) <= 0 ? val : ub;
+                        };
+                    }
+                    else
+                    {
+                        Modify += (val) =>
+                        {
+                            T lb = (T)info.GetValue(o);
+                            return val.CompareTo(lb) >= 0 ? val : lb;
+                        };
+                    }
+                }
+                else if (info is MethodInfo method)
+                {
+                    if (db.upper)
+                    {
+                        Modify += (val) =>
+                        {
+                            T ub = (T)method.Invoke(o, Array.Empty<object>());
+                            return val.CompareTo(ub) <= 0 ? val : ub;
+                        };
+                    }
+                    else
+                    {
+                        Modify += (val) =>
+                        {
+                            T lb = (T)method.Invoke(o, Array.Empty<object>());
+                            return val.CompareTo(lb) >= 0 ? val : lb;
+                        };
+                    }
+                }
+            }
         }
 
         private void CleanInput(T input)

@@ -19,7 +19,7 @@ namespace MenuChanger.MenuElements
         public readonly Dictionary<string, T> Ts;
         public readonly FieldInfo[] Tfields;
         public readonly T Obj;
-        public MenuLabel Label { get; private set; }
+        public MenuLabel Label { get; }
         public readonly Func<T, string> Caption;
 
         private bool isUpdating = false;

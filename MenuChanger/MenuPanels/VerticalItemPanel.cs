@@ -9,8 +9,8 @@ namespace MenuChanger.MenuPanels
 {
     public class VerticalItemPanel : IMenuPanel
     {
-        public MenuPage Parent { get; private set; }
-        public List<IMenuElement> Items { get; private set; }
+        public MenuPage Parent { get; }
+        public List<IMenuElement> Items { get; }
         public bool Hidden { get; private set; } = true;
         Vector2 localTopCenter;
         float vspace;

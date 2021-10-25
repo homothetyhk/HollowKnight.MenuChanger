@@ -12,7 +12,7 @@ namespace MenuChanger.MenuElements
 
         bool TrySetSelection(object obj);
         void MoveNext();
-        void Bind(object obj, FieldInfo field);
+        void Bind(object obj, MemberInfo mi);
 
     }
 }
