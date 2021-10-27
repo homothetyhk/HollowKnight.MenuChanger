@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using MenuChanger.MenuElements;
+using MenuChanger.Extensions;
 
 namespace MenuChanger
 {
@@ -13,8 +14,11 @@ namespace MenuChanger
         public readonly GameObject self;
         public readonly RectTransform rt;
         public readonly CanvasGroup cg;
+        public readonly MenuPageNavigation nav;
+        public MenuPage backTo;
 
-        public MenuButton backButton;
+
+        public SmallButton backButton;
         public bool isShowing = false;
 
         public MenuPage(string name) : this(name, null) { }
@@ -32,21 +36,23 @@ namespace MenuChanger
             rt.localScale = new Vector3(1f, 1f, 1f);
             cg = self.AddComponent<CanvasGroup>();
 
-            // back leads to profile select
+            this.backTo = backTo;
             if (backTo == null)
             {
-                backButton = PrefabMenuObjects.CloneBackButton($"Back");
+                backButton = new SmallButton(this, "Back");
+                backButton.OnClick += UIManager.instance.UIGoToProfileMenu;
+                backButton.OnCancel += UIManager.instance.UIGoToProfileMenu;
             }
             else
             {
-                backButton = PrefabMenuObjects.BuildNewButton("Back");
-                backButton.AddHideMenuPageEvent(this);
-                backButton.AddShowMenuPageEvent(backTo);
+                backButton = new SmallButton(this, "Back");
+                backButton.OnClick += GoBack;
             }
             
-            Add(backButton.gameObject);
-            PrefabMenuObjects.RescaleBackButton(backButton.gameObject);
-            backButton.transform.localPosition = new Vector2(0, -450);
+            Add(backButton.GameObject);
+            backButton.MoveTo(new Vector2(0, -450));
+
+            nav = new SimpleHorizontalNavigation(this);
 
             Hide();
         }
@@ -60,6 +66,7 @@ namespace MenuChanger
             cg.alpha = 1f;
             isShowing = true;
             MenuChangerMod.displayedPages.Add(this);
+            nav.SelectDefault();
 
             AfterShow?.Invoke();
         }
@@ -77,9 +84,32 @@ namespace MenuChanger
             AfterHide?.Invoke();
         }
 
+        public void GoBack()
+        {
+            if (backTo == null)
+            {
+                UIManager.instance.UIGoToProfileMenu();
+            }
+            else
+            {
+                TransitionTo(backTo);
+            }
+        }
+
+        public void TransitionTo(MenuPage next)
+        {
+            Hide();
+            next.Show();
+        }
+
         internal void Add(GameObject obj)
         {
             obj.transform.SetParent(self.transform);
+        }
+
+        public void AddToNavigationControl(ISelectable selectable)
+        {
+            nav.Add(selectable);
         }
 
         public event Action BeforeShow;

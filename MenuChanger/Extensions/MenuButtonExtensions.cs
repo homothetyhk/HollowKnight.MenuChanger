@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace MenuChanger
+namespace MenuChanger.Extensions
 {
     public static class MenuButtonExtensions
     {
@@ -59,6 +59,27 @@ namespace MenuChanger
                 selectOnDown = down,
                 selectOnLeft = left
             };
+        }
+
+        public static void SetNeighborOnSelectable(this Selectable self, Neighbor neighbor, Selectable selectable)
+        {
+            Navigation nv = self.navigation;
+            switch (neighbor)
+            {
+                case Neighbor.Up:
+                    nv.selectOnUp = selectable;
+                    break;
+                case Neighbor.Down:
+                    nv.selectOnDown = selectable;
+                    break;
+                case Neighbor.Right:
+                    nv.selectOnRight = selectable;
+                    break;
+                case Neighbor.Left:
+                    nv.selectOnLeft = selectable;
+                    break;
+            }
+            self.navigation = nv;
         }
 
         public static void ClearEvents(this MenuButton self)

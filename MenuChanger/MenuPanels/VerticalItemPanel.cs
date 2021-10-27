@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using MenuChanger.MenuElements;
+using UnityEngine.UI;
 
 namespace MenuChanger.MenuPanels
 {
@@ -15,15 +16,25 @@ namespace MenuChanger.MenuPanels
         Vector2 localTopCenter;
         float vspace;
         
-
-        public VerticalItemPanel(MenuPage page, Vector2 localTopCenter, float vspace, params IMenuElement[] children)
+        /// <summary>
+        /// Creates a panel which groups its elements in a column.
+        /// </summary>
+        /// <param name="page">The page containing the panel.</param>
+        /// <param name="localTopCenter">The center of the top item of the panel, in MenuPage coordinates.</param>
+        /// <param name="vspace">The space between consecutive elements.</param>
+        /// <param name="rootLevel">True if the panel's navigation should be controlled by the MenuPage. False if it will be nested within another panel.</param>
+        /// <param name="children">The items of the panel.</param>
+        public VerticalItemPanel(MenuPage page, Vector2 localTopCenter, float vspace, bool rootLevel, params IMenuElement[] children)
         {
             Parent = page;
+            
             this.localTopCenter = localTopCenter;
             this.vspace = vspace;
 
             Items = children.ToList();
             Reposition();
+            ResetNavigation();
+            if (rootLevel) Parent.AddToNavigationControl(this);
         }
 
         public void Reposition()
@@ -101,5 +112,63 @@ namespace MenuChanger.MenuPanels
             Items.Clear();
         }
 
+        public void SetNeighbor(Neighbor neighbor, ISelectable selectable)
+        {
+            IEnumerable<ISelectable> selectables = Items.OfType<ISelectable>();
+            if (!selectables.Any()) return;
+            switch (neighbor)
+            {
+                case Neighbor.Up:
+                    selectables.First().SetNeighbor(neighbor, selectable);
+                    break;
+                case Neighbor.Down:
+                    selectables.Last().SetNeighbor(neighbor, selectable);
+                    break;
+                case Neighbor.Left:
+                    foreach (var s in selectables) s.SetNeighbor(neighbor, selectable);
+                    break;
+                case Neighbor.Right:
+                    foreach (var s in selectables) s.SetNeighbor(neighbor, selectable);
+                    break;
+            }
+        }
+
+        public Selectable GetSelectable(Neighbor neighbor)
+        {
+            return GetISelectable(neighbor)?.GetSelectable(neighbor);
+        }
+
+        public ISelectable GetISelectable(Neighbor neighbor)
+        {
+            IEnumerable<ISelectable> selectables = Items.OfType<ISelectable>();
+            if (!selectables.Any()) return null;
+            return neighbor switch
+            {
+                Neighbor.Up => selectables.First(),
+                Neighbor.Down => selectables.Last(),
+                Neighbor.Left => selectables.First(),
+                Neighbor.Right => selectables.Last(),
+                _ => null,
+            };
+        }
+
+        public void ResetNavigation()
+        {
+            foreach (ISelectableGroup isg in Items.OfType<ISelectableGroup>())
+            {
+                isg.ResetNavigation();
+            }
+
+            ISelectable previous = null;
+            foreach (ISelectable current in Items.OfType<ISelectable>())
+            {
+                if (previous != null)
+                {
+                    current.SetNeighbor(Neighbor.Up, previous);
+                    previous.SetNeighbor(Neighbor.Down, current);
+                }
+                previous = current;
+            }
+        }
     }
 }

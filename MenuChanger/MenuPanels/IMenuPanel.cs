@@ -7,7 +7,7 @@ using MenuChanger.MenuElements;
 
 namespace MenuChanger.MenuPanels
 {
-    public interface IMenuPanel : IMenuElement
+    public interface IMenuPanel : IMenuElement, ISelectable, ISelectableGroup
     {
         void Add(IMenuElement obj);
         bool Remove(IMenuElement obj);

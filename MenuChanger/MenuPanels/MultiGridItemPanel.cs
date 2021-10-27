@@ -7,6 +7,9 @@ using UnityEngine;
 
 namespace MenuChanger.MenuPanels
 {
+    /// <summary>
+    /// An ordered item viewer containing grid panels. Allows a grid panel to take an arbitrary number of elements without overflowing.
+    /// </summary>
     public class MultiGridItemPanel : OrderedItemViewer
     {
         readonly int Columns;
@@ -16,6 +19,16 @@ namespace MenuChanger.MenuPanels
         readonly float Hspace;
         Vector2 TopCenter;
 
+        /// <summary>
+        /// Creates a panel which can group an arbitrary number of elements on paginated grids.
+        /// </summary>
+        /// <param name="page">The page containing the panel.</param>
+        /// <param name="rows">The number of rows to allow in the grid before starting a new page.</param>
+        /// <param name="columns">The number of columns in the grid.</param>
+        /// <param name="vspace">The vertical space between consecutive rows.</param>
+        /// <param name="hspace">The horizontal space between consecutive columns.</param>
+        /// <param name="topCenter">The center of the top row of the panel, in MenuPage coordinates.</param>
+        /// <param name="children">The items of the panel.</param>
         public MultiGridItemPanel(MenuPage page,
             int rows, int columns, float vspace, float hspace,
             Vector2 topCenter,
@@ -75,7 +88,7 @@ namespace MenuChanger.MenuPanels
 
         private GridItemPanel NewPanel(params IMenuElement[] children)
         {
-            return new GridItemPanel(Parent, TopCenter, Columns, Vspace, Hspace, children);
+            return new GridItemPanel(Parent, TopCenter, Columns, Vspace, Hspace, false, children);
         }
 
         public override void Add(IMenuElement obj)

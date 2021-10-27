@@ -10,7 +10,7 @@ using MenuChanger.Extensions;
 
 namespace MenuChanger.MenuElements
 {
-    public abstract class EntryField<T> : IMenuElement
+    public abstract class EntryField<T> : IMenuElement, ISelectable
     {
         public MenuPage Parent { get; }
         public GameObject GameObject { get; }
@@ -123,6 +123,30 @@ namespace MenuChanger.MenuElements
         {
             GameObject.Destroy(GameObject);
         }
+
+        public void SetNeighbor(Neighbor neighbor, ISelectable selectable)
+        {
+            Navigation nv = InputField.navigation;
+            switch (neighbor)
+            {
+                case Neighbor.Up:
+                    nv.selectOnUp = selectable?.GetSelectable(Neighbor.Down);
+                    break;
+                case Neighbor.Down:
+                    nv.selectOnDown = selectable?.GetSelectable(Neighbor.Up);
+                    break;
+                case Neighbor.Right:
+                    nv.selectOnRight = selectable?.GetSelectable(Neighbor.Left);
+                    break;
+                case Neighbor.Left:
+                    nv.selectOnLeft = selectable?.GetSelectable(Neighbor.Right);
+                    break;
+            }
+            InputField.navigation = nv;
+        }
+
+        public ISelectable GetISelectable(Neighbor neighbor) => this;
+        public Selectable GetSelectable(Neighbor neighbor) => InputField;
     }
 
 

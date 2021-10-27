@@ -2,17 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MenuChanger.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace MenuChanger.MenuElements
 {
-    public class BaseButton : IMenuElement
+    public class BaseButton : IMenuElement, ISelectable
     {
         public event Action OnClick;
         protected virtual void InvokeOnClick()
         {
             OnClick?.Invoke();
+        }
+
+        public Action OnCancel;
+        protected virtual void InvokeOnCancel()
+        {
+            OnCancel?.Invoke();
         }
 
         public MenuPage Parent { get; }
@@ -29,6 +36,8 @@ namespace MenuChanger.MenuElements
             Parent.Add(GameObject);
             GameObject.transform.localPosition = Vector3.zero;
             newButton.AddEvent(InvokeOnClick);
+            newButton.customCancelAction = (s) => InvokeOnCancel();
+            OnCancel = page.GoBack;
         }
 
         public void Show()
@@ -58,5 +67,28 @@ namespace MenuChanger.MenuElements
             GameObject.transform.localPosition = pos;
         }
 
+        public void SetNeighbor(Neighbor neighbor, ISelectable selectable)
+        {
+            Navigation nv = Button.navigation;
+            switch (neighbor)
+            {
+                case Neighbor.Up:
+                    nv.selectOnUp = selectable?.GetSelectable(Neighbor.Down);
+                    break;
+                case Neighbor.Down:
+                    nv.selectOnDown = selectable?.GetSelectable(Neighbor.Up);
+                    break;
+                case Neighbor.Right:
+                    nv.selectOnRight = selectable?.GetSelectable(Neighbor.Left);
+                    break;
+                case Neighbor.Left:
+                    nv.selectOnLeft = selectable?.GetSelectable(Neighbor.Right);
+                    break;
+            }
+            Button.navigation = nv;
+        }
+
+        public ISelectable GetISelectable(Neighbor neighbor) => this;
+        public Selectable GetSelectable(Neighbor neighbor) => Button;
     }
 }

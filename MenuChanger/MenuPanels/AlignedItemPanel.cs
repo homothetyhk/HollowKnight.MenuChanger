@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace MenuChanger.MenuPanels
 {
+    /*
     public class AlignedItemPanel : IMenuPanel
     {
         public MenuPage Parent { get; }
@@ -125,4 +126,5 @@ namespace MenuChanger.MenuPanels
         }
 
     }
+    */
 }

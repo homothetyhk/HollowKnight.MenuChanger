@@ -85,6 +85,64 @@ namespace MenuChanger.MenuPanels
             Items.Clear();
             TitleLabel?.Destroy();
         }
+        
+        public void SetNeighbor(Neighbor neighbor, ISelectable selectable) // defaults to horizontally linking elements
+        {
+            IEnumerable<ISelectable> selectables = Items.OfType<ISelectable>();
+            if (!selectables.Any()) return;
+            switch (neighbor)
+            {
+                case Neighbor.Up:
+                    foreach (var s in selectables) s.SetNeighbor(neighbor, selectable);
+                    break;
+                case Neighbor.Down:
+                    foreach (var s in selectables) s.SetNeighbor(neighbor, selectable);
+                    break;
+                case Neighbor.Left:
+                    selectables.First().SetNeighbor(neighbor, selectable);
+                    break;
+                case Neighbor.Right:
+                    selectables.Last().SetNeighbor(neighbor, selectable);
+                    break;
+            }
+        }
 
+        public Selectable GetSelectable(Neighbor neighbor)
+        {
+            return GetISelectable(neighbor)?.GetSelectable(neighbor);
+        }
+
+        public ISelectable GetISelectable(Neighbor neighbor)
+        {
+            IEnumerable<ISelectable> selectables = Items.OfType<ISelectable>();
+            if (!selectables.Any()) return null;
+            return neighbor switch
+            {
+                Neighbor.Up => selectables.First(),
+                Neighbor.Down => selectables.Last(),
+                Neighbor.Left => selectables.First(),
+                Neighbor.Right => selectables.Last(),
+                _ => null,
+            };
+        }
+
+        public void ResetNavigation()
+        {
+            foreach (ISelectableGroup isg in Items.OfType<ISelectableGroup>())
+            {
+                isg.ResetNavigation();
+            }
+
+            ISelectable previous = null;
+            foreach (ISelectable current in Items.OfType<ISelectable>())
+            {
+                if (previous != null)
+                {
+                    current.SetNeighbor(Neighbor.Left, previous);
+                    previous.SetNeighbor(Neighbor.Right, current);
+                }
+                previous = current;
+            }
+        }
     }
 }

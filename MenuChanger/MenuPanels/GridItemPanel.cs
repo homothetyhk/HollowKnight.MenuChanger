@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using MenuChanger.MenuElements;
+using UnityEngine.UI;
 
 namespace MenuChanger.MenuPanels
 {
@@ -17,9 +18,18 @@ namespace MenuChanger.MenuPanels
         float vspace;
         float hspace;
         int columns;
-        
 
-        public GridItemPanel(MenuPage page, Vector2 localTopCenter, int columns, float vspace, float hspace, params IMenuElement[] children)
+        /// <summary>
+        /// Creates a panel which groups its elements in a grid with a fixed number of columns.
+        /// </summary>
+        /// <param name="page">The page containing the panel.</param>
+        /// <param name="localTopCenter">The center of the top row of the panel, in MenuPage coordinates.</param>
+        /// <param name="columns">The number of columns in the grid.</param>
+        /// <param name="vspace">The vertical space between consecutive rows.</param>
+        /// <param name="hspace">The horizontal space between consecutive columns.</param>
+        /// <param name="rootLevel">True if the panel's navigation should be controlled by the MenuPage. False if it will be nested within another panel.</param>
+        /// <param name="children">The items of the panel.</param>
+        public GridItemPanel(MenuPage page, Vector2 localTopCenter, int columns, float vspace, float hspace, bool rootLevel, params IMenuElement[] children)
         {
             Parent = page;
             this.localTopCenter = localTopCenter;
@@ -30,6 +40,8 @@ namespace MenuChanger.MenuPanels
 
             Items = children.ToList();
             Reposition();
+            ResetNavigation();
+            if (rootLevel) Parent.AddToNavigationControl(this);
         }
 
         public void Reposition()
@@ -120,5 +132,81 @@ namespace MenuChanger.MenuPanels
             Items.Clear();
         }
 
+        private IEnumerable<IMenuElement> GetColumn(int c) => Items.Where((e, i) => i % columns == c);
+        private IEnumerable<IMenuElement> GetRow(int r) => Items.Skip(r * columns).Take(columns);
+
+        public void ResetNavigation()
+        {
+            foreach (ISelectableGroup isg in Items.OfType<ISelectableGroup>())
+            {
+                isg.ResetNavigation();
+            }
+
+            for (int r = 0; r * columns < Items.Count; r++)
+            {
+                ISelectable previous = null;
+                foreach (ISelectable current in GetRow(r).OfType<ISelectable>())
+                {
+                    if (previous != null)
+                    {
+                        current.SetNeighbor(Neighbor.Left, previous);
+                        previous.SetNeighbor(Neighbor.Right, current);
+                    }
+                    previous = current;
+                }
+            }
+
+            for (int c = 0; c < columns; c++)
+            {
+                ISelectable previous = null;
+                foreach (ISelectable current in GetColumn(c).OfType<ISelectable>())
+                {
+                    if (previous != null)
+                    {
+                        current.SetNeighbor(Neighbor.Up, previous);
+                        previous.SetNeighbor(Neighbor.Down, current);
+                    }
+                    previous = current;
+                }
+            }
+        }
+
+        public void SetNeighbor(Neighbor neighbor, ISelectable selectable)
+        {
+            switch (neighbor)
+            {
+                case Neighbor.Up:
+                    for (int c = 0; c < columns; c++) GetColumn(c).OfType<ISelectable>().FirstOrDefault()?.SetNeighbor(neighbor, selectable);
+                    break;
+                case Neighbor.Down:
+                    for (int c = 0; c < columns; c++) GetColumn(c).OfType<ISelectable>().LastOrDefault()?.SetNeighbor(neighbor, selectable);
+                    break;
+                case Neighbor.Left:
+                    for (int r = 0; r * columns < Items.Count; r++) GetRow(r).OfType<ISelectable>().FirstOrDefault()?.SetNeighbor(neighbor, selectable);
+                    break;
+                case Neighbor.Right:
+                    for (int r = 0; r * columns < Items.Count; r++) GetRow(r).OfType<ISelectable>().LastOrDefault()?.SetNeighbor(neighbor, selectable);
+                    break;
+            }
+        }
+
+        public Selectable GetSelectable(Neighbor neighbor)
+        {
+            return GetISelectable(neighbor)?.GetSelectable(neighbor);
+        }
+
+        public ISelectable GetISelectable(Neighbor neighbor)
+        {
+            IEnumerable<ISelectable> selectables = Items.OfType<ISelectable>();
+            if (!selectables.Any()) return null;
+            return neighbor switch
+            {
+                Neighbor.Up => selectables.First(),
+                Neighbor.Down => selectables.Last(),
+                Neighbor.Left => selectables.First(),
+                Neighbor.Right => selectables.Last(),
+                _ => null,
+            };
+        }
     }
 }
