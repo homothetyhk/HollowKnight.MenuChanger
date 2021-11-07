@@ -70,6 +70,13 @@ namespace MenuChanger
                     MenuChangerMod.instance.LogError($"Unable to manually load settings from menu!\n{e}");
                 }
             }
+            else if (self.saveFileState == SaveSlotButton.SaveFileStates.Empty)
+            {
+                GameManager.instance.profileID = self.GetSaveSlotIndex();
+                UIManager.instance.UIGoToPlayModeMenu();
+                return;
+            }
+
             orig(self, eventData);
         }
 

@@ -12,7 +12,7 @@ namespace MenuChanger
     {
         public abstract void OnEnterMainMenu(MenuPage modeMenu);
         public abstract void OnExitMainMenu();
-        public abstract BigButton GetModeButton(MenuPage modeMenu);
+        public abstract bool TryGetModeButton(MenuPage modeMenu, out BigButton button);
     }
 
     public abstract class ResumeMenuConstructor

@@ -13,7 +13,7 @@ namespace MenuChanger
         private static MenuPage ModePage;
         private static MultiGridItemPanel ModeButtonPanel;
 
-        private static List<ModeMenuConstructor> constructors = new List<ModeMenuConstructor>
+        private static List<ModeMenuConstructor> constructors = new()
         {
             new DefaultModeConstructor(Mode.Classic),
             new DefaultModeConstructor(Mode.Steel),
@@ -24,14 +24,17 @@ namespace MenuChanger
         {
             MenuChangerMod.instance.Log("Constructing mode menu...");
             ModePage = new MenuPage("Mode Page");
-            List<BigButton> buttons = new List<BigButton>();
+            List<BigButton> buttons = new();
 
             for (int i = 0; i < constructors.Count; i++)
             {
                 try
                 {
                     constructors[i].OnEnterMainMenu(ModePage);
-                    buttons.Add(constructors[i].GetModeButton(ModePage));
+                    if (constructors[i].TryGetModeButton(ModePage, out BigButton button))
+                    {
+                        buttons.Add(button);
+                    }
                     MenuChangerMod.instance.Log($"  Constructed menu from {constructors[i].GetType().FullName}");
                 }
                 catch (Exception e)
@@ -80,9 +83,13 @@ namespace MenuChanger
             }
 
             private BigButton button;
+            private bool wasUnlocked;
 
             public override void OnEnterMainMenu(MenuPage modeMenu) 
             {
+                wasUnlocked = IsUnlocked;
+                if (!wasUnlocked) return;
+
                 button = new BigButton(modeMenu, mode);
                 button.OnClick += () =>
                 {
@@ -90,14 +97,32 @@ namespace MenuChanger
                     UIManager.instance.StartNewGame(permaDeath: mode == Mode.Steel, bossRush: mode == Mode.Godmaster);
                 };
             }
-            public override BigButton GetModeButton(MenuPage modeMenu)
+            public override bool TryGetModeButton(MenuPage modeMenu, out BigButton button)
             {
-                return button;
+                if (wasUnlocked)
+                {
+                    button = this.button;
+                    return true;
+                }
+                else
+                {
+                    button = null;
+                    return false;
+                }
             }
             public override void OnExitMainMenu()
             {
                 button = null;
+                wasUnlocked = false;
             }
+
+            public bool IsUnlocked => mode switch
+            {
+                Mode.Classic => true,
+                Mode.Steel => GameManager.instance.GetStatusRecordInt("RecPermadeathMode") == 1,
+                Mode.Godmaster => GameManager.instance.GetStatusRecordInt("RecBossRushMode") == 1,
+                _ => true,
+            };
         }
     }
 }
