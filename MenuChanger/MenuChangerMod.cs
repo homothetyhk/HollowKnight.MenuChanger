@@ -31,7 +31,11 @@ namespace MenuChanger
 
         private void OnSceneChange(Scene from, Scene to)
         {
-            if (from.name == "Menu_Title" && to.name != "Menu_Title") PrefabMenuObjects.Dispose();
+            if (from.name == "Menu_Title" && to.name != "Menu_Title")
+            {
+                ModeMenu.OnExitMainMenu();
+                PrefabMenuObjects.Dispose();
+            }
         }
 
         private void EditUI()
@@ -46,6 +50,7 @@ namespace MenuChanger
         {
             instance = this;
             LogHelper.OnLog += Log;
+            LogHelper.OnLogError += LogError;
             UIManager.EditMenus += PrefabMenuObjects.Setup;
         }
 

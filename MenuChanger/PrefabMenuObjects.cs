@@ -9,8 +9,6 @@ using MenuChanger.MenuElements;
 using UnityEngine.UI.Extensions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using UObject = UnityEngine.Object;
-using static MenuChanger.LogHelper;
 using MenuChanger.Extensions;
 
 namespace MenuChanger

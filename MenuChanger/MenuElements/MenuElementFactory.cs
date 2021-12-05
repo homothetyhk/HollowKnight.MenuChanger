@@ -8,6 +8,10 @@ using MenuChanger.Attributes;
 
 namespace MenuChanger.MenuElements
 {
+    /// <summary>
+    /// Class which converts an object to a menu representation, consisting of MenuItems and EntryFields that access and modify its fields and properties.
+    /// <br/>Can be easily used to automatically generate a menu by first creating a MenuElementFactory, and then passing its Elements array to a MenuPanel.
+    /// </summary>
     public class MenuElementFactory<T>
     {
         public readonly MenuPage Parent;
@@ -20,6 +24,9 @@ namespace MenuChanger.MenuElements
         public readonly IMenuElement[] Elements;
         private readonly MemberInfo[] Members;
 
+        /// <summary>
+        /// Creates an MEF with elements on the given page and bound to the specified object.
+        /// </summary>
         public MenuElementFactory(MenuPage page, T obj)
         {
             Parent = page;
@@ -102,6 +109,9 @@ namespace MenuChanger.MenuElements
             Elements = elements.ToArray();
         }
 
+        /// <summary>
+        /// For each member tracked by the MEF, fetches the value from source and applies it to the corresponding element, and to target.
+        /// </summary>
         public void SetMenuValues(T source, T target)
         {
             foreach (FieldInfo f in Members)
@@ -165,6 +175,6 @@ namespace MenuChanger.MenuElements
             }
         }
 
-        public static string ToDisplayName(string name) => name.FromCamelCase();
+        private static string ToDisplayName(string name) => name.FromCamelCase();
     }
 }

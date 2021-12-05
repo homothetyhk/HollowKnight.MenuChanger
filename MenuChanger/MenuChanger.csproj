@@ -6,7 +6,19 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <LangVersion>latest</LangVersion>
     <Deterministic>true</Deterministic>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <ImplicitUsings>true</ImplicitUsings>
+    <NoWarn>1701;1702;CS1591;IDE0018</NoWarn>
   </PropertyGroup>
+  <ItemGroup>
+    <Using Remove="System.Net.Http" />
+    <Using Remove="System.Threading" />
+    <Using Remove="System.Threading.Tasks" />
+    <Using Include="MenuChanger.LogHelper" Static="true" />
+    <Using Include="UnityEngine" />
+    <Using Include="UnityEngine.UI" />
+    <Using Include="UnityEngine.Object" Alias="UObject" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Assembly-CSharp.dll</HintPath>

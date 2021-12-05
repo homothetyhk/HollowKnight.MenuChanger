@@ -8,6 +8,9 @@ using UnityEngine.UI;
 
 namespace MenuChanger.MenuPanels
 {
+    /// <summary>
+    /// A MenuPanel which arranges its elements in a column with a fixed spacing between elements.
+    /// </summary>
     public class VerticalItemPanel : IMenuPanel
     {
         public MenuPage Parent { get; }
@@ -37,6 +40,9 @@ namespace MenuChanger.MenuPanels
             if (rootLevel) Parent.AddToNavigationControl(this);
         }
 
+        /// <summary>
+        /// Reapplies the panel layout to its items.
+        /// </summary>
         public void Reposition()
         {
             for (int i = 0; i < Items.Count; i++)  Items[i].MoveTo(localTopCenter + new Vector2(0f, -vspace * i));
@@ -54,6 +60,9 @@ namespace MenuChanger.MenuPanels
             Reposition();
         }
 
+        /// <summary>
+        /// Updates the panel with the new spacing between rows.
+        /// </summary>
         public void Respace(float vspace)
         {
             this.vspace = vspace;
@@ -66,6 +75,9 @@ namespace MenuChanger.MenuPanels
             Reposition();
         }
 
+        /// <summary>
+        /// Inserts the item into the specified row of the panel.
+        /// </summary>
         public void Insert(int index, IMenuElement item)
         {
             Items.Insert(index, item);

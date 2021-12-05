@@ -74,6 +74,9 @@ namespace MenuChanger.MenuPanels
             return $"{Index + 1}/{Items.Count}";
         }
 
+        /// <summary>
+        /// Hides the current item of the OrderedItemViewer and shows the item at the previous index, wrapping around if necessary.
+        /// </summary>
         public void ToPrevious()
         {
             Items[Index--].Hide();
@@ -82,6 +85,9 @@ namespace MenuChanger.MenuPanels
             ResetNavigation();
         }
 
+        /// <summary>
+        /// Hides the current item of the OrderedItemViewer and shows the item at the next index, wrapping around if necessary.
+        /// </summary>
         public void ToNext()
         {
             Items[Index++].Hide();
@@ -90,6 +96,9 @@ namespace MenuChanger.MenuPanels
             ResetNavigation();
         }
 
+        /// <summary>
+        /// Hides the current item of the OrderedItemViewer and shows the item at the given index.
+        /// </summary>
         public void JumpTo(int index)
         {
             Items[Index].Hide();

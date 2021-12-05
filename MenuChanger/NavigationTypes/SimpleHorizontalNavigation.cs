@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine.UI;
 
-namespace MenuChanger
+namespace MenuChanger.NavigationTypes
 {
     public class SimpleHorizontalNavigation : MenuPageNavigation
     {

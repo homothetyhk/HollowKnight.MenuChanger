@@ -8,6 +8,9 @@ using UnityEngine.UI;
 
 namespace MenuChanger.MenuElements
 {
+    /// <summary>
+    /// The base class for MenuChanger buttons such as SmallButton or BigButton.
+    /// </summary>
     public class BaseButton : IMenuElement, ISelectable
     {
         public event Action OnClick;
@@ -54,7 +57,7 @@ namespace MenuChanger.MenuElements
 
         public void Destroy()
         {
-            GameObject.Destroy(GameObject);
+            UObject.Destroy(GameObject);
         }
 
         public void Translate(Vector2 delta)

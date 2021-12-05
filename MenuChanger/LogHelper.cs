@@ -2,9 +2,10 @@
 
 namespace MenuChanger
 {
-    public static class LogHelper
+    internal static class LogHelper
     {
         public static event Action<string> OnLog;
+        public static event Action<string> OnLogError;
 
         public static void Log(string message = "")
         {
@@ -20,5 +21,11 @@ namespace MenuChanger
         {
             Log(message?.ToString() ?? "null");
         }
+
+        public static void LogError(string message)
+        {
+            OnLogError?.Invoke(message);
+        }
+
     }
 }

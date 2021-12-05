@@ -57,7 +57,19 @@ namespace MenuChanger.MenuPanels
             }
         }
 
-
+        /// <summary>
+        /// Creates a panel which can group an arbitrary number of elements on paginated grids.
+        /// </summary>
+        /// <param name="page">The page containing the panel.</param>
+        /// <param name="rows">The number of rows to allow in the grid before starting a new page.</param>
+        /// <param name="columns">The number of columns in the grid.</param>
+        /// <param name="vspace">The vertical space between consecutive rows.</param>
+        /// <param name="hspace">The horizontal space between consecutive columns.</param>
+        /// <param name="topCenter">The center of the top row of the panel, in MenuPage coordinates.</param>
+        /// <param name="prevPos">The position of the previous button.</param>
+        /// <param name="nextPos">The position of the next button.</param>
+        /// <param name="indexPos">The position of the index label.</param>
+        /// <param name="children">The items of the panel.</param>
         public MultiGridItemPanel(MenuPage page, 
             int rows, int columns, float vspace, float hspace, 
             Vector2 topCenter, Vector2 prevPos, Vector2 nextPos, Vector2 indexPos, 

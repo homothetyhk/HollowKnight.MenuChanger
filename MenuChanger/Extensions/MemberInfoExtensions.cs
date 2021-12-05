@@ -6,6 +6,9 @@ namespace MenuChanger.Extensions
 {
     public static class MemberInfoExtensions
     {
+        /// <summary>
+        /// Tests whether the member is a field or property which allows read and write operations, and also is either public with no MenuIgnoreAttribute or has a MenuIncludeAttribute.
+        /// </summary>
         public static bool IsValidForMenu(this MemberInfo mi)
         {
             if (mi.MemberType == MemberTypes.Field)
@@ -68,6 +71,10 @@ namespace MenuChanger.Extensions
             }
         }
 
+        /// <summary>
+        /// Gets the value from the field or property of the member.
+        /// </summary>
+        /// <exception cref="NotImplementedException">The MemberInfo is not a FieldInfo or a PropertyInfo.</exception>
         public static object GetValue(this MemberInfo mi, object o)
         {
             return mi.MemberType switch
@@ -78,6 +85,10 @@ namespace MenuChanger.Extensions
             };
         }
 
+        /// <summary>
+        /// Sets the value of the field or property of the member.
+        /// </summary>
+        /// <exception cref="NotImplementedException">The MemberInfo is not a FieldInfo or a PropertyInfo.</exception>
         public static void SetValue(this MemberInfo mi, object o, object value)
         {
             switch (mi.MemberType)
@@ -93,6 +104,10 @@ namespace MenuChanger.Extensions
             }
         }
 
+        /// <summary>
+        /// Gets the type of the field or property of the member.
+        /// </summary>
+        /// <exception cref="NotImplementedException">The MemberInfo is not a FieldInfo or a PropertyInfo</exception>
         public static Type GetValueType(this MemberInfo mi)
         {
             return mi.MemberType switch

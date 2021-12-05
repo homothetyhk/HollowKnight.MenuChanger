@@ -9,7 +9,7 @@ namespace MenuChanger.Extensions
     {
         public static string FromCamelCase(this string str)
         {
-            StringBuilder uiname = new StringBuilder(str);
+            StringBuilder uiname = new(str);
             if (str.Length > 0)
             {
                 uiname[0] = char.ToUpper(uiname[0]);

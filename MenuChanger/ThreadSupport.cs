@@ -4,29 +4,46 @@ using System.Linq;
 using System.Collections;
 using System.Text;
 using UnityEngine;
+using System.Collections.Concurrent;
 
 namespace MenuChanger
 {
-    public static class ThreadSupport
+    /// <summary>
+    /// Utility which helps side threads interact with the main Unity thread.
+    /// </summary>
+    public class ThreadSupport : MonoBehaviour
     {
-        private static NonBouncer nb;
+        private static readonly ConcurrentQueue<Action> actions = new();
+        private static ThreadSupport instance;
 
         internal static void Setup()
         {
-            GameObject go = new GameObject();
-            nb = go.AddComponent<NonBouncer>();
-            GameObject.DontDestroyOnLoad(go);
+            GameObject go = new();
+            instance = go.AddComponent<ThreadSupport>();
+            DontDestroyOnLoad(go);
         }
 
-        private static IEnumerator Invoke(Action a)
+        public void Update()
         {
-            yield return null;
-            a?.Invoke();
+            while (!actions.IsEmpty && actions.TryDequeue(out Action action))
+            {
+                try
+                {
+                    action.Invoke();
+                }
+                catch (Exception e)
+                {
+                    LogError($"Error during ThreadSupport invocation:\n{e}");
+                }
+            }
         }
 
+        /// <summary>
+        /// Enqueues the action to be invoked during the next Unity update.
+        /// </summary>
         public static void BeginInvoke(Action a)
         {
-            nb.StartCoroutine(Invoke(a));
+            actions.Enqueue(a);
         }
     }
 }

@@ -5,11 +5,17 @@ using System.Text;
 
 namespace MenuChanger.MenuElements
 {
+    /// <summary>
+    /// Object which manages a text box displaying a counter that can be incremented.
+    /// </summary>
     public class CounterLabel : MenuLabel
     {
         private int Counter;
         private string Prefix;
 
+        /// <summary>
+        /// Creates a label on the page with the specified prefix and initial counter value.
+        /// </summary>
         public CounterLabel(MenuPage page, string prefix, int startValue = 0) : base(page, $"{prefix}: {startValue}", Style.Body)
         {
             Counter = startValue;

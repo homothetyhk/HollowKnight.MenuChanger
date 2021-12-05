@@ -8,25 +8,33 @@ using UnityEngine;
 
 namespace MenuChanger.MenuElements
 {
+    /// <summary>
+    /// MenuElement which manages a text box displaying a timer tied to a Stopwatch.
+    /// </summary>
     public class TimerLabel : MenuLabel
     {
-        private Stopwatch Stopwatch;
-        private string Prefix;
-        private string RestLabel;
+        private readonly Stopwatch _stopwatch;
+        private readonly string _prefix;
+        private string _restLabel;
         private IEnumerator maintainTime;
+        private readonly StringBuilder _sb = new();
 
+        /// <summary>
+        /// Creates a new TimerLabel. The optional rest label will be used until the timer is started, or else the label will be blank.
+        /// <br/>When the timer is started, the label will display the prefix, followed by the current time.
+        /// </summary>
         public TimerLabel(MenuPage page, string prefix, string restLabel = null) : base(page, string.Empty, Style.Body)
         {
-            Prefix = $"{prefix}: ";
-            RestLabel = restLabel ?? string.Empty;
-            Stopwatch = new Stopwatch();
+            _prefix = $"{prefix}: ";
+            _restLabel = restLabel ?? string.Empty;
+            _stopwatch = new Stopwatch();
             Text.alignment = TextAnchor.UpperCenter;
         }
 
         public void Start()
         {
-            Stopwatch.Reset();
-            Stopwatch.Start();
+            _stopwatch.Reset();
+            _stopwatch.Start();
 
             maintainTime = MaintainTime();
             Text.StartCoroutine(maintainTime);
@@ -34,7 +42,7 @@ namespace MenuChanger.MenuElements
 
         private void StopInternal()
         {
-            if (maintainTime is IEnumerator)
+            if (maintainTime is not null)
             {
                 Text.StopCoroutine(maintainTime);
                 maintainTime = null;
@@ -50,8 +58,8 @@ namespace MenuChanger.MenuElements
         public void Reset(string newRestLabel = null)
         {
             StopInternal();
-            if (newRestLabel is string s) RestLabel = s;
-            Text.text = RestLabel;
+            if (newRestLabel is string s) _restLabel = s;
+            Text.text = _restLabel;
         }
 
 
@@ -66,30 +74,32 @@ namespace MenuChanger.MenuElements
 
         private string ComputeLabelText()
         {
-            StringBuilder sb = new StringBuilder(Prefix);
-            int hours = Stopwatch.Elapsed.Hours;
-            int minutes = Stopwatch.Elapsed.Minutes;
-            int seconds = Stopwatch.Elapsed.Seconds;
-            int milli = Stopwatch.Elapsed.Milliseconds;
+            _sb.Clear();
+            _sb.Append(_prefix);
+
+            int hours = _stopwatch.Elapsed.Hours;
+            int minutes = _stopwatch.Elapsed.Minutes;
+            int seconds = _stopwatch.Elapsed.Seconds;
+            int milli = _stopwatch.Elapsed.Milliseconds;
 
             bool hh = hours > 0;
             bool mm = hh || minutes > 0;
 
             if (hh)
             {
-                sb.Append(hours);
-                sb.Append(':');
+                _sb.Append(hours);
+                _sb.Append(':');
             }
             if (mm)
             {
-                sb.Append(minutes);
-                sb.Append(':');
+                _sb.Append(minutes);
+                _sb.Append(':');
             }
-            sb.Append(seconds);
-            sb.Append('.');
-            sb.Append(milli.ToString().PadLeft(3, '0'));
+            _sb.Append(seconds);
+            _sb.Append('.');
+            _sb.Append(milli.ToString().PadLeft(3, '0'));
 
-            return sb.ToString();
+            return _sb.ToString();
         }
     }
 }

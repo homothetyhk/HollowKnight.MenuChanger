@@ -8,6 +8,9 @@ using UnityEngine.UI;
 
 namespace MenuChanger.MenuPanels
 {
+    /// <summary>
+    /// A panel which does not arrange its elements. Includes an optional title label. Essentially behaves like a MenuPage, including in how it handles navigation.
+    /// </summary>
     public class Subpage : IMenuPanel
     {
         public MenuPage Parent { get; }
@@ -18,6 +21,9 @@ namespace MenuChanger.MenuPanels
         public MenuLabel TitleLabel { get; }
         public bool Hidden { get; private set; }
 
+        /// <summary>
+        /// Creates a Subpage with a title label at the specified position.
+        /// </summary>
         public Subpage(MenuPage page, string title, Vector2 titlePos)
         {
             Parent = page;
@@ -25,7 +31,13 @@ namespace MenuChanger.MenuPanels
             TitleLabel.MoveTo(titlePos);
             Items = new List<IMenuElement>();
         }
+        /// <summary>
+        /// Creates a Subpage with a title label at (0, 400).
+        /// </summary>
         public Subpage(MenuPage page, string title) : this (page, title, new Vector2(0, 400)) { }
+        /// <summary>
+        /// Creates a Subpage with an empty title label at (0, 400).
+        /// </summary>
         public Subpage(MenuPage page) : this (page, string.Empty, new Vector2(0, 400)) { }
 
         

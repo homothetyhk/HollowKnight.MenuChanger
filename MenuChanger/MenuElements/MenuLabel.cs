@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 namespace MenuChanger.MenuElements
 {
+    /// <summary>
+    /// MenuElement which manages a Text component. Supports title and paragraph styles.
+    /// </summary>
     public class MenuLabel : IMenuElement
     {
         public MenuPage Parent { get; }

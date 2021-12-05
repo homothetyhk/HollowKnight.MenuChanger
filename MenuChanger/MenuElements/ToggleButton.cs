@@ -7,8 +7,14 @@ using UnityEngine.UI;
 
 namespace MenuChanger.MenuElements
 {
+    /// <summary>
+    /// MenuItem&lt;bool&gt; which indicates its state using colors instead of displaying the value as text.
+    /// </summary>
     public class ToggleButton : MenuItem<bool>
     {
+        /// <summary>
+        /// Creates a toggle button displaying the given text and initialized to false.
+        /// </summary>
         public ToggleButton(MenuPage page, string text) : base(page, text, false, true)
         {
             

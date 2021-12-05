@@ -11,18 +11,26 @@ using MenuChanger.Extensions;
 
 namespace MenuChanger.MenuElements
 {
+    /// <summary>
+    /// Button which allows selecting an item from a fixed set of values.
+    /// </summary>
     public class MenuItem<T> : SmallButton, IMenuItem
     {
         public int CurrentIndex { get; protected set; }
         public T CurrentSelection { get; protected set; }
         public int Count => Selections.Count;
-        public object BoxedCurrentSelection => CurrentSelection as object;
+        object IMenuItem.CurrentSelection => CurrentSelection as object;
 
         public string Name { get; private set; }
 
+        /// <summary>
+        /// Creates a MenuItem with given array of values. The current value will be displayed with the button's name as a prefix.
+        /// </summary>
         public MenuItem(MenuPage page, string name, params T[] values) : this(page, name, values?.ToList() ?? new List<T>()) { }
 
-        // For maintaining reference to original list
+        /// <summary>
+        /// Creates a MenuItem with given list of values. The current value will be displayed with the button's name as a prefix.
+        /// </summary>
         public MenuItem(MenuPage page, string name, List<T> values) : base(page, name)
         {
             if (string.IsNullOrEmpty(name))
@@ -150,7 +158,7 @@ namespace MenuChanger.MenuElements
 
         public void Bind(object obj, MemberInfo mi)
         {
-            Changed += (self) => mi.SetValue(obj, self.BoxedCurrentSelection);
+            Changed += (self) => mi.SetValue(obj, self.CurrentSelection);
         }
 
         protected readonly FixVerticalAlign _align;

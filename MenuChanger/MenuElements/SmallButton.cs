@@ -7,9 +7,18 @@ using UnityEngine.UI;
 
 namespace MenuChanger.MenuElements
 {
+    /// <summary>
+    /// MenuElement which manages a standard button.
+    /// </summary>
     public class SmallButton : BaseButton, ILockable
     {
+        /// <summary>
+        /// The Text component on the button.
+        /// </summary>
         public Text Text { get; }
+        /// <summary>
+        /// Creates a button on the page with the specified text.
+        /// </summary>
         public SmallButton(MenuPage page, string text) : base(page, PrefabMenuObjects.BuildNewButton(text))
         {
             GameObject.transform.localScale = new Vector2(0.7f, 0.7f);
@@ -37,6 +46,11 @@ namespace MenuChanger.MenuElements
         {
             Locked = false;
             Text.color = Colors.DEFAULT_COLOR;
+        }
+
+        public override string ToString()
+        {
+            return $"Small Button {{ \"{Text.text}\" }}";
         }
 
     }

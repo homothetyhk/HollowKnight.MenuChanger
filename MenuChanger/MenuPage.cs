@@ -6,23 +6,44 @@ using UnityEngine;
 using UnityEngine.UI;
 using MenuChanger.MenuElements;
 using MenuChanger.Extensions;
+using MenuChanger;
+using MenuChanger.NavigationTypes;
 
 namespace MenuChanger
 {
+    /// <summary>
+    /// Wrapper for the standard root object used by most MenuElements. MenuPages are fullscreen pages which can be shown and hidden independently.
+    /// </summary>
     public class MenuPage
     {
         public readonly GameObject self;
         public readonly RectTransform rt;
         public readonly CanvasGroup cg;
         public readonly MenuPageNavigation nav;
+
+        /// <summary>
+        /// The MenuPage which the GoBack method and the back button directs to. Can be modified after creation. If null, defaults to going back to the profile menu.
+        /// </summary>
         public MenuPage backTo;
 
-
+        /// <summary>
+        /// The MenuPage's back button. A back button is always created by the constructor, but can be safely destroyed if desired.
+        /// </summary>
         public SmallButton backButton;
+
+        /// <summary>
+        /// Set true while the MenuPage is displayed.
+        /// </summary>
         public bool isShowing = false;
 
+        /// <summary>
+        /// Creates a MenuPage with the given name, equipped with a back button that returns to the profile menu.
+        /// </summary>
         public MenuPage(string name) : this(name, null) { }
 
+        /// <summary>
+        /// Creates a MenuPage with the given name, equipped with a back button that returns to the given page.
+        /// </summary>
         public MenuPage(string name, MenuPage backTo)
         {
             self = new GameObject(name);
@@ -57,6 +78,9 @@ namespace MenuChanger
             Hide();
         }
 
+        /// <summary>
+        /// Displays the MenuPage, and selects its default element.
+        /// </summary>
         public void Show()
         {
             BeforeShow?.Invoke();
@@ -71,6 +95,9 @@ namespace MenuChanger
             AfterShow?.Invoke();
         }
 
+        /// <summary>
+        /// Hides the MenuPage.
+        /// </summary>
         public void Hide()
         {
             BeforeHide?.Invoke();
@@ -84,6 +111,9 @@ namespace MenuChanger
             AfterHide?.Invoke();
         }
 
+        /// <summary>
+        /// The method invoked by the back button. Returns to the backTo page, or if backTo is null returns to the profile menu.
+        /// </summary>
         public void GoBack()
         {
             if (backTo == null)
@@ -96,6 +126,9 @@ namespace MenuChanger
             }
         }
 
+        /// <summary>
+        /// Hides this MenuPage and shows the next page.
+        /// </summary>
         public void TransitionTo(MenuPage next)
         {
             Hide();
@@ -107,6 +140,9 @@ namespace MenuChanger
             obj.transform.SetParent(self.transform);
         }
 
+        /// <summary>
+        /// Adds the selectable to be managed directly by the page's navigation.
+        /// </summary>
         public void AddToNavigationControl(ISelectable selectable)
         {
             nav.Add(selectable);

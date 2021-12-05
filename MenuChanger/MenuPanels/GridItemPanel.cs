@@ -8,6 +8,9 @@ using UnityEngine.UI;
 
 namespace MenuChanger.MenuPanels
 {
+    /// <summary>
+    /// A MenuPanel which groups its items in a grid with a fixed number of columns and fixed horizontal and vertical spacing.
+    /// </summary>
     public class GridItemPanel : IMenuPanel
     {
         public MenuPage Parent { get; }
@@ -44,6 +47,9 @@ namespace MenuChanger.MenuPanels
             if (rootLevel) Parent.AddToNavigationControl(this);
         }
 
+        /// <summary>
+        /// Reapplies the panel layout to its items.
+        /// </summary>
         public void Reposition()
         {
             Vector2 topLeft = localTopCenter - new Vector2((columns / 2f - 0.5f) * hspace, 0f);
@@ -67,6 +73,9 @@ namespace MenuChanger.MenuPanels
             Reposition();
         }
 
+        /// <summary>
+        /// Updates the panel with the new spacing between rows.
+        /// </summary>
         public void Respace(float vspace)
         {
             this.vspace = vspace;
@@ -80,6 +89,9 @@ namespace MenuChanger.MenuPanels
             if (Hidden) item.Hide();
         }
 
+        /// <summary>
+        /// Inserts the item into the specified row-major index of the panel.
+        /// </summary>
         public void Insert(int index, IMenuElement item)
         {
             Items.Insert(index, item);
@@ -87,6 +99,9 @@ namespace MenuChanger.MenuPanels
             if (Hidden) item.Hide();
         }
 
+        /// <summary>
+        /// Inserts the item into the specified row and column of the panel.
+        /// </summary>
         public void Insert(int row, int column, IMenuElement item)
         {
             Insert(row * columns + column, item);

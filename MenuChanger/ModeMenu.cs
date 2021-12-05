@@ -8,8 +8,20 @@ using MenuChanger.MenuPanels;
 
 namespace MenuChanger
 {
+    /// <summary>
+    /// Static class which manages the MenuChanger mode menu.
+    /// </summary>
     public static class ModeMenu
     {
+        /// <summary>
+        /// The main entry point for adding to the mode menu. Stores the menu constructor to be invoked when the mode menu is built.
+        /// </summary>
+        public static void AddMode(ModeMenuConstructor constructor)
+        {
+            constructors.Add(constructor);
+        }
+
+
         private static MenuPage ModePage;
         private static MultiGridItemPanel ModeButtonPanel;
 
@@ -67,11 +79,6 @@ namespace MenuChanger
                     MenuChangerMod.instance.LogError($"Error during OnEnterMainMenu for constructor of type {c.GetType().Name}:\n{e}");
                 } 
             }
-        }
-
-        public static void AddMode(ModeMenuConstructor constructor)
-        {
-            constructors.Add(constructor);
         }
 
         private class DefaultModeConstructor : ModeMenuConstructor
