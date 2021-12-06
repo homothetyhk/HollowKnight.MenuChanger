@@ -61,18 +61,25 @@ namespace MenuChanger
             UIManager.EditMenus += EditUI;
             On.UIManager.UIGoToProfileMenu += (o, s) =>
             {
-                o(s);
                 HideAllMenuPages();
+                o(s);
             };
             On.UIManager.UIGoToPlayModeMenu += (o, s) => 
             {
-                s.StartCoroutine(s.HideSaveProfileMenu());
-                s.menuState = MainMenuState.PLAY_MODE_MENU;
-
-                ModeMenu.Show();
+                s.StartCoroutine(GoToModeMenu(s));
             };
             ResumeMenu.Hook();
         }
+
+        private IEnumerator GoToModeMenu(UIManager s)
+        {
+            InputHandler.Instance.StopUIInput();
+            yield return s.HideSaveProfileMenu();
+            s.menuState = MainMenuState.PLAY_MODE_MENU;
+            InputHandler.Instance.StartUIInput();
+            ModeMenu.Show();
+        }
+
 
         public Settings Settings = new();
 

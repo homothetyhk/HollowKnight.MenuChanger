@@ -50,6 +50,18 @@ namespace MenuChanger
                 .GetValue(button);
         }
 
+        private static IEnumerator GoToResumeMenu(UIManager s, SaveSlotButton button, MenuPage resumePage)
+        {
+            InputHandler.Instance.StopUIInput();
+            yield return s.HideSaveProfileMenu();
+            s.menuState = MainMenuState.PLAY_MODE_MENU;
+            yield return LoadGameAndDoAction(button.GetSaveSlotIndex(), () =>
+             {
+                 InputHandler.Instance.StartUIInput();
+                 resumePage.Show();
+             });
+        }
+
         private static void SaveSlotButton_OnSubmit(On.UnityEngine.UI.SaveSlotButton.orig_OnSubmit orig, SaveSlotButton self, UnityEngine.EventSystems.BaseEventData eventData)
         {
             if (self.saveFileState == SaveSlotButton.SaveFileStates.LoadedStats
@@ -60,9 +72,8 @@ namespace MenuChanger
                     Settings s = MenuChangerMod.instance.ManuallyLoadSettings<MenuChangerMod, Settings>(self.GetSaveSlotIndex());
                     if (s != null && s.resumeKey != null && ResumePages.TryGetValue(s.resumeKey, out MenuPage page) && page is MenuPage)
                     {
-                        UIManager.instance.StartCoroutine(UIManager.instance.HideSaveProfileMenu());
-                        UIManager.instance.menuState = MainMenuState.PLAY_MODE_MENU;
-                        GameManager.instance.StartCoroutine(LoadGameAndDoAction(self.GetSaveSlotIndex(), page.Show));
+                        self.ForceDeselect();
+                        UIManager.instance.StartCoroutine(GoToResumeMenu(UIManager.instance, self, page));
                         return;
                     }
                 }
@@ -75,6 +86,7 @@ namespace MenuChanger
             {
                 GameManager.instance.profileID = self.GetSaveSlotIndex();
                 UIManager.instance.UIGoToPlayModeMenu();
+                self.ForceDeselect();
                 return;
             }
 
