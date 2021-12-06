@@ -40,8 +40,8 @@ namespace MenuChanger.MenuPanels
         /// </summary>
         /// <param name="page">The page containing the panel.</param>
         /// <param name="prevPos">The position of the previous button.</param>
-        /// <param name="prevPos">The position of the next button.</param>
-        /// <param name="prevPos">The position of the label showing the current page index.</param>
+        /// <param name="nextPos">The position of the next button.</param>
+        /// <param name="indexLabelPos">The position of the label showing the current page index.</param>
         /// <param name="items">The items of the panel.</param>
         public OrderedItemViewer(MenuPage page, Vector2 prevPos, Vector2 nextPos, Vector2 indexLabelPos, params IMenuElement[] items)
         {

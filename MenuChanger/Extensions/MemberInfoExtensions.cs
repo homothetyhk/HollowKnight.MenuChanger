@@ -118,5 +118,20 @@ namespace MenuChanger.Extensions
             };
         }
 
+        /// <summary>
+        /// Returns true if the type is one of the primitive numeric types.
+        /// </summary>
+        public static bool IsNumeric(this Type T)
+        {
+            if (T.IsEnum) return false;
+            return Type.GetTypeCode(T) switch
+            {
+                TypeCode.SByte or TypeCode.Byte or TypeCode.Int16
+                or TypeCode.UInt16 or TypeCode.Int32 or TypeCode.UInt32 or TypeCode.Int64 or TypeCode.UInt64
+                or TypeCode.Single or TypeCode.Double or TypeCode.Decimal => true,
+                _ => false
+            };
+        }
+
     }
 }

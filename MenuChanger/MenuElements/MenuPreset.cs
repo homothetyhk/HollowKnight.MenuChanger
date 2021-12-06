@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using MenuChanger.Extensions;
 
 namespace MenuChanger.MenuElements
 {
@@ -17,33 +18,36 @@ namespace MenuChanger.MenuElements
     public class MenuPreset<T> : MenuItem<string>, IMenuPreset
     {
         public readonly Dictionary<string, T> Ts;
-        public readonly FieldInfo[] Tfields;
+        public readonly MemberInfo[] TMembers;
+
         public readonly T Obj;
         public MenuLabel Label { get; }
         public readonly Func<T, string> Caption;
 
         private bool isUpdating = false;
+        private bool broadcastPreset = true;
 
         public MenuPreset(MenuPage page, string prefix, Dictionary<string, T> dict, T obj,
             Func<T, string> caption)
             : base(page, prefix, dict.Keys.ToArray())
         {
             Ts = dict;
-            Tfields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance);
+            TMembers = typeof(T).GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Where(mi => mi.IsValidForMenu()).ToArray();
+
             Obj = obj;
 
-            Changed += SetPreset;
+            SelfChanged += SetPreset;
 
             Caption = caption;
-            Label = new MenuLabel(page, caption(Ts[CurrentSelection]), MenuLabel.Style.Body);
+            Label = new MenuLabel(page, caption(Ts[Value]), MenuLabel.Style.Body);
 
             // evil code
             Label.GameObject.transform.SetParent(GameObject.transform);
-            Label.GameObject.transform.localPosition = new UnityEngine.Vector3(0, -25, 0);
+            Label.GameObject.transform.localPosition = new Vector3(0, -25, 0);
             Label.GameObject.transform.localScale *= 0.7f;
 
-            Label.Text.alignment = UnityEngine.TextAnchor.MiddleCenter;
-            Changed += s => UpdateCaption();
+            Label.Text.alignment = TextAnchor.MiddleCenter;
+            SelfChanged += s => UpdateCaption();
 
             UpdatePreset();
         }
@@ -60,126 +64,83 @@ namespace MenuChanger.MenuElements
             Label.Text.text = Caption != null ? Caption(Obj) : string.Empty;
         }
 
-        protected override void RefreshText(bool invokeEvent = true)
+        public void SetValueWithoutBroadcast(string key)
+        {
+            broadcastPreset = false;
+            SetValue(key);
+            broadcastPreset = true;
+        }
+
+        protected override void SetValueInternal(object o, bool invokeEvent = true)
         {
             isUpdating = true;
-            base.RefreshText(invokeEvent);
+            base.SetValueInternal(o, invokeEvent);
             isUpdating = false;
         }
 
-        public void SetPreset(MenuItem<string> self) => SetPreset(self.CurrentSelection);
+        public void SetPreset(IValueElement self) => SetPreset((string)self.Value);
 
         public void SetPreset(string key)
         {
+            if (!broadcastPreset) return;
+            
             if (Ts.TryGetValue(key, out T t))
             {
-                foreach (FieldInfo field in Tfields) field.SetValue(Obj, field.GetValue(t));
+                foreach (MemberInfo mi in TMembers) mi.SetValue(Obj, mi.GetValue(t));
+                OnSetPreset?.Invoke(t);
             }
         }
 
-        public void Pair(ToggleButton toggleButton, FieldInfo field)
+        public void Pair(IValueElement element, MemberInfo mi)
         {
-            toggleButton.Changed += _ => UpdatePreset();
-            Changed += _ => toggleButton.SetSelection((bool)field.GetValue(Obj));
+            element.SelfChanged += _ => UpdatePreset();
+            OnSetPreset += t =>
+            {
+                element.SetValue(mi.GetValue(t));
+            };
         }
 
-        public void Pair(ByteEntryField byteField, FieldInfo field)
-        {
-            byteField.Changed += _ => UpdatePreset();
-            Changed += _ => byteField.InputValue = (byte)field.GetValue(Obj);
-        }
-
-        public void Pair(ShortEntryField shortField, FieldInfo field)
-        {
-            shortField.Changed += _ => UpdatePreset();
-            Changed += _ => shortField.InputValue = (short)field.GetValue(Obj);
-        }
-
-        public void Pair(IntEntryField intField, FieldInfo field)
-        {
-            intField.Changed += _ => UpdatePreset();
-            Changed += _ => intField.InputValue = (int)field.GetValue(Obj);
-        }
-
-        public void Pair(LongEntryField longField, FieldInfo field)
-        {
-            longField.Changed += _ => UpdatePreset();
-            Changed += _ => longField.InputValue = (long)field.GetValue(Obj);
-        }
-
-        public void Pair(MenuItem<Enum> enumButton, FieldInfo field)
-        {
-            enumButton.Changed += _ => UpdatePreset();
-            Changed += _ => enumButton.TrySetSelection(field.GetValue(Obj));
-        }
-
-        public void Pair<U>(MenuItem<U> menuItem, FieldInfo field)
-        {
-            menuItem.Changed += _ => UpdatePreset();
-            Changed += _ => menuItem.TrySetSelection(field.GetValue(Obj));
-        }
-
-        public void Pair(RadioSwitch radioSwitch, FieldInfo field)
+        public void Pair(RadioSwitch radioSwitch, MemberInfo mi)
         {
             radioSwitch.Changed += _ => UpdatePreset();
-            Changed += _ => radioSwitch.TrySelect((string)field.GetValue(Obj));
+            OnSetPreset += t => radioSwitch.TrySelect((string)mi.GetValue(t));
         }
 
         public void Pair(MenuElementFactory<T> factory)
         {
-            foreach (FieldInfo field in Tfields)
+            foreach (MemberInfo mi in TMembers)
             {
-                if (field.FieldType == typeof(bool) && factory.BoolFields.TryGetValue(field.Name, out ToggleButton toggleButton))
+                if (factory.ElementLookup.TryGetValue(mi.Name, out IValueElement e))
                 {
-                    Pair(toggleButton, field);
-                }
-                else if (field.FieldType == typeof(byte) && factory.ByteFields.TryGetValue(field.Name, out ByteEntryField byteField))
-                {
-                    Pair(byteField, field);
-                }
-                else if (field.FieldType == typeof(short) && factory.ShortFields.TryGetValue(field.Name, out ShortEntryField shortField))
-                {
-                    Pair(shortField, field);
-                }
-                else if (field.FieldType == typeof(int) && factory.IntFields.TryGetValue(field.Name, out IntEntryField intField))
-                {
-                    Pair(intField, field);
-                }
-                else if (field.FieldType == typeof(long) && factory.LongFields.TryGetValue(field.Name, out LongEntryField longField))
-                {
-                    Pair(longField, field);
-                }
-                else if (field.FieldType.IsEnum)
-                {
-                    if (factory.EnumFields.TryGetValue(field.Name, out MenuItem<Enum> enumButton))
-                    {
-                        Pair(enumButton, field);
-                    }
+                    Pair(e, mi);
                 }
             }
         }
 
         public void UpdatePreset(string s) => UpdatePreset();
 
+        int counter = 0;
         public void UpdatePreset()
         {
             if (isUpdating) return;
-            
-            foreach(string key in Selections)
+
+            foreach(string key in Items)
             {
                 if (CheckPreset(key))
                 {
-                    if (CurrentSelection != key) SetSelection(key);
+                    if (Value != key) SetValueWithoutBroadcast(key);
                     return;
                 }
             }
 
-            if (CurrentSelection != "Custom") SetSelection("Custom");
+            if (Value != "Custom") SetValueWithoutBroadcast("Custom");
         }
 
         public bool CheckPreset(string key)
         {
-            return Ts.TryGetValue(key, out T t) && Tfields.All(f => Equals(f.GetValue(t), f.GetValue(Obj)));
+            return Ts.TryGetValue(key, out T t) && TMembers.All(mi => Equals(mi.GetValue(t), mi.GetValue(Obj)));
         }
+
+        public event Action<T> OnSetPreset;
     }
 }

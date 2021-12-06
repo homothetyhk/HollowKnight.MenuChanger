@@ -10,17 +10,21 @@ using MenuChanger.Extensions;
 
 namespace MenuChanger.MenuElements
 {
-    public abstract class EntryField<T> : IMenuElement, ISelectable
+    /// <summary>
+    /// The base class of MenuChanger input fields.
+    /// </summary>
+    public abstract class EntryField : IMenuElement, ISelectable, IValueElement
     {
         public MenuPage Parent { get; }
         public GameObject GameObject { get; }
         public InputField InputField { get; }
         public bool Hidden { get; private set; }
         public MenuLabel Label { get; }
-        public Vector2 LabelOffset = new Vector2(0f, 55f);
+        public Vector2 LabelOffset = new(0f, 55f);
 
-        public EntryField(MenuPage page, string label, MenuLabel.Style style = MenuLabel.Style.Title)
+        public EntryField(Type valueType, MenuPage page, string label, MenuLabel.Style style = MenuLabel.Style.Title)
         {
+            ValueType = valueType;
             switch (style)
             {
                 default:
@@ -33,62 +37,81 @@ namespace MenuChanger.MenuElements
                     (GameObject, InputField) = PrefabMenuObjects.BuildMultiLineEntryField(page);
                     break;
             }
-            
+
             Parent = page;
 
             Label = new MenuLabel(page, label, MenuLabel.Style.Body);
             Label.Text.alignment = TextAnchor.UpperCenter;
             MoveTo(Vector2.zero);
-
-            InputField.onValueChanged.AddListener(InvokeModify);
-            InputField.onValueChanged.AddListener(InvokeChanged);
+            InputField.onEndEdit.AddListener(Validate);
         }
 
-        public T InputValue
+        public string ValidatedInput { get; protected set; }
+        public object Value { get; protected set; }
+        public Type ValueType { get; }
+
+        protected virtual void Validate(string input)
         {
-            get => Read(InputField.text);
-            set
+            object value;
+            try
             {
-                InputField.text = Write(value);
-                Changed?.Invoke(InputValue);
+                InvokeModifyInputString(ref input, ValidatedInput);
+                value = Read(input, ValueType);
+            }
+            catch
+            {
+                InputField.text = ValidatedInput;
+                return;
+            }
+            ValidatedInput = input;
+            Value = value;
+            try
+            {
+                InvokeSelfChanged();
+            }
+            catch
+            {
+                return;
             }
         }
 
-        public delegate void ChangedHandler(T self);
-        public event ChangedHandler Changed;
-        public void InvokeChanged(string _ = null) => Changed?.Invoke(InputValue);
+        public delegate void ModifyInputHandler<T>(ref T newValue, T orig);
+        public event ModifyInputHandler<string> ModifyInputString;
+        protected void InvokeModifyInputString(ref string newValue, string orig) => ModifyInputString?.Invoke(ref newValue, orig);
 
-        public delegate T ModifyHandler(T input);
-        public event ModifyHandler Modify;
-        public void InvokeModify(string _ = null)
+        public event Action<IValueElement> SelfChanged;
+        protected void InvokeSelfChanged()
         {
-            T input = InputValue;
-            foreach (Delegate d in Modify?.GetInvocationList() ?? Enumerable.Empty<Delegate>())
+            try
             {
-                input = (T)d.DynamicInvoke(input);
+                SelfChanged?.Invoke(this);
             }
-            if (!InputValue.Equals(input)) InputValue = input;
+            catch { return; }
         }
 
-
-        public abstract T Read(string input);
-        public virtual string Write(T t)
+        public virtual object Read(string input, Type type)
         {
+            return Convert.ChangeType(input, type);
+        }
+        public virtual string Write(object t)
+        {
+            if (t is null) return string.Empty;
             return t.ToString();
         }
 
+        public void SetValue(object o) => Validate(Write(o));
 
-        public virtual void Bind(MemberInfo mi, object o)
+        public virtual void Bind(object o, MemberInfo mi)
         {
-            InputValue = (T)mi.GetValue(o);
-            Changed += value => mi.SetValue(o, value);
+            SetValue(mi.GetValue(o));
+            SelfChanged += self => mi.SetValue(o, self.Value);
         }
 
-        public void AddValidateInputToTextColorEvent(Func<T, bool> test)
+        public void AddValidateInputToTextColorEvent(Func<string, bool> test)
         {
-            Changed += (_) =>
+            SelfChanged += (self) =>
             {
-                if (test(InputValue)) InputField.textComponent.color = Colors.DEFAULT_COLOR;
+                if (test(((EntryField)self).ValidatedInput)) InputField.textComponent.color = Colors.DEFAULT_COLOR;
                 else InputField.textComponent.color = Colors.INVALID_INPUT_COLOR;
             };
         }
@@ -121,7 +144,7 @@ namespace MenuChanger.MenuElements
 
         public void Destroy()
         {
-            GameObject.Destroy(GameObject);
+            UObject.Destroy(GameObject);
         }
 
         public void SetNeighbor(Neighbor neighbor, ISelectable selectable)
@@ -149,7 +172,66 @@ namespace MenuChanger.MenuElements
         public Selectable GetSelectable(Neighbor neighbor) => InputField;
     }
 
+    /// <summary>
+    /// An EntryField of a specified type. EntryFields such as NumericEntryField and TextEntryField derive from this class.
+    /// </summary>
+    public class EntryField<T> : EntryField, IValueElement<T>
+    {
+        public EntryField(MenuPage page, string label, MenuLabel.Style style = MenuLabel.Style.Title) : base(typeof(T), page, label, style)
+        {
+            InputField.onEndEdit.AddListener(Validate);
+            SetValue(default);
+        }
 
+        new public T Value
+        {
+            get => (T)base.Value;
+            protected set => base.Value = value;
+        }
+
+        protected override void Validate(string input)
+        {
+            T value;
+            try
+            {
+                InvokeModifyInputString(ref input, ValidatedInput);
+                value = (T)Read(input, ValueType);
+                Modify?.Invoke(ref value, Value);
+            }
+            catch
+            {
+                InputField.text = ValidatedInput;
+                return;
+            }
+            Value = value;
+            InputField.text = ValidatedInput = Write(value);
+            try
+            {
+                InvokeSelfChanged();
+                ValueChanged?.Invoke(value);
+            }
+            catch { }
+        }
+
+        public void SetValue(T t) => Validate(Write(t));
+
+        public event ModifyInputHandler<T> Modify;
+
+        public event Action<T> ValueChanged;
+
+        public void AddValidateInputToTextColorEvent(Func<T, bool> test)
+        {
+            ValueChanged += (_) =>
+            {
+                if (test(Value)) InputField.textComponent.color = Colors.DEFAULT_COLOR;
+                else InputField.textComponent.color = Colors.INVALID_INPUT_COLOR;
+            };
+        }
+    }
+
+    /// <summary>
+    /// An EntryField which allows the Read and Write methods to be overriden by delegate fields.
+    /// </summary>
     public class CustomEntryField<T> : EntryField<T>
     {
         public Func<string, T> read;
@@ -161,11 +243,13 @@ namespace MenuChanger.MenuElements
             this.write = write;
         }
 
-        public override T Read(string input) => read(input);
-        public override string Write(T t) => write(t);
+        public override object Read(string input, Type type) => read != null ? read.Invoke(input) : Read(input, ValueType);
+        public override string Write(object o) => write != null ? write.Invoke((T)o) : base.Write(o);
     }
 
-
+    /// <summary>
+    /// An EntryField for multiline text.
+    /// </summary>
     public class TextEntryField : EntryField<string>
     {
         public TextEntryField(MenuPage page, string label) : base(page, label, MenuLabel.Style.Body)
@@ -174,13 +258,12 @@ namespace MenuChanger.MenuElements
             LabelOffset = new Vector2(0, 30f);
             MoveTo(Vector2.zero);
         }
-
-        public override string Read(string s)
-        {
-            return s;
-        }
     }
 
+    /// <summary>
+    /// An EntryField for numeric types, which supports operations that clamp the input to a given range.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class NumericEntryField<T> : EntryField<T> 
         where T : struct,
           IComparable,
@@ -191,29 +274,15 @@ namespace MenuChanger.MenuElements
     {
         public NumericEntryField(MenuPage page, string label) : base(page, label)
         {
-            InputField.characterValidation = InputField.CharacterValidation.Integer;
+            InputField.characterValidation = InputField.CharacterValidation.Decimal;
+            InputField.characterLimit = Math.Max(typeMin.ToString().Length, typeMax.ToString().Length);
             SetClamp(typeMin, typeMax);
             Modify += InputClamp;
-            Changed += CleanInput;
-            InputField.onValidateInput += CatchNegation;
         }
 
-        public override T Read(string input)
+        public override void Bind(object o, MemberInfo mi)
         {
-            if (long.TryParse(input, out long val))
-            {
-                return (T)Convert.ChangeType(ClampToType(val), typeof(T));
-            }
-            else if (ulong.TryParse(input, out ulong altVal))
-            {
-                return (T)Convert.ChangeType(ClampToType(altVal), typeof(T));
-            }
-            else return default;
-        }
-
-        public override void Bind(MemberInfo mi, object o)
-        {
-            base.Bind(mi, o);
+            base.Bind(o, mi);
 
             if (mi.GetCustomAttribute<MenuRangeAttribute>() is MenuRangeAttribute mr)
             {
@@ -234,18 +303,18 @@ namespace MenuChanger.MenuElements
                 {
                     if (db.upper)
                     {
-                        Modify += (val) =>
+                        Modify += (ref T val, T orig) =>
                         {
                             T ub = (T)info.GetValue(o);
-                            return val.CompareTo(ub) <= 0 ? val : ub;
+                            val = val.CompareTo(ub) <= 0 ? val : ub;
                         };
                     }
                     else
                     {
-                        Modify += (val) =>
+                        Modify += (ref T val, T orig) =>
                         {
                             T lb = (T)info.GetValue(o);
-                            return val.CompareTo(lb) >= 0 ? val : lb;
+                            val = val.CompareTo(lb) >= 0 ? val : lb;
                         };
                     }
                 }
@@ -253,52 +322,30 @@ namespace MenuChanger.MenuElements
                 {
                     if (db.upper)
                     {
-                        Modify += (val) =>
+                        Modify += (ref T val, T orig) =>
                         {
                             T ub = (T)method.Invoke(o, Array.Empty<object>());
-                            return val.CompareTo(ub) <= 0 ? val : ub;
+                            val = val.CompareTo(ub) <= 0 ? val : ub;
                         };
                     }
                     else
                     {
-                        Modify += (val) =>
+                        Modify += (ref T val, T orig) =>
                         {
                             T lb = (T)method.Invoke(o, Array.Empty<object>());
-                            return val.CompareTo(lb) >= 0 ? val : lb;
+                            val = val.CompareTo(lb) >= 0 ? val : lb;
                         };
                     }
                 }
             }
         }
 
-        private void CleanInput(T input)
-        {
-            switch (InputField.text)
-            {
-                case "":
-                case "-":
-                    return;
-                default:
-                    if (InputField.text != input.ToString())
-                    {
-                        InputValue = input;
-                    }
-                    return;
-            }
-        }
-
         private T clampMin;
         private T clampMax;
 
-        private T InputClamp(T input)
+        private void InputClamp(ref T input, T orig)
         {
-            return Clamp(input, clampMin, clampMax);
-        }
-
-        private char CatchNegation(string input, int index, char newChar)
-        {
-            if (newChar == '-' && clampMin.CompareTo(default(T)) >= 0) return '\0';
-            else return newChar;
+            input = Clamp(input, clampMin, clampMax);
         }
 
         public void SetClamp(T min, T max)
@@ -314,53 +361,7 @@ namespace MenuChanger.MenuElements
             return val;
         }
 
-
         readonly static T typeMin = (T)typeof(T).GetField("MinValue", BindingFlags.Public | BindingFlags.Static).GetValue(null);
         readonly static T typeMax = (T)typeof(T).GetField("MaxValue", BindingFlags.Public | BindingFlags.Static).GetValue(null);
-
-        private static long ClampToType(long val)
-        {
-            return NumericEntryField<long>.Clamp(val, Convert.ToInt64(typeMin), Convert.ToInt64(typeMax));
-        }
-
-        private static ulong ClampToType(ulong val)
-        {
-            return NumericEntryField<ulong>.Clamp(val, Convert.ToUInt64(typeMin), Convert.ToUInt64(typeMax));
-        }
     }
-
-    // These types are all useless now
-    public class LongEntryField : NumericEntryField<long>
-    {
-        public LongEntryField(MenuPage page, string label) : base(page, label)
-        {
-            InputField.characterLimit = 20;
-        }
-    }
-
-    public class IntEntryField : NumericEntryField<int>
-    {
-        public IntEntryField(MenuPage page, string label) : base(page, label)
-        {
-            InputField.characterLimit = 12;
-        }
-    }
-
-    public class ShortEntryField : NumericEntryField<short>
-    {
-        public ShortEntryField(MenuPage page, string label) : base(page, label)
-        {
-            InputField.characterLimit = 7;
-        }
-    }
-
-    public class ByteEntryField : NumericEntryField<byte>
-    {
-        public ByteEntryField(MenuPage page, string label) : base(page, label)
-        {
-            InputField.characterLimit = 4;
-        }
-    }
-
-
 }

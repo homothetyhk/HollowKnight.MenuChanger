@@ -12,29 +12,22 @@ namespace MenuChanger.MenuElements
     /// </summary>
     public class ToggleButton : MenuItem<bool>
     {
+        private static List<bool> GetBoolList() => new() { false, true };
+
         /// <summary>
         /// Creates a toggle button displaying the given text and initialized to false.
         /// </summary>
-        public ToggleButton(MenuPage page, string text) : base(page, text, false, true)
-        {
-            
-        }
+        public ToggleButton(MenuPage page, string text) : base(page, text, GetBoolList(), new ToggleButtonFormatter()) { }
 
-        protected override void RefreshText(bool invokeEvent = true)
+        protected override void RefreshText()
         {
-            Text.text = InvokeFormat(Name, string.Empty, string.Empty);
             SetColor();
-            _align.AlignText();
-
-            if (invokeEvent)
-            {
-                InvokeChanged();
-            }
+            base.RefreshText();
         }
 
         public void SetColor()
         {
-            switch (CurrentSelection)
+            switch (Value)
             {
                 case true when !Locked:
                     Text.color = Colors.TRUE_COLOR;

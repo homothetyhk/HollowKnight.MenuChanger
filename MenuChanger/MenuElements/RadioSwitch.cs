@@ -54,26 +54,30 @@ namespace MenuChanger.MenuElements
             }
         }
 
-        public void OnClick(object sender, InterceptEventArgs<bool> args)
+        public void OnClick(MenuItem button, ref object value, ref bool cancelChange)
         {
             if (!Active) return;
-            if (CurrentButton == sender)
+            if (CurrentButton == button)
             {
-                args.cancelChange = true;
+                cancelChange = true;
                 return;
             }
-            if (args.orig)
+
+            bool orig = (bool)button.Value;
+            bool current = (bool)value;
+
+            if (orig)
             {
                 return;
             }
-            if ((args.orig == args.current) || args.cancelChange)
+            if ((orig == current) || cancelChange)
             {
                 return;
             }
 
             ToggleButton previous = CurrentButton;
-            CurrentButton = sender as ToggleButton;
-            previous?.SetSelection(false);
+            CurrentButton = button as ToggleButton;
+            previous?.SetValue(false);
             InvokeChanged();
         }
 
@@ -83,10 +87,10 @@ namespace MenuChanger.MenuElements
             {
                 ToggleButton previous = CurrentButton;
                 CurrentButton = null;
-                previous.SetSelection(false);
+                previous.SetValue(false);
             }
 
-            newButton.SetSelection(true);
+            newButton.SetValue(true);
             CurrentButton = newButton;
             InvokeChanged();
         }
@@ -123,7 +127,7 @@ namespace MenuChanger.MenuElements
             foreach (ToggleButton button in Elements)
             {
                 button.Unlock();
-                button.SetSelection(predicate(button));
+                button.SetValue(predicate(button));
                 button.Lock();
             }
         }
@@ -137,7 +141,7 @@ namespace MenuChanger.MenuElements
             foreach (ToggleButton button in Elements)
             {
                 button.Unlock();
-                if (button.CurrentSelection) button.SetSelection(false);
+                if (button.Value) button.SetValue(false);
                 if (lockPredicate != null && lockPredicate(button))
                 {
                     if (lockPredicate(button)) button.Lock();
@@ -150,7 +154,7 @@ namespace MenuChanger.MenuElements
         /// </summary>
         public void DeselectCurrent()
         {
-            CurrentButton?.SetSelection(false);
+            CurrentButton?.SetValue(false);
             CurrentButton = null;
         }
 

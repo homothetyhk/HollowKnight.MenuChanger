@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 namespace MenuChanger.Attributes
 {
     /// <summary>
-    /// Attribute which indicates that changes to another member should cause validation of the current member's value.
+    /// Attribute which indicates that changes to this member should cause validation of another member's value.
     /// </summary>
     public class TriggerValidationAttribute : Attribute
     {
         /// <summary>
-        /// The member which, when changed, should trigger validation of the current member.
+        /// The member which should be validated when this member is changed.
         /// </summary>
         public string memberName;
         /// <summary>
-        /// Indicates that changes to another member should cause validation of the current member's value.
+        /// Indicates that changes to this member should cause validation of another member's value.
         /// </summary>
         public TriggerValidationAttribute(string memberName) => this.memberName = memberName;
     }

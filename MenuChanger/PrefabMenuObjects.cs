@@ -338,7 +338,7 @@ namespace MenuChanger
             textRT.anchorMin = textRT.anchorMax = new Vector2(0.5f, 0.5f);
             textRT.sizeDelta = new Vector2(337, 63.2f);
 
-            InputField inputField = obj.AddComponent<InputField>();
+            InputField inputField = obj.AddComponent<CustomInputField>();
 
             inputField.textComponent = obj.transform.Find("Text").GetComponent<Text>();
 
@@ -393,7 +393,7 @@ namespace MenuChanger
             textRT.anchorMin = textRT.anchorMax = new Vector2(0.5f, 0.5f);
             textRT.sizeDelta = new Vector2(450f, 800f);
 
-            InputField inputField = obj.AddComponent<InputField>();
+            InputField inputField = obj.AddComponent<CustomInputField>();
 
             inputField.textComponent = t;
 

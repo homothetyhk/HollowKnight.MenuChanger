@@ -1,27 +1,166 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections;
 using System.Reflection;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using MenuChanger.Extensions;
 
 
 namespace MenuChanger.MenuElements
 {
     /// <summary>
-    /// Button which allows selecting an item from a fixed set of values.
+    /// Base class for buttons which allow selecting an item from a fixed set of values.
     /// </summary>
-    public class MenuItem<T> : SmallButton, IMenuItem
+    public abstract class MenuItem : SmallButton, IValueElement
     {
-        public int CurrentIndex { get; protected set; }
-        public T CurrentSelection { get; protected set; }
-        public int Count => Selections.Count;
-        object IMenuItem.CurrentSelection => CurrentSelection as object;
+        public object Value { get; protected set; }
+        public Type ValueType { get; }
+        public IList Items { get; }
+        public int Index { get; protected set; }
+        public string Name { get; }
 
-        public string Name { get; private set; }
+        protected readonly FixVerticalAlign _align;
+        public MenuItemFormatter Formatter;
+
+        public MenuItem(Type valueType, MenuPage page, string name, IList items, MenuItemFormatter formatter) : base(page, name) 
+        {
+            Name = name;
+            _align = GameObject.GetComponentInChildren<FixVerticalAlign>(true);
+            ValueType = valueType;
+            Items = items;
+            Formatter = formatter;
+
+            OnClick += MoveNext;
+        }
+
+        public void AddItem(object o)
+        {
+            if (!IsTypeValid(o)) return;
+            Items.Add(o);
+        }
+
+        public void InsertItem(int index, object o)
+        {
+            if (!IsTypeValid(o)) return;
+            if (index <= Index) Index++;
+            Items.Insert(index, o);
+        }
+        public bool RemoveItem(object o)
+        {
+            int i = Items.IndexOf(o);
+            if (i < 0) return false;
+            Items.RemoveAt(i);
+            if (Index == i) MoveNext();
+            return true;
+        }
+        public void OverwriteCurrent(object o)
+        {
+            if (!IsTypeValid(o)) return;
+            Items[Index] = o;
+            RefreshText();
+        }
+
+        public void RemoveCurrent()
+        {
+            if (Items.Count > 0)
+            {
+                Items.RemoveAt(Index--);
+                MoveNext();
+            }
+        }
+
+        public void Bind(object obj, MemberInfo mi)
+        {
+            SetValue(mi.GetValue(obj));
+            SelfChanged += b => mi.SetValue(obj, b.Value);
+        }
+
+        public void MoveNext()
+        {
+            if (Locked || Items.Count == 0) return;
+
+            int i = Index + 1;
+            if (i >= Items.Count || i < 0) i = 0;
+            SetValueInternal(Items[i]);
+        }
+
+        public void SetValue(object o)
+        {
+            if (Locked || !IsTypeValid(o)) return;
+            SetValueInternal(o);
+        }
+
+        protected virtual void SetValueInternal(object o, bool invokeEvent = true)
+        {
+            bool cancelChange = false;
+            InvokeInterceptChange(ref o, ref cancelChange);
+            if (cancelChange) return;
+            int i = Items.IndexOf(o);
+
+            if (0 <= i && i < Items.Count)
+            {
+                Index = i;
+                Value = Items[i];
+            }
+            else
+            {
+                Index = -1;
+                Value = o;
+            }
+
+            RefreshText();
+            if (invokeEvent)
+            {
+                InvokeChanged();
+            }
+        }
+
+        protected virtual void RefreshText()
+        {
+            Text.text = Formatter.GetText(Name, Value);
+            _align.AlignText();
+        }
+
+        protected virtual bool IsTypeValid(object value)
+        {
+            return ValueType.IsInstanceOfType(value) || (!ValueType.IsValueType && value == null);
+        }
+
+        public delegate void InterceptChangeHandler(MenuItem self, ref object newValue, ref bool cancelChange);
+        /// <summary>
+        /// Event called before the MenuItem's value is updated.
+        /// </summary>
+        public event InterceptChangeHandler InterceptChanged;
+        protected virtual void InvokeInterceptChange(ref object newValue, ref bool cancelChange)
+        {
+            try
+            {
+                InterceptChanged?.Invoke(this, ref newValue, ref cancelChange);
+            }
+            catch { }
+        }
+
+        public event Action<IValueElement> SelfChanged;
+        protected virtual void InvokeChanged()
+        {
+            try
+            {
+                SelfChanged?.Invoke(this);
+            }
+            catch { }
+        }
+    }
+
+
+    /// <summary>
+    /// Button which allows selecting an item from a fixed set of values of the generic type.
+    /// </summary>
+    public class MenuItem<T> : MenuItem
+    {
+        new public T Value 
+        {
+            get => (T)base.Value;
+            protected set => SetValue(value);
+        }
+
+        new protected readonly List<T> Items;
 
         /// <summary>
         /// Creates a MenuItem with given array of values. The current value will be displayed with the button's name as a prefix.
@@ -31,163 +170,123 @@ namespace MenuChanger.MenuElements
         /// <summary>
         /// Creates a MenuItem with given list of values. The current value will be displayed with the button's name as a prefix.
         /// </summary>
-        public MenuItem(MenuPage page, string name, List<T> values) : base(page, name)
+        public MenuItem(MenuPage page, string name, List<T> values) : this(page, name, values, new DefaultMenuItemFormatter<T>()) { }
+
+        public MenuItem(MenuPage page, string name, List<T> values, MenuItemFormatter formatter) : base(typeof(T), page, name, values, formatter)
         {
             if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException(nameof(name));
             }
 
-            Selections = values;
-            Name = name;
+            Items = values;
 
-            _align = Button.gameObject.GetComponentInChildren<FixVerticalAlign>(true);
+            Index = 0;
+            if (Items.Count > 0) Value = Items[0];
+            else Value = default;
 
-            Button.ClearEvents();
-            Button.AddEvent(MoveNext);
-
-            CurrentIndex = 0;
-            if (Selections.Count > 0) CurrentSelection = Selections[0];
-            else CurrentSelection = default;
-            
             RefreshText();
         }
 
-
-        public bool TrySetSelection(object obj)
-        {
-            if (obj is T t)
-            {
-                SetSelection(t);
-                return true;
-            }
-            return false;
-        }
-
-        public void SetSelection(T obj)
+        public void SetValue(T obj)
         {
             if (Locked) return;
-
-            InterceptEventArgs<T> args = InvokeInterceptChanged(obj);
-            if (args.cancelChange) return;
-
-            int i;
-            for (i = 0; i < Selections.Count; i++)
-            {
-                if (Equals(Selections[i], args.current)) break;
-            }
-
-            if (i == Selections.Count)
-            {
-                CurrentIndex = -1;
-                CurrentSelection = obj;
-            }
-            else
-            {
-                CurrentIndex = i;
-                CurrentSelection = Selections[i];
-            }
-
-            RefreshText();
-        }
-
-        public void MoveNext()
-        {
-            if (Locked) return;
-
-            int i = CurrentIndex + 1;
-            if (i >= Selections.Count) i = 0;
-
-            InterceptEventArgs<T> args = InvokeInterceptChanged(Selections[i]);
-            if (args.cancelChange) return;
-
-            if (!Equals(args.orig, args.current))
-            {
-                for (i = 0; i < Selections.Count; i++)
-                {
-                    if (Equals(Selections[i], args.current)) break;
-                }
-                if (i == Selections.Count) return;
-            }
-
-            CurrentIndex = i;
-            CurrentSelection = Selections[i];
-            RefreshText();
+            base.SetValueInternal(obj);
         }
 
         public void AddItem(T t)
         {
-            Selections.Add(t);
+            Items.Add(t);
         }
 
         public void RemoveItem(T t)
         {
-            Selections.Remove(t);
-            if (CurrentSelection.Equals(t)) MoveNext();
+            Items.Remove(t);
+            if (Value.Equals(t)) MoveNext();
         }
 
         public void OverwriteCurrent(T t)
         {
-            if (Selections.Count > 0)
+            if (Items.Count > 0)
             {
-                CurrentSelection = Selections[CurrentIndex] = t;
+                Value = Items[Index] = t;
                 RefreshText();
             }
         }
 
-        public void RemoveCurrent()
+        public event Action<T> ValueChanged;
+        protected override void InvokeChanged()
         {
-            if (Selections.Count > 0)
+            base.InvokeChanged();
+            try
             {
-                Selections.RemoveAt(CurrentIndex--);
-                MoveNext();
+                ValueChanged?.Invoke(Value);
             }
+            catch { }
         }
+    }
 
-        protected virtual void RefreshText(bool invokeEvent = true)
+    /// <summary>
+    /// A MenuItem of the Enum type, which has the Enum's values as its items.
+    /// </summary>
+    public class MenuEnum<T> : MenuItem<T> where T : struct, Enum, IConvertible
+    {
+        public MenuEnum(MenuPage page, string name) : base(page, name, ((T[])Enum.GetValues(typeof(T))).ToList(), new MenuItemEnumFormatter()) { }
+    }
+
+    /// <summary>
+    /// Class used to control the text displayed by a MenuItem.
+    /// </summary>
+    public abstract class MenuItemFormatter
+    {
+        /// <summary>
+        /// Returns the text which should be displayed by the MenuItem parent.
+        /// </summary>
+        public abstract string GetText(string prefix, object value);
+    }
+
+    /// <summary>
+    /// Class used to control the text displayed by a MenuItem.
+    /// </summary>
+    public abstract class MenuItemFormatter<T> : MenuItemFormatter
+    {
+        public abstract string GetText(string prefix, T t);
+        public override string GetText(string prefix, object value)
         {
-            Text.text = InvokeFormat(Name, ": ", CurrentSelection?.ToString() ?? string.Empty);
-
-            _align.AlignText();
-
-            if (invokeEvent)
-            {
-                InvokeChanged();
-            }
+            return GetText(prefix, (T)value);
         }
+    }
 
-        public void Bind(object obj, MemberInfo mi)
+    /// <summary>
+    /// Class used to control the text displayed by a MenuItem. Formats text as "{name}: {item}"
+    /// </summary>
+    public class DefaultMenuItemFormatter<T> : MenuItemFormatter<T>
+    {
+        public override string GetText(string prefix, T t)
         {
-            Changed += (self) => mi.SetValue(obj, self.CurrentSelection);
+            return $"{prefix}: {t}";
         }
+    }
 
-        protected readonly FixVerticalAlign _align;
-        protected readonly List<T> Selections; 
-        
-
-        public event MenuItemChanged Changed;
-        public delegate void MenuItemChanged(MenuItem<T> item);
-        protected void InvokeChanged() => Changed?.Invoke(this);
-
-        public event EventHandler<InterceptEventArgs<T>> InterceptChanged;
-        protected InterceptEventArgs<T> InvokeInterceptChanged(T newValue)
+    /// <summary>
+    /// Class used to control the text displayed by a ToggleButton. Formats text as "{name}", and does not use the value of the button.
+    /// </summary>
+    public class ToggleButtonFormatter : MenuItemFormatter
+    {
+        public override string GetText(string prefix, object value)
         {
-            InterceptEventArgs<T> args = new InterceptEventArgs<T>(CurrentSelection, newValue);
-            InterceptChanged?.Invoke(this, args);
-            return args;
+            return prefix;
         }
+    }
 
-
-        public event MenuItemFormat Format;
-        public delegate (string, string, string) MenuItemFormat(T selection, string prefix, string cons, string repr);
-        protected string InvokeFormat(string prefix, string cons, string repr)
+    /// <summary>
+    /// Class used to control the text displayed by a MenuEnum. Formats text as "{name}: {display(item)}" where display converts the enum value to readable text by assuming a camel-case value.
+    /// </summary>
+    public class MenuItemEnumFormatter : MenuItemFormatter
+    {
+        public override string GetText(string prefix, object value)
         {
-            foreach (MenuItemFormat format in Format?.GetInvocationList() ?? new Delegate[0])
-            {
-                (prefix, cons, repr) = format(CurrentSelection, prefix, cons, repr);
-            }
-
-            return $"{prefix}{cons}{repr}";
+            return $"{prefix}: {value.ToString().FromCamelCase()}";
         }
     }
 }
