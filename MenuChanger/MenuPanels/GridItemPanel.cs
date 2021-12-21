@@ -89,6 +89,13 @@ namespace MenuChanger.MenuPanels
             if (Hidden) item.Hide();
         }
 
+        public void AddRange(IEnumerable<IMenuElement> items)
+        {
+            Items.AddRange(items);
+            Reposition();
+            if (Hidden) foreach (IMenuElement item in items) item.Hide();
+        }
+
         /// <summary>
         /// Inserts the item into the specified row-major index of the panel.
         /// </summary>
@@ -121,6 +128,15 @@ namespace MenuChanger.MenuPanels
         {
             Items.RemoveAt(index);
             Reposition();
+        }
+
+        public void Clear()
+        {
+            foreach (IMenuElement item in Items)
+            {
+                item.Hide();
+            }
+            Items.Clear();
         }
 
         public void Hide()

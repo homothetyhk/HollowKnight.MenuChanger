@@ -79,6 +79,7 @@ namespace MenuChanger.MenuPanels
         /// </summary>
         public void ToPrevious()
         {
+            if (Items.Count == 0) return;
             Items[Index--].Hide();
             Items[Index].Show();
             IndexLabel.Text.text = ComputeCounterText();
@@ -90,6 +91,7 @@ namespace MenuChanger.MenuPanels
         /// </summary>
         public void ToNext()
         {
+            if (Items.Count == 0) return;
             Items[Index++].Hide();
             Items[Index].Show();
             IndexLabel.Text.text = ComputeCounterText();
@@ -101,6 +103,8 @@ namespace MenuChanger.MenuPanels
         /// </summary>
         public void JumpTo(int index)
         {
+            if (index < 0 || index >= Items.Count) return;
+
             Items[Index].Hide();
             Index = index;
             Items[Index].Show();
@@ -129,6 +133,15 @@ namespace MenuChanger.MenuPanels
             IndexLabel.Text.text = ComputeCounterText();
             ResetNavigation();
             return val;
+        }
+
+        public virtual void Clear()
+        {
+            foreach (IMenuElement obj in Items) obj.Hide();
+            Items.Clear();
+            _index = 0;
+            IndexLabel.Text.text = ComputeCounterText();
+            ResetNavigation();
         }
 
         public void MoveTo(Vector2 pos)

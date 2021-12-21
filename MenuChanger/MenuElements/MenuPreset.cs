@@ -119,7 +119,6 @@ namespace MenuChanger.MenuElements
 
         public void UpdatePreset(string s) => UpdatePreset();
 
-        int counter = 0;
         public void UpdatePreset()
         {
             if (isUpdating) return;

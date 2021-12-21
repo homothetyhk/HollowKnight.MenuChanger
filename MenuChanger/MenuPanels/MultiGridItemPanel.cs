@@ -19,6 +19,8 @@ namespace MenuChanger.MenuPanels
         readonly float Hspace;
         Vector2 TopCenter;
 
+        readonly List<GridItemPanel> recycledPanels = new();
+
         /// <summary>
         /// Creates a panel which can group an arbitrary number of elements on paginated grids.
         /// </summary>
@@ -81,41 +83,74 @@ namespace MenuChanger.MenuPanels
             Hspace = hspace;
             TopCenter = topCenter;
             GridCount = rows * columns;
-            
-            for (int i = 0; i * GridCount < children.Length; i++)
-            {
-                int span = Math.Min(children.Length - i * GridCount, GridCount);
-                if (span <= 0) break;
-                IMenuElement[] next = new IMenuElement[span];
-                Array.Copy(children, i * GridCount, next, 0, span);
-                base.Add(NewPanel(next));
-            }
 
-            if (Items.Any())
-            {
-                foreach (IMenuElement panel in Items) panel.Hide();
-                Items[Index].Show();
-            }
+            AddRange(children);
         }
 
         private GridItemPanel NewPanel(params IMenuElement[] children)
         {
+            if (recycledPanels.Count != 0)
+            {
+                GridItemPanel panel = recycledPanels[recycledPanels.Count - 1];
+                panel.AddRange(children);
+                recycledPanels.RemoveAt(recycledPanels.Count - 1);
+                return panel;
+            }
+
             return new GridItemPanel(Parent, TopCenter, Columns, Vspace, Hspace, false, children);
         }
 
-        public override void Add(IMenuElement obj)
+        private GridItemPanel NewPanel(IEnumerable<IMenuElement> children)
         {
-            GridItemPanel last = Items.Last() as GridItemPanel;
-            if (last.Items.Count == GridCount)
+            if (recycledPanels.Count != 0)
             {
-                last = NewPanel(obj);
-                base.Add(last);
+                GridItemPanel panel = recycledPanels[recycledPanels.Count - 1];
+                panel.AddRange(children);
+                recycledPanels.RemoveAt(recycledPanels.Count - 1);
+                return panel;
             }
-            else
+
+            return new GridItemPanel(Parent, TopCenter, Columns, Vspace, Hspace, false, children.ToArray());
+        }
+
+        public override void Add(IMenuElement item)
+        {
+            AddRange(new[] { item });
+        }
+
+        public void AddRange(IEnumerable<IMenuElement> items)
+        {
+            if (Items.Count > 0)
             {
-                last.Add(obj);
+                GridItemPanel last = (GridItemPanel)Items[Items.Count - 1];
+                int diff = GridCount - last.Items.Count;
+                if (diff > 0)
+                {
+                    last.AddRange(items.Take(diff));
+                    if (last.Hidden) last.Hide(); // hide newly added elements
+                    items = items.Skip(diff);
+                }
             }
-            if (last.Hidden) obj.Hide();
+
+            while (items.Any())
+            {
+                GridItemPanel panel = NewPanel(items.Take(GridCount));
+                base.Add(panel);
+                items = items.Skip(GridCount);
+            }
+
+            if (Items.Count > 0) Items[Index].Show();
+        }
+
+        public override void Clear()
+        {
+            foreach (GridItemPanel panel in Items)
+            {
+                panel.Clear();
+                recycledPanels.Add(panel);
+            }
+            
+            base.Clear();
         }
 
         // Absolutely no rebalancing
@@ -128,6 +163,5 @@ namespace MenuChanger.MenuPanels
 
             return false;
         }
-
     }
 }
