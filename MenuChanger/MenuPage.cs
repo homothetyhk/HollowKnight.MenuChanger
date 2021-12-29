@@ -58,18 +58,9 @@ namespace MenuChanger
             cg = self.AddComponent<CanvasGroup>();
 
             this.backTo = backTo;
-            if (backTo == null)
-            {
-                backButton = new SmallButton(this, "Back");
-                backButton.OnClick += UIManager.instance.UIGoToProfileMenu;
-                backButton.OnCancel += UIManager.instance.UIGoToProfileMenu;
-            }
-            else
-            {
-                backButton = new SmallButton(this, "Back");
-                backButton.OnClick += GoBack;
-            }
-            
+            backButton = new SmallButton(this, "Back");
+            backButton.OnClick += GoBack;
+
             Add(backButton.GameObject);
             backButton.MoveTo(new Vector2(0, -450));
 

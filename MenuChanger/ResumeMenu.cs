@@ -13,29 +13,53 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine;
 using MenuChanger.Extensions;
+using MenuChanger.MenuElements;
 
 namespace MenuChanger
 {
     public static class ResumeMenu
     {
-        private static Dictionary<string, MenuPage> ResumePages = new Dictionary<string, MenuPage>();
-        private static Dictionary<int, SaveGameData> SaveGameData = new Dictionary<int, SaveGameData>();
+        private static readonly Dictionary<string, MenuPage> _resumePages = new Dictionary<string, MenuPage>();
+        private static MenuPage transitionPage;
+        private static MenuLabel unloadingLabel;
+        private static MenuLabel loadingLabel;
+        private static bool insideResumeMenu = false;
+
 
         public static void AddResumePage(string key, MenuPage page)
         {
-            ResumePages[key] = page;
+            _resumePages[key] = page;
         }
-
 
         internal static void Reset()
         {
-            ResumePages.Clear();
-            SaveGameData.Clear();
+            _resumePages.Clear();
+            transitionPage = new MenuPage("ResumeMenu Transition Page");
+            transitionPage.backButton.Destroy();
+            loadingLabel = new MenuLabel(transitionPage, "Please wait while save data loads...");
+            loadingLabel.Hide();
+            unloadingLabel = new MenuLabel(transitionPage, "Please wait while save data unloads...");
+            unloadingLabel.Hide();
+            insideResumeMenu = false;
         }
 
         internal static void Hook()
         {
             On.UnityEngine.UI.SaveSlotButton.OnSubmit += SaveSlotButton_OnSubmit;
+            On.UIManager.UIGoToProfileMenu += OnUIGoToProfileMenu;
+        }
+
+        private static void OnUIGoToProfileMenu(On.UIManager.orig_UIGoToProfileMenu orig, UIManager self)
+        {
+            if (insideResumeMenu)
+            {
+                InputHandler.Instance.StopUIInput();
+                MenuChangerMod.HideAllMenuPages();
+                transitionPage.Show();
+                unloadingLabel.Show();
+                self.StartCoroutine(GameManager.instance.ReturnToMainMenu(GameManager.ReturnToMainMenuSaveModes.DontSave));
+            }
+            else orig(self);
         }
 
         private static SaveStats GetSaveStats(this SaveSlotButton button)
@@ -55,8 +79,14 @@ namespace MenuChanger
             InputHandler.Instance.StopUIInput();
             yield return s.HideSaveProfileMenu();
             s.menuState = MainMenuState.PLAY_MODE_MENU;
+            transitionPage.Show();
+            loadingLabel.Show();
+            yield return null;
             yield return LoadGameAndDoAction(button.GetSaveSlotIndex(), () =>
              {
+                 insideResumeMenu = true;
+                 loadingLabel.Hide();
+                 transitionPage.Hide();
                  InputHandler.Instance.StartUIInput();
                  resumePage.Show();
              });
@@ -70,7 +100,7 @@ namespace MenuChanger
                 try
                 {
                     Settings s = MenuChangerMod.instance.ManuallyLoadSettings<MenuChangerMod, Settings>(self.GetSaveSlotIndex());
-                    if (s != null && s.resumeKey != null && ResumePages.TryGetValue(s.resumeKey, out MenuPage page) && page is MenuPage)
+                    if (s != null && s.resumeKey != null && _resumePages.TryGetValue(s.resumeKey, out MenuPage page) && page is MenuPage)
                     {
                         self.ForceDeselect();
                         UIManager.instance.StartCoroutine(GoToResumeMenu(UIManager.instance, self, page));

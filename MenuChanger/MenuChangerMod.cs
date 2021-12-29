@@ -22,7 +22,7 @@ namespace MenuChanger
     public class MenuChangerMod : Mod, ILocalSettings<Settings>
     {
         internal static MenuChangerMod instance { get; private set; }
-        internal static List<MenuPage> displayedPages = new();
+        internal static readonly List<MenuPage> displayedPages = new();
 
         public static void HideAllMenuPages()
         {
@@ -40,6 +40,7 @@ namespace MenuChanger
 
         private void EditUI()
         {
+            displayedPages.Clear();
             ResumeMenu.Reset();
             ModeMenu.OnEnterMainMenu();
         }
