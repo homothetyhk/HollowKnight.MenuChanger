@@ -132,7 +132,7 @@ namespace MenuChanger.MenuElements
                 }
             }
 
-            if (Value != "Custom") SetValueWithoutBroadcast("Custom");
+            SetValueWithoutBroadcast("Custom");
         }
 
         public bool CheckPreset(string key)
