@@ -191,7 +191,7 @@ namespace MenuChanger.MenuElements
         public void SetValue(T obj)
         {
             if (Locked) return;
-            base.SetValueInternal(obj);
+            SetValueInternal(obj);
         }
 
         public void AddItem(T t)
