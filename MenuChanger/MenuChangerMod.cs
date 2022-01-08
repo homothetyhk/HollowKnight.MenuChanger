@@ -1,21 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
+﻿using GlobalEnums;
 using Modding;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using System.Security.Cryptography;
-using System.IO;
-using System.Reflection;
-using System.Xml.Serialization;
-using System.ComponentModel;
 using System.Collections;
-using GlobalEnums;
-using MenuChanger.MenuPanels;
-using MenuChanger.MenuElements;
+using UnityEngine.SceneManagement;
 
 namespace MenuChanger
 {
@@ -84,29 +70,44 @@ namespace MenuChanger
 
         public Settings Settings = new();
 
-        public int MakeAssemblyHash()
-        {
-            SHA1 sha1 = SHA1.Create();
-            FileStream stream = File.OpenRead(Assembly.GetExecutingAssembly().Location);
-            byte[] hash = sha1.ComputeHash(stream).ToArray();
-            stream.Dispose();
-            sha1.Clear();
-
-            unchecked
-            {
-                int val = 0;
-                for (int i = 0; i < hash.Length - 1; i += 4)
-                {
-                    val = 17 * val + 31 * BitConverter.ToInt32(hash, i);
-                }
-                return val;
-            }
-        }
-
         public override string GetVersion()
         {
-            return $"1.0 ({ Math.Abs(MakeAssemblyHash() % 997)})";
+            return _version;
         }
+
+        private static readonly string _sha1;
+        private static readonly string _version;
+        static MenuChangerMod()
+        {
+            System.Reflection.Assembly a = typeof(MenuChangerMod).Assembly;
+
+            using var sha1 = System.Security.Cryptography.SHA1.Create();
+            using var sr = File.OpenRead(a.Location);
+            _sha1 = Convert.ToBase64String(sha1.ComputeHash(sr));
+
+            int buildHash;
+            unchecked // stable string hash code
+            {
+                int hash1 = 5381;
+                int hash2 = hash1;
+                string str = _sha1;
+
+                for (int i = 0; i < str.Length && str[i] != '\0'; i += 2)
+                {
+                    hash1 = ((hash1 << 5) + hash1) ^ str[i];
+                    if (i == str.Length - 1 || str[i + 1] == '\0')
+                        break;
+                    hash2 = ((hash2 << 5) + hash2) ^ str[i + 1];
+                }
+
+                buildHash = hash1 + (hash2 * 1566083941);
+                buildHash = Math.Abs(buildHash) % 997;
+            }
+
+            Version v = a.GetName().Version;
+            _version = $"{v.Major}.{v.Minor}.{v.Build}+{buildHash.ToString().PadLeft(3, '0')}";
+        }
+
 
         public void OnLoadLocal(Settings s)
         {
