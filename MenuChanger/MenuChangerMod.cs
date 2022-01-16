@@ -10,6 +10,8 @@ namespace MenuChanger
         internal static MenuChangerMod instance { get; private set; }
         internal static readonly List<MenuPage> displayedPages = new();
 
+        public static event Action OnExitMainMenu;
+
         public static void HideAllMenuPages()
         {
             while (displayedPages.FirstOrDefault() is MenuPage page) page.Hide();
@@ -21,6 +23,14 @@ namespace MenuChanger
             {
                 ModeMenu.OnExitMainMenu();
                 PrefabMenuObjects.Dispose();
+                try
+                {
+                    OnExitMainMenu?.Invoke();
+                }
+                catch (Exception e)
+                {
+                    LogError($"Error invoking OnExitMainMenu:\n{e}");
+                }
             }
         }
 
