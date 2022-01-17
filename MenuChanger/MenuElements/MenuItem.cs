@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Reflection;
 using MenuChanger.Extensions;
-
+using UnityEngine.EventSystems;
 
 namespace MenuChanger.MenuElements
 {
@@ -27,7 +27,21 @@ namespace MenuChanger.MenuElements
             Items = items;
             Formatter = formatter;
 
-            OnClick += MoveNext;
+            Button.ClearEvents();
+            Button.AddEvent(EventTriggerType.Submit, OnMenuItemClick);
+        }
+
+        protected virtual void OnMenuItemClick(BaseEventData eventData)
+        {
+            if (eventData is PointerEventData pointer && pointer.button != PointerEventData.InputButton.Left)
+            {
+                MovePrevious();
+            }
+            else
+            {
+                MoveNext();
+            }
+            base.InvokeOnClick();
         }
 
         public void AddItem(object o)
@@ -78,6 +92,15 @@ namespace MenuChanger.MenuElements
 
             int i = Index + 1;
             if (i >= Items.Count || i < 0) i = 0;
+            SetValueInternal(Items[i]);
+        }
+
+        public void MovePrevious()
+        {
+            if (Locked || Items.Count == 0) return;
+
+            int i = Index - 1;
+            if (i >= Items.Count || i < 0) i = Items.Count - 1;
             SetValueInternal(Items[i]);
         }
 
