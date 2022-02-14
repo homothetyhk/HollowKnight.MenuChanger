@@ -193,7 +193,7 @@ namespace MenuChanger.MenuElements
         /// <summary>
         /// Creates a MenuItem with given list of values. The current value will be displayed with the button's name as a prefix.
         /// </summary>
-        public MenuItem(MenuPage page, string name, List<T> values) : this(page, name, values, new DefaultMenuItemFormatter<T>()) { }
+        public MenuItem(MenuPage page, string name, List<T> values) : this(page, name, values, new DefaultMenuItemFormatter()) { }
 
         public MenuItem(MenuPage page, string name, List<T> values, MenuItemFormatter formatter) : base(typeof(T), page, name, values, formatter)
         {
@@ -269,25 +269,13 @@ namespace MenuChanger.MenuElements
     }
 
     /// <summary>
-    /// Class used to control the text displayed by a MenuItem.
-    /// </summary>
-    public abstract class MenuItemFormatter<T> : MenuItemFormatter
-    {
-        public abstract string GetText(string prefix, T t);
-        public override string GetText(string prefix, object value)
-        {
-            return GetText(prefix, (T)value);
-        }
-    }
-
-    /// <summary>
     /// Class used to control the text displayed by a MenuItem. Formats text as "{name}: {item}"
     /// </summary>
-    public class DefaultMenuItemFormatter<T> : MenuItemFormatter<T>
+    public class DefaultMenuItemFormatter : MenuItemFormatter
     {
-        public override string GetText(string prefix, T t)
+        public override string GetText(string prefix, object value)
         {
-            return $"{prefix}: {t}";
+            return $"{prefix}: {value}";
         }
     }
 
