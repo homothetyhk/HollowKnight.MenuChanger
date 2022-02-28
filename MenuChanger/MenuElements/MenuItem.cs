@@ -292,12 +292,27 @@ namespace MenuChanger.MenuElements
 
     /// <summary>
     /// Class used to control the text displayed by a MenuEnum. Formats text as "{name}: {display(item)}" where display converts the enum value to readable text by assuming a camel-case value.
+    /// <br/>Supports MenuLabelAttribute on enum members.
     /// </summary>
     public class MenuItemEnumFormatter : MenuItemFormatter
     {
+        private static readonly Dictionary<string, string> cachedNames = new();
+
         public override string GetText(string prefix, object value)
         {
-            return $"{prefix}: {value.ToString().FromCamelCase()}";
+            return $"{prefix}: {GetEnumName(value)}";
         }
+
+        public string GetEnumName(object value)
+        {
+            string repr = value.ToString();
+            if (cachedNames.TryGetValue(repr, out string name)) return name;
+            else if (value.GetType().GetField(repr) is FieldInfo fi)
+            {
+                return cachedNames[repr] = fi.GetMenuName();
+            }
+            else return cachedNames[repr] = repr.FromCamelCase();
+        }
+
     }
 }

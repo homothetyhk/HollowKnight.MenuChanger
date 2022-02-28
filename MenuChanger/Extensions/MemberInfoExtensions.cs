@@ -43,34 +43,6 @@ namespace MenuChanger.Extensions
             }
         }
 
-        public static bool TryGetMenuDescription(this MemberInfo mi, out string desc)
-        {
-            if (Attribute.GetCustomAttribute(mi, typeof(MenuDescriptionAttribute)) is MenuDescriptionAttribute descAttribute)
-            {
-                desc = descAttribute.text;
-                return true;
-            }
-            else
-            {
-                desc = null;
-                return false;
-            }
-        }
-
-        public static bool TryGetMenuSummary(this MemberInfo mi, out string summary)
-        {
-            if (Attribute.GetCustomAttribute(mi, typeof(MenuSummaryAttribute)) is MenuSummaryAttribute descAttribute)
-            {
-                summary = descAttribute.text;
-                return true;
-            }
-            else
-            {
-                summary = null;
-                return false;
-            }
-        }
-
         /// <summary>
         /// Gets the value from the field or property of the member.
         /// </summary>
