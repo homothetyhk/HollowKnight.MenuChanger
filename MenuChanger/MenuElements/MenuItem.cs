@@ -17,15 +17,31 @@ namespace MenuChanger.MenuElements
         public string Name { get; }
 
         protected readonly FixVerticalAlign _align;
-        public MenuItemFormatter Formatter;
+        protected MenuItemFormatter _formatter;
+
+        /// <summary>
+        /// The object which formats the MenuItem's label. Setting this property triggers a text refresh. Must not be null.
+        /// </summary>
+        public MenuItemFormatter Formatter
+        {
+            get
+            {
+                return _formatter;
+            }
+            set
+            {
+                _formatter = value;
+                RefreshText();
+            }
+        }
 
         public MenuItem(Type valueType, MenuPage page, string name, IList items, MenuItemFormatter formatter) : base(page, name) 
         {
             Name = name;
             _align = GameObject.GetComponentInChildren<FixVerticalAlign>(true);
+            _formatter = formatter;
             ValueType = valueType;
             Items = items;
-            Formatter = formatter;
 
             Button.ClearEvents();
             Button.AddEvent(EventTriggerType.Submit, OnMenuItemClick);
