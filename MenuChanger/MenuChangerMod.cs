@@ -72,7 +72,7 @@ namespace MenuChanger
         {
             InputHandler.Instance.StopUIInput();
             yield return s.HideSaveProfileMenu();
-            s.menuState = MainMenuState.PLAY_MODE_MENU;
+            ReflectionHelper.CallMethod(s, "SetMenuState", MainMenuState.PLAY_MODE_MENU);
             InputHandler.Instance.StartUIInput();
             ModeMenu.Show();
         }
