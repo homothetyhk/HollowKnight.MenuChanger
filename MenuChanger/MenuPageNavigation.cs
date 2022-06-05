@@ -24,5 +24,10 @@
         /// Selects an element of the MenuPage by default. Called when the MenuPage is showed.
         /// </summary>
         public abstract void SelectDefault();
+
+        /// <summary>
+        /// Resets navigation on each ISelectableGroup attached to the MPN, and then applies its navigation control to each item.
+        /// </summary>
+        public abstract void ResetNavigation();
     }
 }

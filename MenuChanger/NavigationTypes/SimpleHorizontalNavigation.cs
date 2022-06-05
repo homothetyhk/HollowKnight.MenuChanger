@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MenuChanger.Extensions;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
 
@@ -75,5 +76,32 @@ namespace MenuChanger.NavigationTypes
                 }
             }
         }
+
+        public override void ResetNavigation()
+        {
+            if (Selectables.Count == 0)
+            {
+                Page.backButton.SetNeighbor(Neighbor.Up, null);
+                Page.backButton.SetNeighbor(Neighbor.Down, null);
+            }
+            else
+            {
+                foreach (ISelectable selectable in Selectables)
+                {
+                    if (selectable is ISelectableGroup isg) isg.ResetNavigation();
+                }
+
+                for (int i = 0; i < Selectables.Count; i++)
+                {
+                    int j = i > 0 ? i - 1 : Selectables.Count - 1;
+                    Selectables[i].SymSetNeighbor(Neighbor.Left, Selectables[j]);
+                    Selectables[i].SetNeighbor(Neighbor.Up, Page.backButton);
+                    Selectables[i].SetNeighbor(Neighbor.Down, Page.backButton);
+                }
+                Page.backButton.SetNeighbor(Neighbor.Up, Selectables[0]);
+                Page.backButton.SetNeighbor(Neighbor.Down, Selectables[0]);
+            }
+        }
+
     }
 }

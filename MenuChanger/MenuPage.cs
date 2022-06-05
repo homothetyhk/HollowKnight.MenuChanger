@@ -139,6 +139,15 @@ namespace MenuChanger
             nav.Add(selectable);
         }
 
+        /// <summary>
+        /// Resets navigation for each selectable managed directly by the page's navigation.
+        /// Note that this acts recursively on any ISelectableGroups.        
+        /// </summary>
+        public void ResetNavigation()
+        {
+            nav.ResetNavigation();
+        }
+
         public event Action BeforeShow;
         public event Action AfterShow;
         public event Action BeforeHide;
