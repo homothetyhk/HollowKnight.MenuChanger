@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using MenuChanger.MenuElements;
+﻿using UnityEngine.EventSystems;
 using UnityEngine.UI.Extensions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -15,108 +8,75 @@ namespace MenuChanger
 {
     public static class PrefabMenuObjects
     {
-        internal static Dictionary<string, UObject> indexedPrefabs = new Dictionary<string, UObject>(10);
+        internal static Dictionary<string, GameObject> indexedPrefabs = new(10);
 
-        internal static GameObject ClassicModeButtonObjectPrefab
+        internal static GameObject ClassicModeButtonObject
         {
-            get => Get<GameObject>();
+            get => Get();
             set => Set(value);
         }
 
-        internal static GameObject SteelModeButtonObjectPrefab
+        internal static GameObject SteelModeButtonObject
         {
-            get => Get<GameObject>();
+            get => Get();
             set => Set(value);
         }
 
-        internal static GameObject GGModeButtonObjectPrefab
+        internal static GameObject GGModeButtonObject
         {
-            get => Get<GameObject>();
+            get => Get();
             set => Set(value);
         }
 
-        internal static GameObject BackButtonObjectPrefab
+        internal static GameObject BackButtonObject
         {
-            get => Get<GameObject>();
+            get => Get();
             set => Set(value);
         }
 
-        internal static GameObject DescTextPrefab
+        internal static GameObject DescTextObject
         {
-            get => Get<GameObject>();
+            get => Get();
             set => Set(value);
         }
 
-        internal static MenuButton ClassicModeButtonPrefab
+        internal static GameObject Get([CallerMemberName] string name = null)
         {
-            get
+            if (indexedPrefabs.TryGetValue(name, out GameObject prefab) && prefab != null)
             {
-                GameObject prefab = ClassicModeButtonObjectPrefab;
-                if (prefab == null) return null;
-                return prefab.GetComponent<MenuButton>();
+                prefab = UObject.Instantiate(prefab);
+                prefab.SetActive(true);
+                return prefab;
             }
-        }
 
-        internal static MenuButton SteelModeButtonPrefab
-        {
-            get
-            {
-                GameObject prefab = SteelModeButtonObjectPrefab;
-                if (prefab == null) return null;
-                return prefab.GetComponent<MenuButton>();
-            }
-        }
-
-        internal static MenuButton GGModeButtonPrefab
-        {
-            get
-            {
-                GameObject prefab = GGModeButtonObjectPrefab;
-                if (prefab == null) return null;
-                return prefab.GetComponent<MenuButton>();
-            }
-        }
-
-        internal static MenuButton BackButtonPrefab
-        {
-            get
-            {
-                GameObject prefab = BackButtonObjectPrefab;
-                if (prefab == null) return null;
-                return prefab.GetComponent<MenuButton>();
-            }
-        }
-
-        internal static T Get<T>([CallerMemberName] string name = null) where T : UObject
-        {
-            if (indexedPrefabs.TryGetValue(name, out UObject prefab) && prefab != null) return prefab as T;
             Log($"MenuChanger prefab {name} did not exist at time of request!");
             return null;
         }
 
-        internal static void Set(UObject value, [CallerMemberName] string name = null)
+        internal static void Set(GameObject value, [CallerMemberName] string name = null)
         {
             UObject.DontDestroyOnLoad(value);
             indexedPrefabs[name] = value;
+            value.SetActive(false);
         }
 
         internal static void Setup()
         {
             if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Menu_Title") return;
 
-            ClassicModeButtonObjectPrefab = UObject.Instantiate(UIManager.instance.playModeMenuScreen.defaultHighlight.gameObject);
-            SteelModeButtonObjectPrefab = UObject.Instantiate(UIManager.instance.playModeMenuScreen.defaultHighlight.FindSelectableOnDown().gameObject);
-            GGModeButtonObjectPrefab = UObject.Instantiate(UIManager.instance.playModeMenuScreen.content.transform.Find("GGButton").gameObject);
-            BackButtonObjectPrefab = UObject.Instantiate(UIManager.instance.playModeMenuScreen.defaultHighlight
+            ClassicModeButtonObject = UObject.Instantiate(UIManager.instance.playModeMenuScreen.defaultHighlight.gameObject);
+            SteelModeButtonObject = UObject.Instantiate(UIManager.instance.playModeMenuScreen.defaultHighlight.FindSelectableOnDown().gameObject);
+            GGModeButtonObject = UObject.Instantiate(UIManager.instance.playModeMenuScreen.content.transform.Find("GGButton").gameObject);
+            BackButtonObject = UObject.Instantiate(UIManager.instance.playModeMenuScreen.defaultHighlight
                 .FindSelectableOnDown().FindSelectableOnDown().gameObject);
-            DescTextPrefab = UObject.Instantiate(
+            DescTextObject = UObject.Instantiate(
                 UIManager.instance.extrasContentMenuScreen.content.gameObject.transform.Find("ScrollRect").Find("DescriptionText").gameObject);
-            UObject.Destroy(DescTextPrefab.GetComponent<SoftMaskScript>());
+            UObject.Destroy(indexedPrefabs[nameof(DescTextObject)].GetComponent<SoftMaskScript>());
         }
 
         internal static void Dispose()
         {
-            foreach (var kvp in indexedPrefabs)
+            foreach (KeyValuePair<string, GameObject> kvp in indexedPrefabs)
             {
                 if (kvp.Value != null) UObject.Destroy(kvp.Value);
             }
@@ -135,11 +95,11 @@ namespace MenuChanger
 
         public static (GameObject, Text, CanvasGroup) BuildDescText(MenuPage page, string text)
         {
-            GameObject obj = UObject.Instantiate(DescTextPrefab);
+            GameObject obj = DescTextObject;
             
             // prevent null ref logs
             SoftMaskScript sms = obj.GetComponent<SoftMaskScript>();
-            if (sms is SoftMaskScript)
+            if (sms != null)
             {
                 typeof(Graphic).GetField("m_Canvas", BindingFlags.NonPublic | BindingFlags.Instance)
                     .SetValue(sms.GetComponent<Graphic>(), UIManager.instance.UICanvas);
@@ -149,7 +109,7 @@ namespace MenuChanger
             // set text and remove scrollbar mask
             Text t = obj.GetComponent<Text>();
             t.text = text;
-            t.material = BackButtonObjectPrefab.transform.Find("Text").GetComponent<Text>().material;
+            t.material = BackButtonObject.transform.Find("Text").GetComponent<Text>().material;
 
             // add to page and fix scale issues
             page.Add(obj);
@@ -171,13 +131,13 @@ namespace MenuChanger
             {
                 default:
                 case Mode.Classic:
-                    button = UObject.Instantiate(ClassicModeButtonObjectPrefab).GetComponent<MenuButton>();
+                    button = ClassicModeButtonObject.GetComponent<MenuButton>();
                     break;
                 case Mode.Steel:
-                    button = UObject.Instantiate(SteelModeButtonObjectPrefab).GetComponent<MenuButton>();
+                    button = SteelModeButtonObject.GetComponent<MenuButton>();
                     break;
                 case Mode.Godmaster:
-                    button = UObject.Instantiate(GGModeButtonObjectPrefab).GetComponent<MenuButton>();
+                    button = GGModeButtonObject.GetComponent<MenuButton>();
                     break;
             }
             button.buttonType = MenuButton.MenuButtonType.Proceed;
@@ -202,30 +162,30 @@ namespace MenuChanger
 
         public static MenuButton BuildBigButtonOneTextNoSprite(string title)
         {
-            var obj = CloneBigButton();
-            UObject.Destroy(obj.button.transform.Find("Image").GetComponent<Image>());
-            obj.titleText.text = title;
-            obj.titleText.transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, -5f);
-            obj.descText.text = string.Empty;
+            (MenuButton button, Text titleText, Text descText) = CloneBigButton();
+            UObject.Destroy(button.transform.Find("Image").GetComponent<Image>());
+            titleText.text = title;
+            titleText.transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, -5f);
+            descText.text = string.Empty;
 
-            return obj.button;
+            return button;
         }
 
         public static MenuButton BuildBigButtonTwoTextNoSprite(string title, string desc)
         {
-            var obj = CloneBigButton();
-            UObject.Destroy(obj.button.transform.Find("Image").GetComponent<Image>());
-            obj.titleText.text = title;
-            obj.descText.text = desc;
-            obj.titleText.gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 28f);
-            obj.descText.gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, -53f);
+            (MenuButton button, Text titleText, Text descText) = CloneBigButton();
+            UObject.Destroy(button.transform.Find("Image").GetComponent<Image>());
+            titleText.text = title;
+            descText.text = desc;
+            titleText.gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 28f);
+            descText.gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, -53f);
 
-            return obj.button;
+            return button;
         }
 
         public static MenuButton BuildBigButtonTwoTextAndSprite(Sprite sprite, string title, string desc)
         {
-            MenuButton button = UObject.Instantiate(ClassicModeButtonObjectPrefab).GetComponent<MenuButton>();
+            MenuButton button = ClassicModeButtonObject.GetComponent<MenuButton>();
             button.buttonType = MenuButton.MenuButtonType.Proceed;
             button.cancelAction = GlobalEnums.CancelAction.CustomCancelAction;
             UObject.Destroy(button.gameObject.GetComponent<StartGameEventTrigger>());
@@ -254,7 +214,7 @@ namespace MenuChanger
 
         public static MenuButton BuildBigButtonOneTextAndSprite(Sprite sprite, string title)
         {
-            MenuButton button = UObject.Instantiate(ClassicModeButtonObjectPrefab).GetComponent<MenuButton>();
+            MenuButton button = ClassicModeButtonObject.GetComponent<MenuButton>();
             button.buttonType = MenuButton.MenuButtonType.Proceed;
             UObject.Destroy(button.gameObject.GetComponent<StartGameEventTrigger>());
             button.cancelAction = GlobalEnums.CancelAction.CustomCancelAction;
@@ -281,7 +241,7 @@ namespace MenuChanger
 
         public static MenuButton BuildBigButtonSpriteOnly(Sprite sprite)
         {
-            MenuButton button = UObject.Instantiate(ClassicModeButtonObjectPrefab).GetComponent<MenuButton>();
+            MenuButton button = ClassicModeButtonObject.GetComponent<MenuButton>();
             button.buttonType = MenuButton.MenuButtonType.Proceed;
             button.cancelAction = GlobalEnums.CancelAction.CustomCancelAction;
             UObject.Destroy(button.gameObject.GetComponent<StartGameEventTrigger>());
@@ -298,7 +258,16 @@ namespace MenuChanger
 
         public static (GameObject, Text, CanvasGroup) BuildLabel(MenuPage page, string label)
         {
-            GameObject obj = BackButtonPrefab.Clone(label + " Label", MenuButton.MenuButtonType.Activate, Vector2.zero, label).gameObject;
+            GameObject obj = BackButtonObject;
+            MenuButton button = obj.GetComponent<MenuButton>();
+            button.name = label + " Label";
+            button.buttonType = MenuButton.MenuButtonType.Activate;
+
+            // Change text on the button
+            Transform textTrans = button.transform.Find("Text");
+            UObject.Destroy(textTrans.GetComponent<AutoLocalizeTextUI>());
+            textTrans.GetComponent<Text>().text = label;
+
             UObject.Destroy(obj.GetComponent<EventTrigger>());
             UObject.Destroy(obj.GetComponent<MenuButton>());
 
@@ -314,8 +283,16 @@ namespace MenuChanger
 
         public static MenuButton BuildNewButton(string text)
         {
-            GameObject buttonObj = BackButtonPrefab.Clone(text + " Button", MenuButton.MenuButtonType.Activate, Vector2.zero, text).gameObject;
+            GameObject buttonObj = BackButtonObject;
             MenuButton button = buttonObj.GetComponent<MenuButton>();
+            button.name = text + " Button";
+            button.buttonType = MenuButton.MenuButtonType.Activate;
+
+            // Change text on the button
+            Transform textTrans = button.transform.Find("Text");
+            UObject.Destroy(textTrans.GetComponent<AutoLocalizeTextUI>());
+            textTrans.GetComponent<Text>().text = text;
+
             button.ClearEvents();
             button.cancelAction = GlobalEnums.CancelAction.CustomCancelAction;
             button.navigation = new Navigation
@@ -327,7 +304,11 @@ namespace MenuChanger
 
         public static (GameObject, InputField) BuildEntryField()
         {
-            GameObject obj = BackButtonPrefab.Clone("EntryField", MenuButton.MenuButtonType.Activate, Vector2.zero).gameObject;
+            GameObject obj = BackButtonObject;
+            MenuButton button = obj.GetComponent<MenuButton>();
+            button.name = "EntryField";
+            button.buttonType = MenuButton.MenuButtonType.Activate;
+
             UObject.DestroyImmediate(obj.GetComponent<MenuButton>());
             UObject.DestroyImmediate(obj.GetComponent<EventTrigger>());
             UObject.DestroyImmediate(obj.transform.Find("Text").GetComponent<AutoLocalizeTextUI>());
@@ -357,11 +338,11 @@ namespace MenuChanger
 
         public static (GameObject, InputField) BuildMultiLineEntryField(MenuPage page)
         {
-            GameObject obj = UObject.Instantiate(DescTextPrefab);
+            GameObject obj = DescTextObject;
 
             // prevent null ref logs
             SoftMaskScript sms = obj.GetComponent<SoftMaskScript>();
-            if (sms is SoftMaskScript)
+            if (sms != null)
             {
                 typeof(Graphic).GetField("m_Canvas", BindingFlags.NonPublic | BindingFlags.Instance)
                     .SetValue(sms.GetComponent<Graphic>(), UIManager.instance.UICanvas);
@@ -370,7 +351,7 @@ namespace MenuChanger
 
             // remove scrollbar mask
             Text t = obj.GetComponent<Text>();
-            t.material = BackButtonObjectPrefab.transform.Find("Text").GetComponent<Text>().material;
+            t.material = BackButtonObject.transform.Find("Text").GetComponent<Text>().material;
 
             // add to page and fix scale issues
             page.Add(obj);

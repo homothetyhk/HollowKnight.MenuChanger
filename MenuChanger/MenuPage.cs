@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-using UnityEngine.UI;
-using MenuChanger.MenuElements;
-using MenuChanger.Extensions;
-using MenuChanger;
+﻿using MenuChanger.MenuElements;
 using MenuChanger.NavigationTypes;
 
 namespace MenuChanger
@@ -16,6 +8,8 @@ namespace MenuChanger
     /// </summary>
     public class MenuPage
     {
+        public class MenuPageComponent : MonoBehaviour { public MenuPage MenuPage; }
+
         public readonly GameObject self;
         public readonly RectTransform rt;
         public readonly CanvasGroup cg;
@@ -47,6 +41,7 @@ namespace MenuChanger
         public MenuPage(string name, MenuPage backTo)
         {
             self = new GameObject(name);
+            self.AddComponent<MenuPageComponent>().MenuPage = this;
             self.transform.position = UIManager.instance.UICanvas.transform.position;
             self.transform.SetParent(UIManager.instance.UICanvas.transform);
 

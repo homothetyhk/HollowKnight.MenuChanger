@@ -1,53 +1,10 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.Events;
+﻿using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using Object = UnityEngine.Object;
 
 namespace MenuChanger.Extensions
 {
     internal static class MenuButtonExtensions
     {
-        public static MenuButton Clone(this MenuButton self, string name, MenuButton.MenuButtonType type, Vector2 pos,
-            string text = null, string description = null, Sprite image = null)
-        {
-            // Set up duplicate of button
-            MenuButton newBtn = Object.Instantiate(self.gameObject).GetComponent<MenuButton>();
-            newBtn.name = name;
-            newBtn.buttonType = type;
-
-            Transform transform = newBtn.transform;
-            transform.SetParent(self.transform.parent);
-            transform.localScale = self.transform.localScale;
-
-            // Place the button in the proper spot
-            transform.localPosition = pos;
-
-            // Change text on the button
-            if (text != null)
-            {
-                Transform textTrans = newBtn.transform.Find("Text");
-                Object.Destroy(textTrans.GetComponent<AutoLocalizeTextUI>());
-                textTrans.GetComponent<Text>().text = text;
-            }
-
-            if (description != null)
-            {
-                Transform descTrans = newBtn.transform.Find("DescriptionText");
-                Object.Destroy(descTrans.GetComponent<AutoLocalizeTextUI>());
-                descTrans.GetComponent<Text>().text = description;
-            }
-
-            // Change image on button to the logo
-            if (image != null)
-            {
-                newBtn.transform.Find("Image").GetComponent<Image>().sprite = image;
-            }
-
-            return newBtn;
-        }
-
         public static void ClearEvents(this MenuButton self)
         {
             self.gameObject.GetComponent<EventTrigger>().triggers.Clear();

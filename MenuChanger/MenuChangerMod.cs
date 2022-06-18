@@ -31,6 +31,17 @@ namespace MenuChanger
                 {
                     LogError($"Error invoking OnExitMainMenu:\n{e}");
                 }
+                try
+                {
+                    foreach (var comp in UIManager.instance.UICanvas.transform.GetComponentsInChildren<MenuPage.MenuPageComponent>(true))
+                    {
+                        UObject.Destroy(comp.gameObject);
+                    }
+                }
+                catch (Exception e)
+                {
+                    LogError($"Error destroying MenuPages on exiting menu:{e}");
+                }
             }
         }
 
@@ -61,12 +72,28 @@ namespace MenuChanger
                 HideAllMenuPages();
                 o(s);
             };
+            On.UIManager.ContinueGame += OnContinueGame;
+            On.UIManager.StartNewGame += OnStartGame;
             On.UIManager.UIGoToPlayModeMenu += (o, s) => 
             {
                 s.StartCoroutine(GoToModeMenu(s));
             };
             ResumeMenu.Hook();
         }
+
+        private void OnStartGame(On.UIManager.orig_StartNewGame orig, UIManager self, bool permaDeath, bool bossRush)
+        {
+            HideAllMenuPages();
+            orig(self, permaDeath, bossRush);
+        }
+
+        private void OnContinueGame(On.UIManager.orig_ContinueGame orig, UIManager self)
+        {
+            HideAllMenuPages();
+            orig(self);
+        }
+
+
 
         private IEnumerator GoToModeMenu(UIManager s)
         {
