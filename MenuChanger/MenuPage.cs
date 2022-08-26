@@ -102,6 +102,8 @@ namespace MenuChanger
         /// </summary>
         public void GoBack()
         {
+            BeforeGoBack?.Invoke();
+
             if (backTo == null)
             {
                 UIManager.instance.UIGoToProfileMenu();
@@ -110,6 +112,8 @@ namespace MenuChanger
             {
                 TransitionTo(backTo);
             }
+
+            AfterGoBack?.Invoke();
         }
 
         /// <summary>
@@ -147,5 +151,7 @@ namespace MenuChanger
         public event Action AfterShow;
         public event Action BeforeHide;
         public event Action AfterHide;
+        public event Action BeforeGoBack;
+        public event Action AfterGoBack;
     }
 }
