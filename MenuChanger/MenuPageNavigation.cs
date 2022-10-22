@@ -12,7 +12,7 @@
 
         public MenuPage Page { get; }
 
-        public abstract IReadOnlyCollection<ISelectable> Selectables { get; }
+        public abstract IReadOnlyCollection<ISelectable> Items { get; }
 
         /// <summary>
         /// Adds the ISelectable to navigation control.

@@ -146,7 +146,7 @@ namespace MenuChanger
         /// <param name="newNav">The new navigation to use</param>
         public void ReplaceNavigation(MenuPageNavigation newNav)
         {
-            foreach (ISelectable s in nav.Selectables)
+            foreach (ISelectable s in nav.Items)
             {
                 newNav.Add(s);
             }
