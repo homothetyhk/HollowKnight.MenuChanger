@@ -1,13 +1,12 @@
 ﻿using MenuChanger.Extensions;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine.UI;
 
 namespace MenuChanger.NavigationTypes
 {
     public class SimpleHorizontalNavigation : MenuPageNavigation
     {
-        public List<ISelectable> Selectables = new();
+        public List<ISelectable> selectables = new();
+
+        public override IReadOnlyCollection<ISelectable> Selectables => selectables.AsReadOnly();
 
         public SimpleHorizontalNavigation(MenuPage page) : base(page)
         {
@@ -15,9 +14,9 @@ namespace MenuChanger.NavigationTypes
 
         public override void SelectDefault()
         {
-            if (Selectables.Count > 0)
+            if (selectables.Count > 0)
             {
-                Selectable s = Selectables[0].GetSelectable(Neighbor.Up);
+                Selectable s = selectables[0].GetSelectable(Neighbor.Up);
                 if (s)
                 {
                     s.Select();
@@ -25,19 +24,22 @@ namespace MenuChanger.NavigationTypes
                 }
             }
 
-            if (Page.backButton != null && Page.backButton.Button) Page.backButton.Button.Select();
+            if (Page.backButton != null && Page.backButton.Button)
+            {
+                Page.backButton.Button.Select();
+            }
         }
 
         public override void Add(ISelectable selectable)
         {
             selectable.SetNeighbor(Neighbor.Down, Page.backButton);
             selectable.SetNeighbor(Neighbor.Up, Page.backButton);
-            if (Selectables.Any())
+            if (selectables.Any())
             {
-                selectable.SetNeighbor(Neighbor.Left, Selectables[Selectables.Count - 1]);
-                Selectables[Selectables.Count - 1].SetNeighbor(Neighbor.Right, selectable);
-                selectable.SetNeighbor(Neighbor.Right, Selectables[0]);
-                Selectables[0].SetNeighbor(Neighbor.Left, selectable);
+                selectable.SetNeighbor(Neighbor.Left, selectables[selectables.Count - 1]);
+                selectables[selectables.Count - 1].SetNeighbor(Neighbor.Right, selectable);
+                selectable.SetNeighbor(Neighbor.Right, selectables[0]);
+                selectables[0].SetNeighbor(Neighbor.Left, selectable);
             }
             else
             {
@@ -47,19 +49,19 @@ namespace MenuChanger.NavigationTypes
                 selectable.SetNeighbor(Neighbor.Right, selectable);
             }
 
-            Selectables.Add(selectable);
+            selectables.Add(selectable);
         }
 
         public override void Remove(ISelectable selectable)
         {
-            int i = Selectables.IndexOf(selectable);
+            int i = selectables.IndexOf(selectable);
             if (i >= 0)
             {
-                Selectables.RemoveAt(i);
-                if (Selectables.Any())
+                selectables.RemoveAt(i);
+                if (selectables.Any())
                 {
-                    ISelectable previous = Selectables[i > 0 ? i - 1 : Selectables.Count - 1];
-                    ISelectable next = Selectables[i < Selectables.Count ? i : 0];
+                    ISelectable previous = selectables[i > 0 ? i - 1 : selectables.Count - 1];
+                    ISelectable next = selectables[i < selectables.Count ? i : 0];
                     previous.SetNeighbor(Neighbor.Right, next);
                     next.SetNeighbor(Neighbor.Left, previous);
 
@@ -79,27 +81,30 @@ namespace MenuChanger.NavigationTypes
 
         public override void ResetNavigation()
         {
-            if (Selectables.Count == 0)
+            if (selectables.Count == 0)
             {
                 Page.backButton.SetNeighbor(Neighbor.Up, null);
                 Page.backButton.SetNeighbor(Neighbor.Down, null);
             }
             else
             {
-                foreach (ISelectable selectable in Selectables)
+                foreach (ISelectable selectable in selectables)
                 {
-                    if (selectable is ISelectableGroup isg) isg.ResetNavigation();
+                    if (selectable is ISelectableGroup isg)
+                    {
+                        isg.ResetNavigation();
+                    }
                 }
 
-                for (int i = 0; i < Selectables.Count; i++)
+                for (int i = 0; i < selectables.Count; i++)
                 {
-                    int j = i > 0 ? i - 1 : Selectables.Count - 1;
-                    Selectables[i].SymSetNeighbor(Neighbor.Left, Selectables[j]);
-                    Selectables[i].SetNeighbor(Neighbor.Up, Page.backButton);
-                    Selectables[i].SetNeighbor(Neighbor.Down, Page.backButton);
+                    int j = i > 0 ? i - 1 : selectables.Count - 1;
+                    selectables[i].SymSetNeighbor(Neighbor.Left, selectables[j]);
+                    selectables[i].SetNeighbor(Neighbor.Up, Page.backButton);
+                    selectables[i].SetNeighbor(Neighbor.Down, Page.backButton);
                 }
-                Page.backButton.SetNeighbor(Neighbor.Up, Selectables[0]);
-                Page.backButton.SetNeighbor(Neighbor.Down, Selectables[0]);
+                Page.backButton.SetNeighbor(Neighbor.Up, selectables[0]);
+                Page.backButton.SetNeighbor(Neighbor.Down, selectables[0]);
             }
         }
 
