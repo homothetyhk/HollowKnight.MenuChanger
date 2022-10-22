@@ -7,7 +7,13 @@ namespace MenuChanger.NavigationTypes
 {
     public class SimpleHorizontalNavigation : MenuPageNavigation
     {
+        /// <summary>
+        /// A list of selectables. Note: Prefer to use <see cref="Items"/> and the add/remove methods instead
+        /// of modifying this list directly
+        /// </summary>
         public List<ISelectable> Selectables = new();
+
+        public override IReadOnlyCollection<ISelectable> Items => Selectables.AsReadOnly();
 
         public SimpleHorizontalNavigation(MenuPage page) : base(page)
         {

@@ -13,7 +13,7 @@ namespace MenuChanger
         public readonly GameObject self;
         public readonly RectTransform rt;
         public readonly CanvasGroup cg;
-        public readonly MenuPageNavigation nav;
+        public MenuPageNavigation nav;
 
         /// <summary>
         /// The MenuPage which the GoBack method and the back button directs to. Can be modified after creation. If null, defaults to going back to the profile menu.
@@ -136,6 +136,22 @@ namespace MenuChanger
         public void AddToNavigationControl(ISelectable selectable)
         {
             nav.Add(selectable);
+        }
+
+        /// <summary>
+        /// Replaces the page's navigation control with a new one, migrates all the selectable elements
+        /// corrently controlled by the page's navigation into the new one, and recursively resets navigation
+        /// for the page.
+        /// </summary>
+        /// <param name="newNav">The new navigation to use</param>
+        public void ReplaceNavigation(MenuPageNavigation newNav)
+        {
+            foreach (ISelectable s in nav.Items)
+            {
+                newNav.Add(s);
+            }
+            nav = newNav;
+            ResetNavigation();
         }
 
         /// <summary>
