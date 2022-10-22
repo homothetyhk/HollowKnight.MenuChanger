@@ -1,4 +1,7 @@
 ﻿using MenuChanger.Extensions;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine.UI;
 
 namespace MenuChanger.NavigationTypes
 {
@@ -28,10 +31,7 @@ namespace MenuChanger.NavigationTypes
                 }
             }
 
-            if (Page.backButton != null && Page.backButton.Button)
-            {
-                Page.backButton.Button.Select();
-            }
+            if (Page.backButton != null && Page.backButton.Button) Page.backButton.Button.Select();
         }
 
         public override void Add(ISelectable selectable)
@@ -94,10 +94,7 @@ namespace MenuChanger.NavigationTypes
             {
                 foreach (ISelectable selectable in Selectables)
                 {
-                    if (selectable is ISelectableGroup isg)
-                    {
-                        isg.ResetNavigation();
-                    }
+                    if (selectable is ISelectableGroup isg) isg.ResetNavigation();
                 }
 
                 for (int i = 0; i < Selectables.Count; i++)
