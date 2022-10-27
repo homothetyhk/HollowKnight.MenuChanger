@@ -10,6 +10,7 @@
     <Deterministic>true</Deterministic>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <ImplicitUsings>true</ImplicitUsings>
+    <Nullable>annotations</Nullable>
     <NoWarn>1701;1702;CS1591;IDE0018</NoWarn>
     <HollowKnightRefs>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed</HollowKnightRefs>
   </PropertyGroup>

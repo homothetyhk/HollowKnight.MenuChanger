@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Collections;
-using System.Text;
-using UnityEngine;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
+using System.Threading;
 
 namespace MenuChanger
 {
@@ -40,10 +35,61 @@ namespace MenuChanger
 
         /// <summary>
         /// Enqueues the action to be invoked during the next Unity update.
+        /// <br/>If the action raises an exception, the exception is caught and logged.
         /// </summary>
         public static void BeginInvoke(Action a)
         {
             actions.Enqueue(a);
+        }
+
+        /// <summary>
+        /// Enqueues the action to be invoked during the next Unity update. Blocks the requesting thread until the action has been invoked.
+        /// <br/>If the action raises an exception, the exception is caught and rethrown on the requester's thread.
+        /// </summary>
+        public static void BlockUntilInvoked(Action a)
+        {
+            EventWaitHandle h = new(false, EventResetMode.AutoReset);
+            Exception? error = null;
+            BeginInvoke(() =>
+            {
+                try
+                {
+                    a.Invoke();
+                }
+                catch (Exception e)
+                {
+                    error = e;
+                }
+                h.Set();
+            });
+            h.WaitOne();
+            if (error is not null) throw error;
+        }
+
+        /// <summary>
+        /// Enqueues the function to be invoked during the next Unity update. Blocks the requesting thread until the function has been invoked, and returns its result.
+        /// <br/>If the function raises an exception, the exception is caught and rethrown on the requester's thread.
+        /// </summary>
+        public static T BlockUntilInvoked<T>(Func<T> f)
+        {
+            EventWaitHandle h = new(false, EventResetMode.AutoReset);
+            T result = default;
+            Exception? error = null;
+            BeginInvoke(() =>
+            {
+                try
+                {
+                    result = f.Invoke();
+                }
+                catch (Exception e)
+                {
+                    error = e;
+                }
+                h.Set();
+            });
+            h.WaitOne();
+            if (error is not null) throw error;
+            return result;
         }
     }
 }

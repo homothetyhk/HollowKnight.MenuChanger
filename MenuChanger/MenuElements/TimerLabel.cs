@@ -14,7 +14,7 @@ namespace MenuChanger.MenuElements
     public class TimerLabel : MenuLabel
     {
         private readonly Stopwatch _stopwatch;
-        private readonly string _prefix;
+        private string _prefix;
         private string _restLabel;
         private IEnumerator maintainTime;
         private readonly StringBuilder _sb = new();
@@ -25,12 +25,15 @@ namespace MenuChanger.MenuElements
         /// </summary>
         public TimerLabel(MenuPage page, string prefix, string restLabel = null) : base(page, string.Empty, Style.Body)
         {
-            _prefix = $"{prefix}: ";
+            SetPrefix(prefix);
             _restLabel = restLabel ?? string.Empty;
             _stopwatch = new Stopwatch();
             Text.alignment = TextAnchor.UpperCenter;
         }
 
+        /// <summary>
+        /// Resets and starts the timer.
+        /// </summary>
         public void Start()
         {
             _stopwatch.Reset();
@@ -40,6 +43,9 @@ namespace MenuChanger.MenuElements
             Text.StartCoroutine(maintainTime);
         }
 
+        /// <summary>
+        /// Stops the timer.
+        /// </summary>
         private void StopInternal()
         {
             if (maintainTime is not null)
@@ -62,6 +68,24 @@ namespace MenuChanger.MenuElements
             Text.text = _restLabel;
         }
 
+        public void SetPrefix(string newPrefix)
+        {
+            _prefix = $"{newPrefix}: ";
+        }
+
+        /// <summary>
+        /// Stops the timer, sets the prefix to a new value, and restarts the timer. Returns the final time as a string, without prefix.
+        /// </summary>
+        public string Split(string newPrefix)
+        {
+            StopInternal();
+            string time = ComputeTimeText();
+            SetPrefix(newPrefix);
+            Start();
+            return time;
+        }
+
+        public TimeSpan Elapsed { get => _stopwatch.Elapsed; }
 
         private IEnumerator MaintainTime()
         {
@@ -70,6 +94,41 @@ namespace MenuChanger.MenuElements
                 yield return new WaitForSecondsRealtime(0.01f);
                 Text.text = ComputeLabelText();
             }
+        }
+
+        private string ComputeTimeText()
+        {
+            _sb.Clear();
+
+            int hours = _stopwatch.Elapsed.Hours;
+            int minutes = _stopwatch.Elapsed.Minutes;
+            int seconds = _stopwatch.Elapsed.Seconds;
+            int milli = _stopwatch.Elapsed.Milliseconds;
+
+            bool hh = hours > 0;
+            bool mm = hh || minutes > 0;
+            bool ss = true;
+
+            if (hh)
+            {
+                _sb.Append(hours);
+                _sb.Append(':');
+            }
+            if (mm)
+            {
+                if (hh) _sb.Append(minutes.ToString().PadLeft(2, '0'));
+                else _sb.Append(minutes);
+                _sb.Append(':');
+            }
+            if (ss)
+            {
+                if (mm) _sb.Append(seconds.ToString().PadLeft(2, '0'));
+                else _sb.Append(seconds);
+            }
+            _sb.Append('.');
+            _sb.Append(milli.ToString().PadLeft(3, '0'));
+
+            return _sb.ToString();
         }
 
         private string ComputeLabelText()
@@ -84,6 +143,7 @@ namespace MenuChanger.MenuElements
 
             bool hh = hours > 0;
             bool mm = hh || minutes > 0;
+            bool ss = true;
 
             if (hh)
             {
@@ -92,10 +152,15 @@ namespace MenuChanger.MenuElements
             }
             if (mm)
             {
-                _sb.Append(minutes);
+                if (hh) _sb.Append(minutes.ToString().PadLeft(2, '0'));
+                else _sb.Append(minutes);
                 _sb.Append(':');
             }
-            _sb.Append(seconds);
+            if (ss)
+            {
+                if (mm) _sb.Append(seconds.ToString().PadLeft(2, '0'));
+                else _sb.Append(seconds);
+            }
             _sb.Append('.');
             _sb.Append(milli.ToString().PadLeft(3, '0'));
 
