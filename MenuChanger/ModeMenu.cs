@@ -21,7 +21,7 @@ namespace MenuChanger
             constructors.Add(constructor);
         }
 
-
+        public static bool Active { get; private set; }
         private static MenuPage ModePage;
         private static MultiGridItemPanel ModeButtonPanel;
 
@@ -34,7 +34,14 @@ namespace MenuChanger
 
         internal static void OnEnterMainMenu()
         {
+            if (constructors.Count <= 3)
+            {
+                MenuChangerMod.instance.Log("Mode menu was not requested, skipping construction...");
+                return;
+            }
+
             MenuChangerMod.instance.Log("Constructing mode menu...");
+            Active = true;
             ModePage = new MenuPage("Mode Page");
             List<BigButton> buttons = new();
 
@@ -66,6 +73,7 @@ namespace MenuChanger
 
         internal static void OnExitMainMenu()
         {
+            Active = false;
             ModePage = null;
             ModeButtonPanel = null;
             foreach (var c in constructors)
@@ -103,6 +111,8 @@ namespace MenuChanger
                     MenuChangerMod.HideAllMenuPages();
                     UIManager.instance.StartNewGame(permaDeath: mode == Mode.Steel, bossRush: mode == Mode.Godmaster);
                 };
+
+                GameManager.instance.RefreshLanguageText += RefreshLanguage;
             }
             public override bool TryGetModeButton(MenuPage modeMenu, out BigButton button)
             {
@@ -119,6 +129,7 @@ namespace MenuChanger
             }
             public override void OnExitMainMenu()
             {
+                GameManager.instance.RefreshLanguageText -= RefreshLanguage;
                 button = null;
                 wasUnlocked = false;
             }
@@ -130,6 +141,30 @@ namespace MenuChanger
                 Mode.Godmaster => GameManager.instance.GetStatusRecordInt("RecBossRushMode") == 1,
                 _ => true,
             };
+
+            private void RefreshLanguage()
+            {
+                button.GameObject.transform.Find("Text").GetComponent<Text>().text = GetTitle();
+                button.GameObject.transform.Find("DescriptionText").GetComponent<Text>().text = GetDesc();
+            }
+
+            private string GetTitle()
+            {
+                return mode switch
+                {
+                    Mode.Godmaster => Language.Language.Get("MODE_GODSGLORY", "CP3"),
+                    _ => Language.Language.Get(mode == Mode.Classic ? "MODE_NORMAL" : "MODE_STEEL", "MainMenu"),
+                };
+            }
+
+            private string GetDesc()
+            {
+                return mode switch
+                {
+                    Mode.Godmaster => Language.Language.Get("MODE_GODSGLORY_DESC", "CP3"),
+                    _ => Language.Language.Get(mode == Mode.Classic ? "NORMAL_MODE_TEXT" : "STEEL_MODE_TEXT", "MainMenu"),
+                };
+            }
         }
     }
 }

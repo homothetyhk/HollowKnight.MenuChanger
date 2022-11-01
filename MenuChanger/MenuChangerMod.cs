@@ -76,7 +76,8 @@ namespace MenuChanger
             On.UIManager.StartNewGame += OnStartGame;
             On.UIManager.UIGoToPlayModeMenu += (o, s) => 
             {
-                s.StartCoroutine(GoToModeMenu(s));
+                if (ModeMenu.Active) s.StartCoroutine(GoToModeMenu(s));
+                else o(s);
             };
             ResumeMenu.Hook();
         }
