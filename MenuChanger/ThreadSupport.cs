@@ -3,11 +3,19 @@ using System.Threading;
 
 namespace MenuChanger
 {
+    public class ThreadSupportException : Exception
+    {
+        public ThreadSupportException() : base() { }
+        public ThreadSupportException(string message) : base(message) { }
+        public ThreadSupportException(string message, Exception innerException) : base(message, innerException) { }
+    }
+
     /// <summary>
     /// Utility which helps side threads interact with the main Unity thread.
     /// </summary>
     public class ThreadSupport : MonoBehaviour
     {
+
         private static readonly ConcurrentQueue<Action> actions = new();
         private static ThreadSupport instance;
 
@@ -63,7 +71,8 @@ namespace MenuChanger
                 h.Set();
             });
             h.WaitOne();
-            if (error is not null) throw error;
+            if (error is not null) 
+                throw new ThreadSupportException("An exception was thrown during a ThreadSupport invocation", error);
         }
 
         /// <summary>
@@ -88,7 +97,8 @@ namespace MenuChanger
                 h.Set();
             });
             h.WaitOne();
-            if (error is not null) throw error;
+            if (error is not null) 
+                throw new ThreadSupportException("An exception was thrown during a ThreadSupport invocation", error);
             return result;
         }
     }
