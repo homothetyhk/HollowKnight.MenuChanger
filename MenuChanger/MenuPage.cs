@@ -102,6 +102,8 @@ namespace MenuChanger
         /// </summary>
         public void GoBack()
         {
+            if (BlockGoBack) return;
+
             BeforeGoBack?.Invoke();
 
             if (backTo == null)
@@ -169,5 +171,10 @@ namespace MenuChanger
         public event Action AfterHide;
         public event Action BeforeGoBack;
         public event Action AfterGoBack;
+
+        /// <summary>
+        /// If true, GoBack calls have no effect.
+        /// </summary>
+        public bool BlockGoBack { get; set; } = false;
     }
 }
