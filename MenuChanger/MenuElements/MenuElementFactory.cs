@@ -83,9 +83,9 @@ namespace MenuChanger.MenuElements
 
             foreach (var mi in Members)
             {
-                foreach (var tv in mi.GetCustomAttributes<TriggerValidationAttribute>())
+                foreach (string member in mi.GetCustomAttributes<TriggerValidationAttribute>().SelectMany(tv => tv.memberNames))
                 {
-                    if (Members.FirstOrDefault(m => m.Name == tv.memberName) is not MemberInfo m2
+                    if (Members.FirstOrDefault(m => m.Name == member) is not MemberInfo m2
                         || !ElementLookup.TryGetValue(mi.Name, out IValueElement ve1)
                         || !ElementLookup.TryGetValue(m2.Name, out IValueElement ve2)) continue;
                     ve1.SelfChanged += _ => ve2.SetValue(ve2.Value);

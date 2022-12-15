@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MenuChanger.Attributes
+﻿namespace MenuChanger.Attributes
 {
     /// <summary>
     /// Attribute which indicates that the member it is applied to is bounded above or below by the value of the named member.
     /// </summary>
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
     public class DynamicBoundAttribute : Attribute
     {
         /// <summary>
