@@ -1,4 +1,1 @@
-# This is the **HOMEPAGE**.
-Refer to [Markdown](http://daringfireball.net/projects/markdown/) for how to write markdown files.
-## Quick Start Notes:
-1. Add images to the *images* folder if the file is referencing an image.
+This is the documentation for MenuChanger, a Hollow Knight mod for editing the main menu and adding mode select options.

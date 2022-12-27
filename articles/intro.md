@@ -1,1 +1,1 @@
-# Add your introductions here!
+This is the landing page for MenuChanger articles and tutorials.
