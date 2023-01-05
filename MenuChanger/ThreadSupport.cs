@@ -52,8 +52,9 @@ namespace MenuChanger
 
         /// <summary>
         /// Enqueues the action to be invoked during the next Unity update. Blocks the requesting thread until the action has been invoked.
-        /// <br/>If the action raises an exception, the exception is caught and rethrown on the requester's thread.
+        /// <br/>If the action raises an exception, the exception is caught and rethrown on the requester's thread as a <see cref="ThreadSupportException"/>.
         /// </summary>
+        /// <exception cref="ThreadSupportException"></exception>
         public static void BlockUntilInvoked(Action a)
         {
             EventWaitHandle h = new(false, EventResetMode.AutoReset);
@@ -77,8 +78,9 @@ namespace MenuChanger
 
         /// <summary>
         /// Enqueues the function to be invoked during the next Unity update. Blocks the requesting thread until the function has been invoked, and returns its result.
-        /// <br/>If the function raises an exception, the exception is caught and rethrown on the requester's thread.
+        /// <br/>If the function raises an exception, the exception is caught and rethrown on the requester's thread as a <see cref="ThreadSupportException"/>.
         /// </summary>
+        /// <exception cref="ThreadSupportException"></exception>
         public static T BlockUntilInvoked<T>(Func<T> f)
         {
             EventWaitHandle h = new(false, EventResetMode.AutoReset);

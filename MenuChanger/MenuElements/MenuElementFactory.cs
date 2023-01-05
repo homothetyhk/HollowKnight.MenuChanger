@@ -57,7 +57,7 @@ namespace MenuChanger.MenuElements
         public readonly MenuPage Parent;
         public readonly Dictionary<string, IValueElement> ElementLookup = new();
         public readonly IValueElement[] Elements;
-        private readonly MemberInfo[] Members;
+        private readonly List<MemberInfo> Members;
 
         /// <summary>
         /// Creates an MEF with elements on the given page and bound to the specified object.
@@ -65,11 +65,11 @@ namespace MenuChanger.MenuElements
         public MenuElementFactory(MenuPage page, T obj)
         {
             Parent = page;
-            Members = typeof(T).GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                .Where(f => f.IsValidForMenu()).ToArray();
             List<IValueElement> elements = new();
+            Members = new();
 
-            foreach (MemberInfo mi in Members)
+            foreach (MemberInfo mi in typeof(T).GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                .Where(f => f.IsValidForMenu()))
             {
                 Type U = mi.GetValueType();
 
@@ -78,10 +78,11 @@ namespace MenuChanger.MenuElements
                     elements.Add(element);
                     ElementLookup.Add(mi.Name, element);
                     element.Bind(obj, mi);
+                    Members.Add(mi);
                 }
             }
 
-            foreach (var mi in Members)
+            foreach (MemberInfo mi in Members)
             {
                 foreach (string member in mi.GetCustomAttributes<TriggerValidationAttribute>().SelectMany(tv => tv.memberNames))
                 {
