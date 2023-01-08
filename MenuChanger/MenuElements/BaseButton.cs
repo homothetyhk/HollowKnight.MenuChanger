@@ -19,6 +19,8 @@ namespace MenuChanger.MenuElements
             OnClick?.Invoke();
         }
 
+        public void ClearOnClick() => OnClick = null;
+
         public Action OnCancel;
         protected virtual void InvokeOnCancel()
         {

@@ -46,11 +46,8 @@ namespace MenuChanger.Extensions
         /// </summary>
         public static void AddHideAndShowEvent(this BaseButton self, MenuPage next)
         {
-            self.OnClick += () =>
-            {
-                self.Parent.Hide();
-                next.Show();
-            };
+            self.OnClick += self.Parent.Hide;
+            self.OnClick += next.Show;
         }
 
         /// <summary>
@@ -58,11 +55,8 @@ namespace MenuChanger.Extensions
         /// </summary>
         public static void AddHideAndShowEvent(this BaseButton self, MenuPage prev, MenuPage next)
         {
-            self.OnClick += () =>
-            {
-                prev.Hide();
-                next.Show();
-            };
+            self.OnClick += prev.Hide;
+            self.OnClick += next.Show;
         }
 
         /// <summary>
