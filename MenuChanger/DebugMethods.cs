@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Reflection;
-using System.ComponentModel;
-using UnityEngine;
-using UnityEngine.UI;
 using Component = UnityEngine.Component;
 
 namespace MenuChanger

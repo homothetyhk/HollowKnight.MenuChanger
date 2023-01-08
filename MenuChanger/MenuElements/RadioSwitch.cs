@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-
-namespace MenuChanger.MenuElements
+﻿namespace MenuChanger.MenuElements
 {
     /// <summary>
     /// A control for managing a group of ToggleButtons, with modes to allow selecting only one at a time or selecting multiple toggles.

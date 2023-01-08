@@ -1,11 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Threading.Tasks;
-using MenuChanger.Extensions;
-using UnityEngine.UI;
-using static MenuChanger.LogHelper;
-
-namespace MenuChanger
+﻿namespace MenuChanger
 {
     public enum Neighbor
     {

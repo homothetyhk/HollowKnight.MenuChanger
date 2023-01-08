@@ -1,8 +1,8 @@
-﻿using UnityEngine.EventSystems;
-using UnityEngine.UI.Extensions;
+﻿using MenuChanger.Extensions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using MenuChanger.Extensions;
+using UnityEngine.EventSystems;
+using UnityEngine.UI.Extensions;
 
 namespace MenuChanger
 {

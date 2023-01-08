@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MenuChanger.Extensions;
+﻿using MenuChanger.Extensions;
 using MenuChanger.MenuElements;
-using UnityEngine;
-using UnityEngine.UI;
 
 namespace MenuChanger.MenuPanels
 {

@@ -1,6 +1,5 @@
-﻿using System;
+﻿using MenuChanger.Attributes;
 using System.Reflection;
-using MenuChanger.Attributes;
 
 namespace MenuChanger.Extensions
 {

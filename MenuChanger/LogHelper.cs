@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MenuChanger
+﻿namespace MenuChanger
 {
     internal static class LogHelper
     {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-
-namespace MenuChanger
+﻿namespace MenuChanger
 {
     public static class Colors
     {

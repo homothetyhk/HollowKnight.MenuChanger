@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-
-namespace MenuChanger.MenuElements
+﻿namespace MenuChanger.MenuElements
 {
     /// <summary>
     /// The common interface for MenuChanger types which are attached to a MenuPage, and have the abilities to be shown, hidden, and moved around.

@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Reflection;
-using GlobalEnums;
-using Modding;
-using Modding.Patches;
-using Newtonsoft.Json;
-using UnityEngine.UI;
-using System.Collections;
-using UnityEngine;
+﻿using GlobalEnums;
 using MenuChanger.Extensions;
 using MenuChanger.MenuElements;
+using Modding;
+using System.Collections;
+using System.Reflection;
 
 namespace MenuChanger
 {

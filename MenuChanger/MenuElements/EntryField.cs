@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
-using UnityEngine;
-using UnityEngine.UI;
-using MenuChanger.Attributes;
+﻿using MenuChanger.Attributes;
 using MenuChanger.Extensions;
+using System.Reflection;
 
 namespace MenuChanger.MenuElements
 {

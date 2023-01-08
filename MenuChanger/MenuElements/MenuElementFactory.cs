@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Reflection;
+﻿using MenuChanger.Attributes;
 using MenuChanger.Extensions;
-using MenuChanger.Attributes;
+using System.Reflection;
 
 namespace MenuChanger.MenuElements
 {

@@ -1,6 +1,6 @@
-﻿using System.Collections;
+﻿using MenuChanger.Extensions;
+using System.Collections;
 using System.Reflection;
-using MenuChanger.Extensions;
 using UnityEngine.EventSystems;
 
 namespace MenuChanger.MenuElements

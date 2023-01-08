@@ -1,8 +1,8 @@
-﻿using System.Reflection;
-using Modding;
+﻿using Modding;
 using Modding.Patches;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Reflection;
 
 namespace MenuChanger.Extensions
 {

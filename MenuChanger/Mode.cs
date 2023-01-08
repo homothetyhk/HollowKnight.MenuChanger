@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MenuChanger
+﻿namespace MenuChanger
 {
     public enum Mode
     {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MenuChanger.MenuElements
+﻿namespace MenuChanger.MenuElements
 {
     /// <summary>
     /// Object which manages a text box displaying a counter that can be incremented.
