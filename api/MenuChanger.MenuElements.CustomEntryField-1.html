@@ -1,0 +1,498 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class CustomEntryField&lt;T&gt;
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class CustomEntryField&lt;T&gt;
+   ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="MenuChanger.MenuElements.CustomEntryField`1">
+  
+  
+  <h1 id="MenuChanger_MenuElements_CustomEntryField_1" data-uid="MenuChanger.MenuElements.CustomEntryField`1" class="text-break">Class CustomEntryField&lt;T&gt;
+  </h1>
+  <div class="markdown level0 summary"><p>An EntryField which allows the Read and Write methods to be overriden by delegate fields.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><a class="xref" href="MenuChanger.MenuElements.EntryField.html">EntryField</a></div>
+    <div class="level2"><a class="xref" href="MenuChanger.MenuElements.EntryField-1.html">EntryField</a>&lt;T&gt;</div>
+    <div class="level3"><span class="xref">CustomEntryField&lt;T&gt;</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="MenuChanger.MenuElements.IValueElement-1.html">IValueElement</a>&lt;T&gt;</div>
+    <div><a class="xref" href="MenuChanger.MenuElements.IValueElement.html">IValueElement</a></div>
+    <div><a class="xref" href="MenuChanger.MenuElements.IMenuElement.html">IMenuElement</a></div>
+    <div><a class="xref" href="MenuChanger.ISelectable.html">ISelectable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField-1.html#MenuChanger_MenuElements_EntryField_1_Value">EntryField&lt;T&gt;.Value</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField-1.html#MenuChanger_MenuElements_EntryField_1_Validate_System_String_">EntryField&lt;T&gt;.Validate(String)</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField-1.html#MenuChanger_MenuElements_EntryField_1_SetValue__0_">EntryField&lt;T&gt;.SetValue(T)</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField-1.html#MenuChanger_MenuElements_EntryField_1_Modify">EntryField&lt;T&gt;.Modify</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField-1.html#MenuChanger_MenuElements_EntryField_1_ValueChanged">EntryField&lt;T&gt;.ValueChanged</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField-1.html#MenuChanger_MenuElements_EntryField_1_AddValidateInputToTextColorEvent_Func__0_System_Boolean__">EntryField&lt;T&gt;.AddValidateInputToTextColorEvent(Func&lt;T, Boolean&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_Parent">EntryField.Parent</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_GameObject">EntryField.GameObject</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_InputField">EntryField.InputField</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_Hidden">EntryField.Hidden</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_Label">EntryField.Label</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_LabelOffset">EntryField.LabelOffset</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_ValidatedInput">EntryField.ValidatedInput</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_ValueType">EntryField.ValueType</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_ModifyInputString">EntryField.ModifyInputString</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_InvokeModifyInputString_System_String__System_String_">EntryField.InvokeModifyInputString(String, String)</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_SelfChanged">EntryField.SelfChanged</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_InvokeSelfChanged">EntryField.InvokeSelfChanged()</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_SetValue_System_Object_">EntryField.SetValue(Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_Bind_System_Object_System_Reflection_MemberInfo_">EntryField.Bind(Object, MemberInfo)</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_AddValidateInputToTextColorEvent_Func_System_String_System_Boolean__">EntryField.AddValidateInputToTextColorEvent(Func&lt;String, Boolean&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_MoveTo_Vector2_">EntryField.MoveTo(Vector2)</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_Translate_Vector2_">EntryField.Translate(Vector2)</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_Show">EntryField.Show()</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_Hide">EntryField.Hide()</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_Destroy">EntryField.Destroy()</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_SetNeighbor_MenuChanger_Neighbor_MenuChanger_ISelectable_">EntryField.SetNeighbor(Neighbor, ISelectable)</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_GetISelectable_MenuChanger_Neighbor_">EntryField.GetISelectable(Neighbor)</a>
+    </div>
+    <div>
+      <a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_GetSelectable_MenuChanger_Neighbor_">EntryField.GetSelectable(Neighbor)</a>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="MenuChanger.MenuElements.html">MenuChanger.MenuElements</a></h6>
+  <h6><strong>Assembly</strong>: MenuChanger.dll</h6>
+  <h5 id="MenuChanger_MenuElements_CustomEntryField_1_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class CustomEntryField&lt;T&gt; : EntryField&lt;T&gt;, IValueElement&lt;T&gt;, IValueElement, IMenuElement, ISelectable</code></pre>
+  </div>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuElements_CustomEntryField_1__ctor_MenuChanger_MenuPage_System_String_Func_System_String__0__Func__0_System_String__.md&amp;value=---%0Auid%3A%20MenuChanger.MenuElements.CustomEntryField%601.%23ctor(MenuChanger.MenuPage%2CSystem.String%2CFunc%7BSystem.String%2C%600%7D%2CFunc%7B%600%2CSystem.String%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuElements/EntryField.cs/#L234">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuElements_CustomEntryField_1__ctor_" data-uid="MenuChanger.MenuElements.CustomEntryField`1.#ctor*"></a>
+  <h4 id="MenuChanger_MenuElements_CustomEntryField_1__ctor_MenuChanger_MenuPage_System_String_Func_System_String__0__Func__0_System_String__" data-uid="MenuChanger.MenuElements.CustomEntryField`1.#ctor(MenuChanger.MenuPage,System.String,Func{System.String,`0},Func{`0,System.String})">CustomEntryField(MenuPage, String, Func&lt;String, T&gt;, Func&lt;T, String&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CustomEntryField(MenuPage page, string label, Func&lt;string, T&gt; read, Func&lt;T, string&gt; write)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="MenuChanger.MenuPage.html">MenuPage</a></td>
+        <td><span class="parametername">page</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">label</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">Func</span>&lt;<span class="xref">System.String</span>, T&gt;</td>
+        <td><span class="parametername">read</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">Func</span>&lt;T, <span class="xref">System.String</span>&gt;</td>
+        <td><span class="parametername">write</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuElements_CustomEntryField_1_read.md&amp;value=---%0Auid%3A%20MenuChanger.MenuElements.CustomEntryField%601.read%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuElements/EntryField.cs/#L231">View Source</a>
+  </span>
+  <h4 id="MenuChanger_MenuElements_CustomEntryField_1_read" data-uid="MenuChanger.MenuElements.CustomEntryField`1.read">read</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Func&lt;string, T&gt; read</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Func</span>&lt;<span class="xref">System.String</span>, T&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuElements_CustomEntryField_1_write.md&amp;value=---%0Auid%3A%20MenuChanger.MenuElements.CustomEntryField%601.write%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuElements/EntryField.cs/#L232">View Source</a>
+  </span>
+  <h4 id="MenuChanger_MenuElements_CustomEntryField_1_write" data-uid="MenuChanger.MenuElements.CustomEntryField`1.write">write</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Func&lt;T, string&gt; write</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Func</span>&lt;T, <span class="xref">System.String</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuElements_CustomEntryField_1_Read_System_String_Type_.md&amp;value=---%0Auid%3A%20MenuChanger.MenuElements.CustomEntryField%601.Read(System.String%2CType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuElements/EntryField.cs/#L240">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuElements_CustomEntryField_1_Read_" data-uid="MenuChanger.MenuElements.CustomEntryField`1.Read*"></a>
+  <h4 id="MenuChanger_MenuElements_CustomEntryField_1_Read_System_String_Type_" data-uid="MenuChanger.MenuElements.CustomEntryField`1.Read(System.String,Type)">Read(String, Type)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override object Read(string input, Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">input</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_Read_System_String_Type_">EntryField.Read(String, Type)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuElements_CustomEntryField_1_Write_System_Object_.md&amp;value=---%0Auid%3A%20MenuChanger.MenuElements.CustomEntryField%601.Write(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuElements/EntryField.cs/#L241">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuElements_CustomEntryField_1_Write_" data-uid="MenuChanger.MenuElements.CustomEntryField`1.Write*"></a>
+  <h4 id="MenuChanger_MenuElements_CustomEntryField_1_Write_System_Object_" data-uid="MenuChanger.MenuElements.CustomEntryField`1.Write(System.Object)">Write(Object)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string Write(object o)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">o</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="MenuChanger.MenuElements.EntryField.html#MenuChanger_MenuElements_EntryField_Write_System_Object_">EntryField.Write(Object)</a></div>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="MenuChanger.MenuElements.IValueElement-1.html">IValueElement&lt;T&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="MenuChanger.MenuElements.IValueElement.html">IValueElement</a>
+  </div>
+  <div>
+      <a class="xref" href="MenuChanger.MenuElements.IMenuElement.html">IMenuElement</a>
+  </div>
+  <div>
+      <a class="xref" href="MenuChanger.ISelectable.html">ISelectable</a>
+  </div>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="MenuChanger.Extensions.MenuElementExtensions.html#MenuChanger_Extensions_MenuElementExtensions_SymSetNeighbor_MenuChanger_ISelectable_MenuChanger_Neighbor_MenuChanger_ISelectable_">MenuElementExtensions.SymSetNeighbor(ISelectable, Neighbor, ISelectable)</a>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuElements_CustomEntryField_1.md&amp;value=---%0Auid%3A%20MenuChanger.MenuElements.CustomEntryField%601%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuElements/EntryField.cs/#L229" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

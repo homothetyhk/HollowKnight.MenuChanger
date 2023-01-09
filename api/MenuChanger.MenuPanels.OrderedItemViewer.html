@@ -1,0 +1,971 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class OrderedItemViewer
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class OrderedItemViewer
+   ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="MenuChanger.MenuPanels.OrderedItemViewer">
+  
+  
+  <h1 id="MenuChanger_MenuPanels_OrderedItemViewer" data-uid="MenuChanger.MenuPanels.OrderedItemViewer" class="text-break">Class OrderedItemViewer
+  </h1>
+  <div class="markdown level0 summary"><p>A panel which shows one element at a time, managed by arrow buttons.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">OrderedItemViewer</span></div>
+      <div class="level2"><a class="xref" href="MenuChanger.MenuPanels.MultiGridItemPanel.html">MultiGridItemPanel</a></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="MenuChanger.MenuPanels.IMenuPanel.html">IMenuPanel</a></div>
+    <div><a class="xref" href="MenuChanger.MenuElements.IMenuElement.html">IMenuElement</a></div>
+    <div><a class="xref" href="MenuChanger.ISelectable.html">ISelectable</a></div>
+    <div><a class="xref" href="MenuChanger.ISelectableGroup.html">ISelectableGroup</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="MenuChanger.MenuPanels.html">MenuChanger.MenuPanels</a></h6>
+  <h6><strong>Assembly</strong>: MenuChanger.dll</h6>
+  <h5 id="MenuChanger_MenuPanels_OrderedItemViewer_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class OrderedItemViewer : IMenuPanel, IMenuElement, ISelectable, ISelectableGroup</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer__ctor_MenuChanger_MenuPage_MenuChanger_MenuElements_IMenuElement___.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.%23ctor(MenuChanger.MenuPage%2CMenuChanger.MenuElements.IMenuElement%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L29">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer__ctor_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.#ctor*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer__ctor_MenuChanger_MenuPage_MenuChanger_MenuElements_IMenuElement___" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.#ctor(MenuChanger.MenuPage,MenuChanger.MenuElements.IMenuElement[])">OrderedItemViewer(MenuPage, IMenuElement[])</h4>
+  <div class="markdown level1 summary"><p>Creates a panel which shows one element at a time, managed by arrow buttons placed on either side of the back button.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OrderedItemViewer(MenuPage page, params IMenuElement[] items)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="MenuChanger.MenuPage.html">MenuPage</a></td>
+        <td><span class="parametername">page</span></td>
+        <td><p>The page containing the panel.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="MenuChanger.MenuElements.IMenuElement.html">IMenuElement</a>[]</td>
+        <td><span class="parametername">items</span></td>
+        <td><p>The items of the panel.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer__ctor_MenuChanger_MenuPage_Vector2_Vector2_Vector2_MenuChanger_MenuElements_IMenuElement___.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.%23ctor(MenuChanger.MenuPage%2CVector2%2CVector2%2CVector2%2CMenuChanger.MenuElements.IMenuElement%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L40">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer__ctor_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.#ctor*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer__ctor_MenuChanger_MenuPage_Vector2_Vector2_Vector2_MenuChanger_MenuElements_IMenuElement___" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.#ctor(MenuChanger.MenuPage,Vector2,Vector2,Vector2,MenuChanger.MenuElements.IMenuElement[])">OrderedItemViewer(MenuPage, Vector2, Vector2, Vector2, IMenuElement[])</h4>
+  <div class="markdown level1 summary"><p>Creates a panel which shows one element at a time, managed by arrow buttons placed at the specified positions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OrderedItemViewer(MenuPage page, Vector2 prevPos, Vector2 nextPos, Vector2 indexLabelPos, params IMenuElement[] items)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="MenuChanger.MenuPage.html">MenuPage</a></td>
+        <td><span class="parametername">page</span></td>
+        <td><p>The page containing the panel.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td><span class="parametername">prevPos</span></td>
+        <td><p>The position of the previous button.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td><span class="parametername">nextPos</span></td>
+        <td><p>The position of the next button.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td><span class="parametername">indexLabelPos</span></td>
+        <td><p>The position of the label showing the current page index.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="MenuChanger.MenuElements.IMenuElement.html">IMenuElement</a>[]</td>
+        <td><span class="parametername">items</span></td>
+        <td><p>The items of the panel.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_Hidden.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.Hidden%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L16">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_Hidden_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Hidden*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_Hidden" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Hidden">Hidden</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Hidden { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_Index.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.Index%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L20">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_Index_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Index*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_Index" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Index">Index</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Index { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_IndexLabel.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.IndexLabel%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L15">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_IndexLabel_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.IndexLabel*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_IndexLabel" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.IndexLabel">IndexLabel</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MenuLabel IndexLabel { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="MenuChanger.MenuElements.MenuLabel.html">MenuLabel</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_Items.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.Items%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L11">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_Items_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Items*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_Items" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Items">Items</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;IMenuElement&gt; Items { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">List</span>&lt;<a class="xref" href="MenuChanger.MenuElements.IMenuElement.html">IMenuElement</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_NextButton.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.NextButton%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L14">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_NextButton_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.NextButton*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_NextButton" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.NextButton">NextButton</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SmallButton NextButton { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="MenuChanger.MenuElements.SmallButton.html">SmallButton</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_Parent.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.Parent%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L12">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_Parent_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Parent*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_Parent" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Parent">Parent</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MenuPage Parent { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="MenuChanger.MenuPage.html">MenuPage</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_PrevButton.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.PrevButton%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L13">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_PrevButton_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.PrevButton*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_PrevButton" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.PrevButton">PrevButton</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SmallButton PrevButton { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="MenuChanger.MenuElements.SmallButton.html">SmallButton</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_Add_MenuChanger_MenuElements_IMenuElement_.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.Add(MenuChanger.MenuElements.IMenuElement)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L116">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_Add_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Add*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_Add_MenuChanger_MenuElements_IMenuElement_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Add(MenuChanger.MenuElements.IMenuElement)">Add(IMenuElement)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual void Add(IMenuElement obj)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="MenuChanger.MenuElements.IMenuElement.html">IMenuElement</a></td>
+        <td><span class="parametername">obj</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_Clear.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.Clear%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L132">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_Clear_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Clear*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_Clear" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Clear">Clear()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual void Clear()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_ComputeCounterText.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.ComputeCounterText%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L66">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_ComputeCounterText_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.ComputeCounterText*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_ComputeCounterText" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.ComputeCounterText">ComputeCounterText()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected string ComputeCounterText()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_Destroy.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.Destroy%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L173">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_Destroy_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Destroy*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_Destroy" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Destroy">Destroy()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Destroy()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_GetISelectable_MenuChanger_Neighbor_.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.GetISelectable(MenuChanger.Neighbor)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L210">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_GetISelectable_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.GetISelectable*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_GetISelectable_MenuChanger_Neighbor_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.GetISelectable(MenuChanger.Neighbor)">GetISelectable(Neighbor)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ISelectable GetISelectable(Neighbor neighbor)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="MenuChanger.Neighbor.html">Neighbor</a></td>
+        <td><span class="parametername">neighbor</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="MenuChanger.ISelectable.html">ISelectable</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_GetSelectable_MenuChanger_Neighbor_.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.GetSelectable(MenuChanger.Neighbor)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L205">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_GetSelectable_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.GetSelectable*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_GetSelectable_MenuChanger_Neighbor_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.GetSelectable(MenuChanger.Neighbor)">GetSelectable(Neighbor)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Selectable GetSelectable(Neighbor neighbor)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="MenuChanger.Neighbor.html">Neighbor</a></td>
+        <td><span class="parametername">neighbor</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Selectable</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_Hide.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.Hide%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L164">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_Hide_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Hide*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_Hide" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Hide">Hide()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Hide()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_JumpTo_MenuChanger_MenuElements_IMenuElement_.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.JumpTo(MenuChanger.MenuElements.IMenuElement)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L109">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_JumpTo_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.JumpTo*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_JumpTo_MenuChanger_MenuElements_IMenuElement_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.JumpTo(MenuChanger.MenuElements.IMenuElement)">JumpTo(IMenuElement)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void JumpTo(IMenuElement element)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="MenuChanger.MenuElements.IMenuElement.html">IMenuElement</a></td>
+        <td><span class="parametername">element</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_JumpTo_System_Int32_.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.JumpTo(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L98">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_JumpTo_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.JumpTo*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_JumpTo_System_Int32_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.JumpTo(System.Int32)">JumpTo(Int32)</h4>
+  <div class="markdown level1 summary"><p>Hides the current item of the OrderedItemViewer and shows the item at the given index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void JumpTo(int index)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">index</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_MoveTo_Vector2_.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.MoveTo(Vector2)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L141">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_MoveTo_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.MoveTo*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_MoveTo_Vector2_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.MoveTo(Vector2)">MoveTo(Vector2)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void MoveTo(Vector2 pos)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td><span class="parametername">pos</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_Remove_MenuChanger_MenuElements_IMenuElement_.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.Remove(MenuChanger.MenuElements.IMenuElement)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L124">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_Remove_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Remove*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_Remove_MenuChanger_MenuElements_IMenuElement_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Remove(MenuChanger.MenuElements.IMenuElement)">Remove(IMenuElement)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual bool Remove(IMenuElement obj)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="MenuChanger.MenuElements.IMenuElement.html">IMenuElement</a></td>
+        <td><span class="parametername">obj</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_ResetNavigation.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.ResetNavigation%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L231">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_ResetNavigation_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.ResetNavigation*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_ResetNavigation" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.ResetNavigation">ResetNavigation()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ResetNavigation()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_SetNeighbor_MenuChanger_Neighbor_MenuChanger_ISelectable_.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.SetNeighbor(MenuChanger.Neighbor%2CMenuChanger.ISelectable)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L188">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_SetNeighbor_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.SetNeighbor*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_SetNeighbor_MenuChanger_Neighbor_MenuChanger_ISelectable_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.SetNeighbor(MenuChanger.Neighbor,MenuChanger.ISelectable)">SetNeighbor(Neighbor, ISelectable)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetNeighbor(Neighbor neighbor, ISelectable selectable)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="MenuChanger.Neighbor.html">Neighbor</a></td>
+        <td><span class="parametername">neighbor</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="MenuChanger.ISelectable.html">ISelectable</a></td>
+        <td><span class="parametername">selectable</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_Show.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.Show%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L155">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_Show_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Show*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_Show" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Show">Show()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Show()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_ToNext.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.ToNext%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L86">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_ToNext_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.ToNext*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_ToNext" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.ToNext">ToNext()</h4>
+  <div class="markdown level1 summary"><p>Hides the current item of the OrderedItemViewer and shows the item at the next index, wrapping around if necessary.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ToNext()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_ToPrevious.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.ToPrevious%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L74">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_ToPrevious_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.ToPrevious*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_ToPrevious" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.ToPrevious">ToPrevious()</h4>
+  <div class="markdown level1 summary"><p>Hides the current item of the OrderedItemViewer and shows the item at the previous index, wrapping around if necessary.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ToPrevious()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer_Translate_Vector2_.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer.Translate(Vector2)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L146">View Source</a>
+  </span>
+  <a id="MenuChanger_MenuPanels_OrderedItemViewer_Translate_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Translate*"></a>
+  <h4 id="MenuChanger_MenuPanels_OrderedItemViewer_Translate_Vector2_" data-uid="MenuChanger.MenuPanels.OrderedItemViewer.Translate(Vector2)">Translate(Vector2)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Translate(Vector2 delta)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector2</span></td>
+        <td><span class="parametername">delta</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="MenuChanger.MenuPanels.IMenuPanel.html">IMenuPanel</a>
+  </div>
+  <div>
+      <a class="xref" href="MenuChanger.MenuElements.IMenuElement.html">IMenuElement</a>
+  </div>
+  <div>
+      <a class="xref" href="MenuChanger.ISelectable.html">ISelectable</a>
+  </div>
+  <div>
+      <a class="xref" href="MenuChanger.ISelectableGroup.html">ISelectableGroup</a>
+  </div>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="MenuChanger.Extensions.MenuElementExtensions.html#MenuChanger_Extensions_MenuElementExtensions_SymSetNeighbor_MenuChanger_ISelectable_MenuChanger_Neighbor_MenuChanger_ISelectable_">MenuElementExtensions.SymSetNeighbor(ISelectable, Neighbor, ISelectable)</a>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/new/master/apiSpec/new?filename=MenuChanger_MenuPanels_OrderedItemViewer.md&amp;value=---%0Auid%3A%20MenuChanger.MenuPanels.OrderedItemViewer%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/homothetyhk/HollowKnight.MenuChanger/blob/master/MenuChanger/MenuPanels/OrderedItemViewer.cs/#L9" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
